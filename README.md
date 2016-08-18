@@ -11,7 +11,7 @@
 
 - ci with Travis OR CircleCi (TODO)
 
-- ability to do code coverage, using `grunt-istanbul` and `[freaktechnik/istanbul-jpm](istanbul-jpm)`
+- ability to do code coverage, using `grunt-istanbul` and [`istanbul-jpm`](freaktechnik/istanbul-jpm)
 
 - uses Grunt to do some of the heavy lifting.  Sorry if you hate Grunt.  [I do as well](#1).
 
@@ -19,9 +19,8 @@
 
 ## General Setup and Install
 
-```
-npm install
-```
+1.  Clone / copy the directory
+2.  `npm install`
 
 ## Adding a new npm library
 
