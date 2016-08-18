@@ -9,11 +9,13 @@
 
 - `addons-linter` with `.addonslinterrc`
 
-- ci with Travis OR CircleCi
+- ci with Travis OR CircleCi (TODO)
 
-- ability to do code coverage [TODO]
+- ability to do code coverage, using `grunt-istanbul` and `[freaktechnik/istanbul-jpm](istanbul-jpm)`
 
-- uses Grunt to do some of the heavy lifting.  Sorry if you hate Grunt.
+- uses Grunt to do some of the heavy lifting.  Sorry if you hate Grunt.  [I do as well](#1).
+
+- TODO:  Allow better build of React type things for front ends
 
 ## General Setup and Install
 
