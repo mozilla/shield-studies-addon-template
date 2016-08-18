@@ -6,6 +6,6 @@ env:
   browser: true
 
 rules:
-  comma-dangle: 0
-  no-console: 0
-  no-unused-vars: [2, { vars: all, args: none }]
+  comma-dangle: off
+  no-console: off
+  no-unused-vars: [error, { vars: all, args: none }]

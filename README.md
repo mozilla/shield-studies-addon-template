@@ -33,15 +33,23 @@ npm install --save-dev somelibrary
 
 Issues on this Github :)
 
-## Strong Assumptions and Opinions
+## Assumptions and Opinions
 
 1.  All code lives in `lib` and is ES6.
 2.  All website stuff (web-workers, ui) lives in `data`
 3.  Index at `lib/index.js`
 4.  Grunt, b/c it makes instrument / coverage easier
+
+    - `grunt-istanbul` + `istanbul-jpm`
+    - if you want or need `make`, `gulp`, `webpack` you absolutely can
+
 5.  All the testing happens in a create `testing-env` folder, so that
 
     - it can use a custom `.jpmignore` file
     - it can do coverage with less silliness
 
 6.  As built, the tests will fail, until you fix the facade tests.
+7.  We use `chai` for testing.  If you don't, remove it where it happens.
+8.  You are somewhere with some resemblence to Unix cli (Linux or OSX).
+
+

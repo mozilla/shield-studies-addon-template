@@ -7,4 +7,4 @@ env:
   browser: true
 
 rules:
-  no-console: 0  /* it would be better to find the right env for this*/
+  no-console: off  /* it would be better to find the right env for this*/
