@@ -1,0 +1,4 @@
+
+# special for testing
+!/node_modules/chai/**
+!/node_modules/istanbul-jpm/**

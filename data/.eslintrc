@@ -1,0 +1,10 @@
+extends: eslint:recommended
+
+env:
+  worker: true
+  node: false
+  es6: true
+  browser: true
+
+rules:
+  no-console: 0  /* it would be better to find the right env for this*/

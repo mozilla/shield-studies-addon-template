@@ -1,0 +1,4 @@
+
+ignorerules:
+  LOW_LEVEL_MODULE: true
+  KNOWN_LIBRARY: true
