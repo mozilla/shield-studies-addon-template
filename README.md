@@ -11,7 +11,7 @@
 
 - ci with Travis OR CircleCi (TODO)
 
-- ability to do code coverage, using `grunt-istanbul` and [`istanbul-jpm`](freaktechnik/istanbul-jpm)
+- ability to do code coverage, using `grunt-istanbul` and [`istanbul-jpm`](https://github.com/freaktechnik/istanbul-jpm)
 
 - uses Grunt to do some of the heavy lifting.  Sorry if you hate Grunt.  [I do as well](#1).
 
