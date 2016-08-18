@@ -28,7 +28,12 @@
     "grunt-shell": "^1.3.0",
     "istanbul-jpm": "^0.1.0",
     "jpm": "^1.0.7",
+    "shield-studies-addon-utils": "^1.2.0",
     "yamljs": "^0.2.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gregglind/shield-studies-addon-template.git"
   },
   "scripts": {
     "eslint": "grunt eslint",

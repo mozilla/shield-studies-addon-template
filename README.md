@@ -38,4 +38,9 @@ Issues on this Github :)
 2.  All website stuff (web-workers, ui) lives in `data`
 3.  Index at `lib/index.js`
 4.  Grunt, b/c it makes instrument / coverage easier
+5.  All the testing happens in a create `testing-env` folder, so that
 
+    - it can use a custom `.jpmignore` file
+    - it can do coverage with less silliness
+
+6.  As built, the tests will fail, until you fix the facade tests.
