@@ -10,12 +10,9 @@
 ## these node modules should ship
 !/node_modules/shield-studies-addon-utils/**
 
-
 ## allow in lib and data
 !/{lib,data}/**
-  # but not .DS_Store files!
+
+# but not .DS_Store files!
 {lib,data}/**/.DS_Store
 {lib,data}/**/.eslintrc
-
-
-

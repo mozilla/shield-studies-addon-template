@@ -1,8 +1,9 @@
-deprecated/*
+*.log
+*.update.rdf
 *.xpi
 .DS_Store
-*.update.rdf
-node_modules/*
 coverage/
+deprecated/*
+node_modules/*  
 test/z-ensure-coverage.js
 testing-env

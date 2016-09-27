@@ -1,0 +1,11 @@
+env:
+  browser: true
+  es6: true
+  node: false
+  worker: true
+
+extends:
+  - eslint:recommended
+
+rules:
+  no-console: off # it would be better to find the right env for this
