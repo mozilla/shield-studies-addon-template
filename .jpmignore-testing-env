@@ -1,4 +1,3 @@
-
 # special for testing
 !/node_modules/{deep-eql,type-detect,assertion-error}/**
 !/node_modules/chai/**
