@@ -3,30 +3,32 @@ module.exports = function (grunt) {
 
   // gross, put this in the process
   process.env.coveragedir = require('os').tmpdir();
-  console.log(process.env.coveragedir);
+  console.log('coveragedir: %s', process.env.coveragedir);
+
+  var fxBinary = process.env.JPM_FIREFOX_BINARY || 'Aurora';
 
   grunt.initConfig({
     eslint: {
-      files: '{lib,data,test}/**/*.js{,on}',
+      files: '**/*.js',
       options: {
         quiet: true
       }
     },
     shell: {
       addonLintTest: {
-        command: 'jpm xpi; addons-linter --output json --pretty *xpi | node scripts/addon-lint-consumer.js',
+        command: 'scripts/addonLintTest',
       },
-      makeCoverageTest: {
-        command: 'echo > test/z-ensure-coverage.js; git ls-tree -r HEAD --name-only lib | grep "js$" | xargs -I \'{}\' echo \'require("../{}");\' | egrep -v "(jetpack|main.js)" >> test/z-ensure-coverage.js',
+      cleanCoverage: {
+        command: 'rm -rf coverage'
+      },
+      'ensure-files-are-covered': {
+        command: 'scripts/ensure-files-are-covered'
       },
       makeTestEnv: {
-        command: 'rm -rf testing-env && mkdir testing-env && cd testing-env && cat ../.jpmignore ../.jpmignore-testing-env > .jpmignore && ln -s ../Gruntfile.js . && ln -s ../node_modules . && ln -s ../data . && ln -s ../coverage/instrument/lib . && ln -s ../package.json . && ln -s ../test .',
+        command: 'scripts/makeTestEnv'
       },
       jpmTest: {
-        command: 'cd testing-env && jpm test',
-      },
-      jpmTestTravis: {
-        command: 'cd testing-env && jpm test -b /usr/local/bin/firefox',
+        command: 'cd testing-env && node_modules/.bin/jpm test --tbpl -b ' + fxBinary
       }
     },
     instrument: {
@@ -52,8 +54,6 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-eslint');
-  grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-istanbul');
 
@@ -62,22 +62,28 @@ module.exports = function (grunt) {
     grunt.log.ok('Read __coverage__ global');
   });
 
-  if (process.env.TRAVIS) {
-    grunt.log.ok('testing with travis path for fx');
-    grunt.registerTask('jpmtest', ['shell:jpmTestTravis']);
-  } else {
-    grunt.registerTask('jpmtest', ['shell:jpmTest']);
-  }
+  grunt.registerTask('reportLocation', function () {
+    grunt.log.writeln('report at:', 'coverage/reports/lcov-report/index.html'['blue']);
+  });
 
-  grunt.registerTask('test', [
-    'eslint',
-    'shell:addonLintTest',
-    'instrument',
-    'shell:makeCoverageTest',
-    'shell:makeTestEnv',
-    'jpmtest', // knows about travis
+  grunt.registerTask('coverageReport', [
     'readcoverageglobal',
     'storeCoverage',
-    'makeReport'
+    'makeReport',
+    'reportLocation'
+  ]);
+
+  grunt.registerTask('jpmtest', [
+    'shell:ensure-files-are-covered',
+    'shell:makeTestEnv',
+    'shell:jpmTest',
+  ]);
+
+  grunt.registerTask('test', [
+    'shell:addonLintTest',
+    'shell:cleanCoverage',
+    'instrument',
+    'jpmtest',
+    'coverageReport'
   ]);
 };

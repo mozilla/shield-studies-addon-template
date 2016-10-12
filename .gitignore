@@ -4,6 +4,7 @@
 .DS_Store
 coverage/
 deprecated/*
-node_modules/*  
-test/z-ensure-coverage.js
+npm-shrinkwrap.json
+node_modules/*
+test/test-z-ensure-coverage.js
 testing-env

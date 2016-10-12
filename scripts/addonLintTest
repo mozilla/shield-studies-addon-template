@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -o nounset
+set -o errexit
+
+node_modules/.bin/jpm xpi
+node_modules/.bin/addons-linter --output json --pretty *xpi |\
+ node scripts/addon-lint-consumer.js
+
+echo "OK" $0
