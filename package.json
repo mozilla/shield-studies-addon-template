@@ -1,10 +1,10 @@
 {
   "name": "shield-studies-addon-template",
   "description": "A basic add-on",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "author": "Gregg Lind <glind@mozilla.com>",
   "bugs": {
-    "url": "https://github.com/gregglind/shield-studies-addon-template/issues"
+    "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "dependencies": {},
   "devDependencies": {
