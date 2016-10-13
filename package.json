@@ -1,7 +1,7 @@
 {
   "name": "shield-studies-addon-template",
   "description": "A basic add-on",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Gregg Lind <glind@mozilla.com>",
   "bugs": {
     "url": "https://github.com/gregglind/shield-studies-addon-template/issues"
@@ -10,7 +10,7 @@
   "devDependencies": {
     "addons-linter": "^0.15.5",
     "chai": "^3.5.0",
-    "depcheck": "^0.6.4",
+    "depcheck-ci": "^1.0.1",
     "eslint": "^3.6.1",
     "fixpack": "^2.3.1",
     "grunt": "^1.0.1",
@@ -20,6 +20,7 @@
     "istanbul-jpm": "^0.1.0",
     "jpm": "^1.0.7",
     "npm-run-all": "^3.1.0",
+    "nsp": "^2.6.2",
     "shield-studies-addon-utils": "^2.0.0",
     "yamljs": "^0.2.8"
   },
@@ -41,9 +42,10 @@
   "scripts": {
     "eslint": "grunt eslint",
     "lint": "npm-run-all lint:*",
-    "lint:depcheck": "# depcheck --ignores eslint,jpm",
+    "lint:depcheck": "depcheck-ci  # use coverage to catch missing",
     "lint:eslint": "eslint .",
     "lint:fixpack": "fixpack",
+    "lint:nsp": "nsp check",
     "prepublish": "npm shrinkwrap",
     "pretest": "npm-run-all lint:*",
     "test": "grunt test && istanbul check-coverage --statements 100 --functions 100 --branches 100 --lines 100 coverage/reports/coverage.json"
