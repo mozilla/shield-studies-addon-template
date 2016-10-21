@@ -1,7 +1,7 @@
 {
   "name": "shield-studies-addon-template",
   "description": "A basic add-on",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Gregg Lind <glind@mozilla.com>",
   "bugs": {
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
@@ -42,6 +42,7 @@
   "scripts": {
     "eslint": "grunt eslint",
     "lint": "npm-run-all lint:*",
+    "lint:addons-linter": "# `addons-linter` will be caught during `test` # grunt shell:addonLintTest",
     "lint:depcheck": "depcheck-ci  # use coverage to catch missing",
     "lint:eslint": "eslint .",
     "lint:fixpack": "fixpack",

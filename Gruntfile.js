@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     },
     shell: {
       addonLintTest: {
-        command: 'scripts/addonLintTest',
+        command: 'scripts/addonLintTest ' + require('./package.json').name
       },
       cleanCoverage: {
         command: 'rm -rf coverage'
