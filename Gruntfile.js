@@ -8,12 +8,6 @@ module.exports = function (grunt) {
   var fxBinary = process.env.JPM_FIREFOX_BINARY || 'Aurora';
 
   grunt.initConfig({
-    eslint: {
-      files: '**/*.js',
-      options: {
-        quiet: true
-      }
-    },
     shell: {
       addonLintTest: {
         command: 'scripts/addonLintTest ' + require('./package.json').name

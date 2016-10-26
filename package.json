@@ -40,7 +40,7 @@
     "url": "git://github.com/mozilla/shield-studies-addon-template.git"
   },
   "scripts": {
-    "eslint": "grunt eslint",
+    "eslint": "eslint --quiet **/*.js",
     "lint": "npm-run-all lint:*",
     "lint:addons-linter": "# `addons-linter` will be caught during `test` # grunt shell:addonLintTest",
     "lint:depcheck": "depcheck-ci  # use coverage to catch missing",
