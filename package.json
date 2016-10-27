@@ -8,7 +8,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "addons-linter": "^0.15.5",
+    "addons-linter": "^0.15.8",
     "chai": "^3.5.0",
     "depcheck-ci": "^1.0.1",
     "eslint": "^3.6.1",
