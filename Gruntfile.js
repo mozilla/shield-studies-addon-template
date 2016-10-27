@@ -9,9 +9,6 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     shell: {
-      addonLintTest: {
-        command: 'scripts/addonLintTest ' + require('./package.json').name
-      },
       cleanCoverage: {
         command: 'rm -rf coverage'
       },
@@ -74,7 +71,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('test', [
-    'shell:addonLintTest',
     'shell:cleanCoverage',
     'instrument',
     'jpmtest',
