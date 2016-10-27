@@ -21,8 +21,7 @@
     "jpm": "^1.0.7",
     "npm-run-all": "^3.1.0",
     "nsp": "^2.6.2",
-    "shield-studies-addon-utils": "^2.0.0",
-    "yamljs": "^0.2.8"
+    "shield-studies-addon-utils": "^2.0.0"
   },
   "engines": {
     "firefox": ">=38.0a1",
