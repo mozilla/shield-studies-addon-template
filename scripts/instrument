@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -o nounset
+set -o errexit
+
+rm -rf coverage/instrument
+mkdir -p coverage/instrument/lib
+./node_modules/.bin/istanbul instrument lib/ --output coverage/instrument/lib
+
+echo "OK" $0
