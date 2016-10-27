@@ -19,6 +19,16 @@
 
 ## General Setup and Install
 
+### Using shield CLI
+The [`shield` CLI tool](https://www.npmjs.com/package/shield-study-cli) makes it easy to start a Shield study with this add-on template.
+
+1. Install `shield`:
+  * `npm install -g shield-study-cli`
+2. Initialize a study add-on:
+  * `shield init <change>-shield-study`
+  
+### Manually
+
 1.  Clone / copy the directory
 2.  `npm install`
 
