@@ -1,44 +1,9 @@
 module.exports = function (grunt) {
-  var istanbulJpm = require('istanbul-jpm');
-
   // gross, put this in the process
   process.env.coveragedir = require('os').tmpdir();
   console.log('coveragedir: %s', process.env.coveragedir);
 
-  var fxBinary = process.env.JPM_FIREFOX_BINARY || 'Aurora';
-
   grunt.initConfig({
-    eslint: {
-      files: '**/*.js',
-      options: {
-        quiet: true
-      }
-    },
-    shell: {
-      addonLintTest: {
-        command: 'scripts/addonLintTest ' + require('./package.json').name
-      },
-      cleanCoverage: {
-        command: 'rm -rf coverage'
-      },
-      'ensure-files-are-covered': {
-        command: 'scripts/ensure-files-are-covered'
-      },
-      makeTestEnv: {
-        command: 'scripts/makeTestEnv'
-      },
-      jpmTest: {
-        command: 'cd testing-env && node_modules/.bin/jpm test --tbpl -b ' + fxBinary
-      }
-    },
-    instrument: {
-      files: 'lib/**/*.js',
-      options: {
-        lazy: false,
-        basePath: 'coverage/instrument',
-        instrumenter: istanbulJpm.Instrumenter
-      }
-    },
     storeCoverage: {
       options: {
         dir: 'coverage/reports'
@@ -73,17 +38,7 @@ module.exports = function (grunt) {
     'reportLocation'
   ]);
 
-  grunt.registerTask('jpmtest', [
-    'shell:ensure-files-are-covered',
-    'shell:makeTestEnv',
-    'shell:jpmTest',
-  ]);
-
   grunt.registerTask('test', [
-    'shell:addonLintTest',
-    'shell:cleanCoverage',
-    'instrument',
-    'jpmtest',
     'coverageReport'
   ]);
 };

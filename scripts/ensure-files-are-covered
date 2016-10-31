@@ -3,7 +3,7 @@ set -o nounset
 set -o errexit
 
 cat << DONE > test/test-z-ensure-coverage.js
-// automatically created by makeCoverageTest
+// automatically created by ensure-files-are-covered
 DONE
 
 git ls-tree -r HEAD --name-only lib | \
