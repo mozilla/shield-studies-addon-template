@@ -49,7 +49,8 @@ Issues on this Github :)
     - it can do coverage with less silliness
 
 6.  As built, the tests will fail, until you fix the facade tests.
-7.  We use `chai` for testing.  If you don't, remove it where it happens.
 8.  You are somewhere with some resemblence to Unix cli (Linux or OSX).
 
+## Suggestions
 
+1.  You may like to use [`chai`](https://www.npmjs.com/package/chai) for testing.
