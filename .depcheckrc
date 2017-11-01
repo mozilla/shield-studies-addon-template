@@ -1,7 +1,0 @@
-{
-  "ignore": ["addons-linter", "depcheck-ci", "jpm"],
-  "ignoreDirs": [
-  ],
-  "strict": false,
-  "unused": true
-}
