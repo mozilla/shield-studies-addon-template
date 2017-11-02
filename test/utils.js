@@ -166,14 +166,23 @@ module.exports.allAddons = async(driver) => {
 };
 */
 
+// Returns array of pings of type `type` in sorted order by timestamp
+// first element is most recent ping
+// as seen in shield-study-addon-util's `utils.jsm`
 module.exports.getTelemetryPings = async(driver, options) => {
   // callback is how you get the return back from the script
   return driver.executeAsyncScript(async(options, callback) => {
-    const {type, n, timestamp, headersOnly} = options;
+    let {type, n, timestamp, headersOnly} = options;
     Components.utils.import("resource://gre/modules/TelemetryArchive.jsm");
     // {type, id, timestampCreated}
     let pings = await TelemetryArchive.promiseArchivedPingList();
-    if (type) pings = pings.filter(p => p.type === type);
+    if (type) {
+      if (!(type instanceof Array)) {
+        type = [type];  // Array-ify if it's a string
+      }
+    }
+    if (type) pings = pings.filter(p => type.includes(p.type));
+
     if (timestamp) pings = pings.filter(p => p.timestampCreated > timestamp);
 
     pings.sort((a, b) => b.timestampCreated - a.timestampCreated);

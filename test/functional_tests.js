@@ -55,12 +55,13 @@ async function postTestReset(driver) {
 
 /* Part 2:  The Tests */
 
-describe.only("notification bar", function() {
+describe.only("basic functional tests", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(15000);
 
   let driver;
   let addonId;
+  let pings;
 
   before(async() => {
     driver = await utils.promiseSetupDriver();
@@ -70,6 +71,10 @@ describe.only("notification bar", function() {
     addonId = await utils.installAddon(driver);
     // add the share-button to the toolbar
     // await utils.addShareButton(driver);
+    // allow our shield study addon some time to send initial pings
+    await driver.sleep(1000);
+    // collect sent pings
+    pings = await getPings(driver);
   });
 
   after(async() => driver.quit());
@@ -86,11 +91,7 @@ describe.only("notification bar", function() {
   }
 
   async function getPings(driver) {
-    const ar = ["shield-study", "shield-study-addon"];
-    const out = {};
-    out["shield-study"] = await utils.getTelemetryPings(driver, {type: "shield-study"});
-    out["shield-study-addon"] = await utils.getTelemetryPings(driver, {type: "shield-study-addon"});
-    return out;
+    return utils.getTelemetryPings(driver, ["shield-study", "shield-study-addon"]);
   }
   */
 
@@ -105,6 +106,29 @@ describe.only("notification bar", function() {
 
   // afterEach(async() => postTestReset(driver));
 
+  it("should send shield telemetry pings", async() => {
+
+    assert(pings.length > 0, "at least one shield telemetry ping");
+
+  });
+
+  it("at least one shield-study telemetry ping with study_state=installed", async() => {
+
+    const foundPings = utils.searchTelemetry([
+      ping => ping.type === "shield-study" && ping.payload.data.study_state === "installed",
+    ], pings);
+    assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=installed");
+
+  });
+
+  it("at least one shield-study telemetry ping with study_state=enter", async() => {
+
+    const foundPings = utils.searchTelemetry([
+      ping => ping.type === "shield-study" && ping.payload.data.study_state === "enter",
+    ], pings);
+    assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=enter");
+
+  });
 
   // TODO, this could be a better test, but it's SOMETHING.
   /*
