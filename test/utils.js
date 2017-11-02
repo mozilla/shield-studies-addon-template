@@ -76,7 +76,7 @@ module.exports.promiseSetupDriver = async() => {
     .setFirefoxOptions(options);
 
   const binaryLocation = await promiseActualBinary(process.env.FIREFOX_BINARY || "nightly");
-  console.log(binaryLocation);
+  //console.log(binaryLocation);
   await options.setBinary(new firefox.Binary(binaryLocation));
   const driver = await builder.build();
   // Firefox will be started up by now
