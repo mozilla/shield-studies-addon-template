@@ -1,7 +1,7 @@
 "use strict";
 
 /* global  __SCRIPT_URI_SPEC__  */
-/* global Feature, Services */ // from imports
+/* global Feature, Services */ // Cu.import
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(startup|shutdown|install|uninstall)" }]*/
 
 const { utils: Cu } = Components;
@@ -25,7 +25,11 @@ XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Featu
 // var log = createLog(studyConfig.study.studyName, config.log.bootstrap.level);  // defined below.
 // log("LOG started!");
 
-/* Example addon-specific module imports.  Remember to Unload.
+/* Example addon-specific module imports.  Remember to Unload during shutdown!
+
+  // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Using
+
+
    Ideally, put ALL your feature code in a Feature.jsm file,
    NOT in this bootstrap.js.
 
@@ -119,6 +123,8 @@ function shutdown(addonData, reason) {
     // normal shutdown, or 2nd uninstall request
 
     // QA NOTE:  unload addon specific modules here.
+    Cu.unload();
+
 
     // clean up our modules.
     Cu.unload(CONFIGPATH);

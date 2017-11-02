@@ -57,9 +57,9 @@ var config = {
         "study_state": "ended-neutral",
         "baseUrl":  null,
       },
-      "orientation-leave-study": {
+      "introduction-leave-study": {
         "study_state": "ended-negative",
-        "baseUrl": "http://www.example.com/?reason=orientation-leave-study",
+        "baseUrl": "http://www.example.com/?reason=introduction-leave-study",
       },
     },
     "telemetry": {

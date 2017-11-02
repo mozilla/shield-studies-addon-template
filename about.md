@@ -66,10 +66,10 @@
 
 ## tl;dr - Running the Template Study
 
-1.  **One time**:  
+1.  **One time**:
 
     * Clone this directory
-    
+
     ```
     git clone template
     rm -rf {.git,docs}/
@@ -81,11 +81,11 @@
    ```
    npm install
    ```
-   
+
     * install **Firefox Nightly** for easier development
 
 2. Edit and examine files:
-	
+
 	- `addon/bootstrap.js`
 	- `addon/Config.jsm`
 	- `package.json`
@@ -98,19 +98,19 @@
 4.  Debug using
 
     - [`browser console`][link-browser-console]
-    - `about:debugging`.  
+    - `about:debugging`.
 
 5.  Restart / re-run after addon changes.
 
 Repeat Steps 2-5 as necessary.
-  
+
 
 ## Direcotry Contents
 
 ```
 ├── .circleci/            # setup for Circle-CI integration
 |
-├── .eslintignore         # 
+├── .eslintignore         #
 ├── .eslintrc.js          # linting rules: mozilla, json
 |
 ├── .git/
@@ -173,7 +173,7 @@ Note: see [about the #kittens study](#kittens) for architecture of the particula
 - Shield-Studies-Addon-Utils
 - Legacy Addon framing code
 - UI / Feature
-    
+
     - (optional) Web Extension, embedded
     - (optional) Various Firefox modules (`.jsm` files)
 
@@ -186,7 +186,7 @@ More details on each follow.
 1. **suggest variation for a client**
   - deterministic and predicatable:  every startup will suggest the same variation for a particular client
   - per client: uses sha256 hash of (Telemetry Id, study name)
-  
+
   ```javascript
   const variation = await studyUtils.deterministicVariation(myWeightedVariations);
   studyUtils.setVariation(variation);
@@ -203,7 +203,7 @@ More details on each follow.
   ```
 3. **Report feature interaction and success data** using Telemetry
   - `shield-study-addon` Telemetry bucket
-  
+
   ```javascript
   // values must be strings
   studyUtils.telemetry({evt:"click", button:"share", times:"3"})
@@ -230,7 +230,7 @@ A **Legacy Addon** consists of:
   - optional `chrome.manifest`, `update.rdf` etc.
 
 * build process to turn these files an `xpi`.
-* signing process using the [Legacy Signing Key][legacy-signing], to enable running in Beta and Release. 
+* signing process using the [Legacy Signing Key][legacy-signing], to enable running in Beta and Release.
 
 ### Your Feature, with Variations
 
@@ -251,10 +251,10 @@ If you do not have UI
 
 ```
     time ------------->
-    
+
     ENTRY +-> INSTALL +----> ENDINGS +------> EXIT
-  
-    
+
+
     enter +-> install +----> user-disable     exit (all states)
        +      +  +  +
        |      |  |  +------> ended-positive
@@ -276,40 +276,40 @@ If you do not have UI
 
 All **N** enters will eventually have an ending and an exit.
 
-There will be **i** installs ( \\( i \le N \\) ).  
+There will be **i** installs ( \\( i \le N \\) ).
 
-There will be **x** ineligibles ( \\( x \le N \\) ).  
+There will be **x** ineligibles ( \\( x \le N \\) ).
 
 \\( N = i + x \\)
 
 
 ```
-     enter  ==  exit  
+     enter  ==  exit
             ==  (install + ineligible)
-            
-    install == user-disable + expired + ended-* 
+
+    install == user-disable + expired + ended-*
 ```
 
-### How Probes are Sent from `studyUtils.jsm` 
+### How Probes are Sent from `studyUtils.jsm`
 
-Note: 
+Note:
 
 `const su = Cu.import("resource://path/to/StudyUtils.jsm")`
 
-`study_state` | `studyUtils` call | when to call it 
+`study_state` | `studyUtils` call | when to call it
 --- | --- | ---
 `enter` | `su.firstSeen()` |   call ONCE per study  during `ADDON_INSTALL`
-`install` | `su.startup(ADDON_INSTALL)`  |  During `boostrap.js:startup` 
+`install` | `su.startup(ADDON_INSTALL)`  |  During `boostrap.js:startup`
 none sent | `su.startup(<other reasons>)` |  Never
 **ENDINGS** | | Affected by the `endings` config value.
 `user-disable` | `su.endStudy("user-disable")` | Implies user uninstalled or disabled addon, or (BUG) Normandy uninstalled it.
-`expired` | `su.endStudy("expired")` | Time-limited study reached expiration.  
+`expired` | `su.endStudy("expired")` | Time-limited study reached expiration.
 `ended-positive` | `su.endStudy("ended-positive")` | General study-defined 'good ending', such as attempting to use feature.
 `ended-negative` | `su.endStudy("ended-negative")` | General study-defined 'bad ending', such as clicking 'I do not like this feature'.
 `ended-neutral` | `su.endStudy("ended-neutral")` | General study-defined 'neutral ending'.
 `ineligible` | `su.endStudy("ineligible")` |  During install, client actually not appropriate for study, for some study-specific reason.
-**EXIT** | | 
-`exit` | | automatically sent as part of `endStudy` 
+**EXIT** | |
+`exit` | | automatically sent as part of `endStudy`
 
 
 **Note**:  Every user should have
@@ -371,18 +371,18 @@ studyUtils.endStudy("user-attempted-signup");
     [Bugzilla for QA Helper Addon](https://bugzilla.mozilla.org/show_bug.cgi?id=1407757
     )
     [direct install link for Signed XPI for @qa-shield-study-helper-1.0.0.xpi][qa-helper-addon-direct]
-    
+
     Example output:
-    
+
     ```text
     // common fields
-    
+
     branch        up-to-expectations-1        // should describe Question text
     study_name    57-perception-shield-study
     addon_version 1.0.0
     version       3
-    
-    
+
+
     2017-10-09T14:16:18.042Z shield-study
     {
       "study_state": "enter"
@@ -423,7 +423,7 @@ studyUtils.endStudy("user-attempted-signup");
 
 2.  Use `about:telemetry`, and look for `shield-study` or `shield-study-addon` probes.
 
-    
+
 
 ### Collector (example s.t.m.o query)
 
@@ -433,7 +433,7 @@ studyUtils.endStudy("user-attempted-signup");
 
 ## Engineering Side-by-Side (a/b) Feature Variations
 
-Note: this is a gloss / summary.  
+Note: this is a gloss / summary.
 
 
 1.  Your feature has a `startup` or `configuration` method that does different things depending on which variation is chosen.
@@ -442,10 +442,10 @@ Note: this is a gloss / summary.
     // bootstrap.js startup()...
    const variation = await studyUtils.deterministicVariation(myWeightedVariations);
     studyUtils.setVariation(variation);
-    
+
     //...
-    
-    // start the feature 
+
+    // start the feature
     TheFeature.startup(variation)
     ```
 
@@ -454,8 +454,8 @@ Note: this is a gloss / summary.
 
 ## Kittens or Puppers, the Critical Study We have all been waiting for
 
-Style: 
- 
+Style:
+
 - Embedded Web Extension
 - Telmetry on 'button click'
 - has one "end early" condition:  3 or more button presses during a sesson.
@@ -499,21 +499,29 @@ Debugging `Cu.import`.
 
 ### s.t.m.o - [sql.telemetry.mozilla.org](http://sql.telemetry.mozilla.org/)
 
+
+#### Where are my pings?
+
+1.  Are you seeing them in `about:telemetry` and / or the QA-Study-Helper.  If YES, then they are being reported at client, good!  If NO:   check the config settings for your study for `telemetry.send => true`
+2. Is pref set weirdly:  `toolkit.telemetry.server => https://incoming.telemetry.mozilla.org`.  If you are running from `run_firefox` and maybe lots of other contexts, this pref will not be properly set (because we don’t usually want to send telemetry!)   BAD RESULT:  “toolkit.telemetry.server”, Pref::new(“https://%(server)s/dummy/telemetry/“))
+3.  Have you waited… 3-5 minutes?
+
+
 - All error messages are misleading.  They almost always indicate issues with syntax.   Sometimes they indicate mis-spelled fields.
 - No SEMI-COLONS at the end of your sql!
 - Athena >> Presto (10-20x faster!)
-- Be careful with single and double-quotes.  
+- Be careful with single and double-quotes.
 
 ## Glossary
 
 - **Probe**.  A Telemetry measure, or ping.  More broadly:  any measure sent anywhere.
-- **Variation**.  synonyms (branch, arm):  
+- **Variation**.  synonyms (branch, arm):
    - which *specific* version / configuration a specific client is randomized into.
    - A JSON object describing the configuration for that specific choice, with keys like `name`.
 
 ## OTHER DOCS
 
-- template/README.md 
+- template/README.md
 
     - should be edited for YOUR STUDY
     - move the general npm commands there
@@ -530,7 +538,7 @@ Debugging `Cu.import`.
     Needed to send any telemetry
 
     Minimal setup:
-    
+
     ```
     {
         "studyName": "a-study-name",
@@ -541,7 +549,7 @@ Debugging `Cu.import`.
         }
     }
     ```
-    
+
 
 - `studyUtils.deterministicVariation(weightedVariations)`
 
@@ -550,7 +558,7 @@ Debugging `Cu.import`.
 - `studyUtils.setVariation(anObjectWithNameKey)`
 
     Actually set the variation.
-    
+
 
 ### Lifecycle
 
@@ -568,18 +576,18 @@ Debugging `Cu.import`.
     - Send ending ping
     - Open a url for that ending if defined
     - Uninstalls addon
-    
+
 
 ### Running
 
 - `await studyUtils.info()`
 
     Return configuration info
-    
+
 - `studyUtils.respondToWebExtensionMessage`
 
     "Do shield things" (`telemetry`, `info`, `endStudy`)
-    
+
 - `studyUtils._isEnding`
 
     Useful flag for knowing if something is already calling an ending, to help prevent race conditions and "double endings"
@@ -597,9 +605,9 @@ Change SSAU api to this:
 - suggestVariation
 - setup(includes branch)
 - install() => firstSeen() => ping('enter');
-- 
+-
 - alreadyEnding()
-- endStudy()?  tryEndStudy()?   # first in. 
+- endStudy()?  tryEndStudy()?   # first in.
 
 - info
 - respondToWebExtension / respond?
@@ -612,13 +620,13 @@ Change SSAU api to this:
 startup(reason) {
   const isEligible = some Fn();
   studyUtils.startup(reason, isEligible)
-  
+
   if INSTALL {
     if !isEliglbe endStudy('ineligible')
-    
+
   }
   startup(reason)
-  
+
   ==> utils.startup(reason)
     if INSTALL, then send install
     else send nothing
@@ -628,7 +636,7 @@ startup(reason) {
 
 ```
 install
-- elgible 
+- elgible
 - not eligible
 
 
@@ -642,6 +650,11 @@ endStudy()
 telemetry();
 
 ```
+
+## TODO
+
+- debuggin and setting localstore?  Prefs are 1000x easier
+- debug both halves.
 
 
 ## Template

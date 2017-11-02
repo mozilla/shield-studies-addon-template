@@ -1,11 +1,83 @@
 # Shield Study Embedded Web Extension Template
 
-The most up to date [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) addon template as of October 2017, sporting a leaner file structure than other shield addon templates.
+**Note**:  This is toy / demonstration [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Legacy Addon.  Use this as a template for yours
 
 
-# tutorial
+## Getting started
 
-see [./tutorial.md]
+```
+# install depndencies
+npm install
+
+## build
+npm run eslint 
+npm run build
+
+## build and run
+npm run firefox
+```
+
+### Details
+
+First, make sure you are on NPM 5+ installed so that the proper dependencies are installed using the package-lock.json file.
+
+`$ npm install -g npm`
+
+After cloning the repo, you can run the following commands from the top level directory, one after another:
+
+```
+$ npm install
+$ npm run build
+```
+
+This packages the add-on into `dist/linked-addon.xpi`. This file is the addon you load into Firefox.
+
+Note: `linked-addon.xpi` is a symbolic link to the extension's true XPI, which is named based on the study's unique addon ID specified in `package.json`.
+
+
+## About This Study
+
+(Note: get these from your PHD).
+
+Goal:  Determine which if any TOOLBAR BUTTONS DESIGNS is the most enticing to the user.
+
+
+## User Experience / Functionality
+
+During INSTALL ONLY users see:
+
+- a notification bar
+
+    -  introducing the feature. 
+    -  allowing them to opt out 
+
+During FIRST INSTALL and EVERY OTHER STARTUP, users see:
+
+- a 'toolbar button' (webExtension BrowserAction)
+
+    - with one of 3 images (Cat, Dog, Lizard)
+
+Clicking on the button
+
+- changes the badge
+- sends telemetry
+
+Icon will be the same every run.
+
+If the user clicks on the badge more than 3 times, it ends the study.
+
+
+## Data Collected / Telemetry Pings
+
+Measure:
+- Button (BrowserAction) usage.
+
+see [TELEMETRY.md](./TELEMETRY.md)
+
+## Data Collected / Telemetry Pings
+
+see [TESTPLAN](./TESTPLAN.md)
+
 
 # Directory Structure and Files
 
@@ -27,10 +99,20 @@ see [./tutorial.md]
 │   ├── install.rdf       # (derived from templates)
 │   │
 │   ├── lib               # JSM (Firefox modules)
-│   │   └── AddonPrefs.jsm
+│   │   └── AddonPrefs.jsm 
+│   │   └── Feature.jsm   # does `introduction`
+|   |
 │   └── webextension      # modern, embedded webextesion
 │       ├── .eslintrc.json
 │       ├── background.js
+│       ├── icons
+│       │   ├── Anonymous-Lizard.svg
+│       │   ├── DogHazard1.svg
+│       │   ├── Grooming-Cat-Line-Art.svg
+│       │   ├── isolatedcorndog.svg
+│       │   ├── kittens.svg
+│       │   ├── lizard.svg
+│       │   └── puppers.svg
 │       └── manifest.json
 │
 ├── bin                   # Scripts / commands
@@ -60,20 +142,23 @@ see [./tutorial.md]
     ├── test_printer.py
     └── utils.js
 
+
+>> tree -a -I node_modules
+
 ```
 
-(based on results from:  `tree -a -L 2 -I node_modules`)
+## General Shield Study Engineering
 
-# Similar repositories
+see [./about.md]
+
+
+### Similar repositories
 
 [https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example]() - A repository that was created this week specifically to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
 [https://github.com/mozilla/shield-studies-addon-template]() - An old "official" template for shield study add-ons, not updated since October 2016. Do not use.
 
-# Functionality
 
-Adds a new button (with a green 'puzzle piece') symbol to the Firefox toolbar, which triggers telemetry data to be sent to Shield servers when clicked.
-
-# Anatomy of a shield study add-on
+### Anatomy of a shield study add-on
 
 Shield study add-ons are legacy (`addon/bootstrap.js`) add-ons with an optional embedded web extension (`addon/webextension/background.js`).
 
@@ -83,23 +168,9 @@ It is recommended to build necessary logic and user interface using in the conte
 
 For more information about the legacy add-on part of the codebase, see [https://github.com/mozilla/shield-studies-addon-utils]().
 
-# Getting started
 
-First, make sure you are on NPM 5+ installed so that the proper dependencies are installed using the package-lock.json file.
 
-`$ npm install -g npm`
-
-After cloning the repo, you can run the following commands from the top level directory, one after another:
-
-`$ npm install`
-
-`$ npm run build`
-
-This packages the add-on into `linked-addon.xpi` which is stored in `dist/`. This file is what you load into Firefox.
-
-Note: `linked-addon.xpi` is a symbolic link to the extension's true XPI, which is named based on the study's unique addon ID specified in `package.json`.
-
-# Loading the Web Extension in Firefox
+### Loading the Web Extension in Firefox
 
 Open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/). You can load the `.xpi` using the following steps:
 
@@ -110,7 +181,7 @@ Open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/fir
 
 To debug installation and loading of extensions loaded in this manner, use the Browser Console which can be open from Firefox's top toolbar in `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and `console.log()` output from the extensions that we build.
 
-# Seeing the add-on in action
+### Seeing the add-on in action
 
 You should see a green puzzle piece icon in the browser address bar. You should also see the following in the Browser Console (`Tools > Web Developer > Browser Console`), which comes from this add-on:
 
@@ -144,7 +215,7 @@ To end early: Click on button multiple times until the 'too-popular' endpoint is
 
 That's it! The rest is up to you. Fork the repo and hack away.
 
-# Developing
+### Developing
 
 You can automatically build recent changes and package them into a `.xpi` by running the following from the top level directory:
 
@@ -152,7 +223,7 @@ You can automatically build recent changes and package them into a `.xpi` by run
 
 Now, anytime a file is changed and saved, node will repackage the add-on. You must reload the add-on as before, or by clicking the "Reload" under the add-on in *about:debugging*. Note that a hard re-load is recommended to clear local storage. To do this, simply remove the add-on and reload as before.
 
-# Description of what goes on when this addon is started
+### Description of what goes on when this addon is started
 
 During `bootstrap.js:startup(data, reason)`:
 
@@ -166,11 +237,11 @@ During `bootstrap.js:startup(data, reason)`:
 
 Tip: It is particularly useful to compare the source code of previously deployed shield studies with this template (and each other) to get an idea of what is actually relevant to change between studies vs what is mostly untouched boilerplate.
 
-# Getting Data
+### Getting Data
 
 Telemetry pings are loaded into S3 and re:dash. You can use this [Example Query](https://sql.telemetry.mozilla.org/queries/46999/source#table) as a starting point.
 
-# Testing
+### Testing
 
 Run the following to run the example set of functional tests:
 

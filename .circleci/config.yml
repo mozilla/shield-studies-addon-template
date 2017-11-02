@@ -14,7 +14,7 @@ jobs:
           name: xvfb and openbox
           command: Xvfb $DISPLAY -ac & sleep 1 & openbox
           background: true
-    
+
       - checkout
 
       - restore_cache:
@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Build .XPI
           command: npm run build
-  
+
       - run:
           name: Functional tests
           command: npm run test

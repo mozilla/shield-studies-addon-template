@@ -1,5 +1,5 @@
 {
-  "name": "template-shield-study",
+  "name": "shield-studies-addon-template",
   "description": "Template Shield Study",
   "version": "1.2.0",
   "author": "Mozilla Gregg Lind <glind@mozilla.com>",
@@ -18,7 +18,7 @@
     "iconPath": "icon.png"
   },
   "bugs": {
-    "url": "https://github.com/gregglind/template-shield-study/issues"
+    "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "devDependencies": {
     "addons-linter": "^0.28.0",
@@ -45,14 +45,19 @@
     "selenium-webdriver": "^3.5.0",
     "shield-studies-addon-utils": "^4.1.0"
   },
-  "homepage": "",
+  "homepage": "http://github.com/mozilla/shield-studies-addon-template",
   "keywords": [
     "mozilla",
+    "legacy-addon",
+    "firefox",
     "shield-study"
   ],
-  "license": "MPL-2.0",
+  "license": "MIT",
   "main": "index.js",
-  "repository": "https://github.com/mozilla/template-shield-study.git",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mozilla/shield-studies-addon-template.git"
+  },
   "scripts": {
     "build": "bash ./bin/xpi.sh",
     "eslint": "eslint addon --ext jsm --ext js --ext json",

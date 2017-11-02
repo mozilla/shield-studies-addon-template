@@ -29,6 +29,8 @@ $mustache package.json templates/chrome.manifest.mustache > addon/chrome.manifes
 echo 'Copying all files in `addon/` into the xpi...'
 
 # xpi all of 'addon' to 'dist'
+mkdir -p dist
+
 pushd addon > /dev/null
 zip -r  "../dist/${XPI_NAME}" .
 popd > /dev/null
