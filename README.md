@@ -74,7 +74,7 @@ Measure:
 
 see [TELEMETRY.md](./TELEMETRY.md)
 
-## Data Collected / Telemetry Pings
+## Test plan
 
 see [TESTPLAN](./TESTPLAN.md)
 
@@ -149,39 +149,37 @@ see [TESTPLAN](./TESTPLAN.md)
 
 ## General Shield Study Engineering
 
-see [./about.md]
-
-
-### Similar repositories
-
-[https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example]() - A repository that was created this week specifically to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
-[https://github.com/mozilla/shield-studies-addon-template]() - An old "official" template for shield study add-ons, not updated since October 2016. Do not use.
-
-
-### Anatomy of a shield study add-on
-
 Shield study add-ons are legacy (`addon/bootstrap.js`) add-ons with an optional embedded web extension (`addon/webextension/background.js`).
 
 The web extension needs to be packaged together with a legacy add-on in order to be able to access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
 
 It is recommended to build necessary logic and user interface using in the context of the webextension and communicate with the legacy add-on code through messaging whenever privileged access is required.
 
-For more information about the legacy add-on part of the codebase, see [https://github.com/mozilla/shield-studies-addon-utils]().
+For more information, see [./about.md]
 
+
+### Similar repositories
+
+[https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example]() - A repository that was created this week specifically to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
+[https://github.com/gregglind/template-shield-study]() - The incubation repo for the updated structure and contents of this repo. Use this repo instead.   
 
 
 ### Loading the Web Extension in Firefox
 
-Open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/). You can load the `.xpi` using the following steps:
+You can have Firefox automatically launched and the add-on installed by running:
 
-* Navigate to *about:config* and set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded WebExtension since new versions of Firefox are becoming restricted to pure Web  Extensions only.
+`$ npm run firefox`
+
+To load the extension manually instead, open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/) and load the `.xpi` using the following steps:
+
+* Navigate to *about:config* and set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
 * Navigate to *about:debugging* in your URL bar
 * Select "Load Temporary Add-on"
 * Find and select the `linked-addon.xpi` file you just built.
 
-To debug installation and loading of extensions loaded in this manner, use the Browser Console which can be open from Firefox's top toolbar in `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and `console.log()` output from the extensions that we build.
-
 ### Seeing the add-on in action
+
+To debug installation and loading of extensions loaded in this manner, use the Browser Console which can be open from Firefox's top toolbar in `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and `console.log()` output from the extensions that we build.
 
 You should see a green puzzle piece icon in the browser address bar. You should also see the following in the Browser Console (`Tools > Web Developer > Browser Console`), which comes from this add-on:
 

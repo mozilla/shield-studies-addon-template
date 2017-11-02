@@ -2,7 +2,7 @@
 
 ## Automated Testing
 
-`npm test` does **optimistic testing** of the *commonest path* though the study for a user
+`npm test` verifies the telemetry payload as expected at firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the *commonest path* though the study for a user
 
 - prove the notification bar ui opens
 - *clicking on the left-most button presented*.
@@ -158,50 +158,4 @@ printPings()
 
 ### Example sequence for a 'voted => not sure' interaction
 
-```
-
-// common fields
-
-branch        up-to-expectations-1        // should describe Question text
-study_name    57-perception-shield-study
-addon_version 1.0.0
-version       3
-
-
-2017-10-09T14:16:18.042Z shield-study
-{
-  "study_state": "enter"
-}
-2017-10-09T14:16:18.055Z shield-study
-{
-  "study_state": "installed"
-}
-2017-10-09T14:16:18.066Z shield-study-addon
-{
-  "attributes": {
-    "event": "prompted",
-    "promptType": "notificationBox-strings-1"
-  }
-}
-2017-10-09T16:29:44.109Z shield-study-addon
-{
-  "attributes": {
-    "promptType": "notificationBox-strings-1",
-    "event": "answered",
-    "yesFirst": "1",
-    "score": "0",
-    "label": "not sure",
-    "branch": "up-to-expectations-1",
-    "message": "Is Firefox performing up to your expectations?"
-  }
-}
-2017-10-09T16:29:44.188Z shield-study
-{
-  "study_state": "ended-neutral",
-  "study_state_fullname": "voted"
-}
-2017-10-09T16:29:44.191Z shield-study
-{
-  "study_state": "exit"
-}
-```
+See [TELEMETRY.md](./TELEMETRY.md), EXAMPLE SEQUENCE section at the bottom.
