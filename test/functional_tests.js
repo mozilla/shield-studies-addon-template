@@ -10,15 +10,17 @@ process.on("unhandledRejection", r => console.log(r)); // eslint-disable-line no
 
 const assert = require("assert");
 const utils = require("./utils");
-const clipboardy = require("clipboardy");
+//const clipboardy = require("clipboardy");
 const webdriver = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
 
 const By = webdriver.By;
 const Context = firefox.Context;
 const until = webdriver.until;
+/*
 const MAX_TIMES_TO_SHOW = 5; // this must match MAX_TIMES_TO_SHOW in bootstrap.js
 const MOZILLA_ORG = "http://mozilla.org";
+*/
 
 // TODO create new profile per test?
 // then we can test with a clean profile every time
@@ -26,6 +28,7 @@ const MOZILLA_ORG = "http://mozilla.org";
 
 /* Part 1:  Test helpers */
 
+/*
 async function postTestReset(driver) {
   // wait for the animation to end before running subsequent tests
   await utils.waitForAnimationEnd(driver);
@@ -47,6 +50,7 @@ async function postTestReset(driver) {
     callback();
   });
 }
+*/
 
 
 /* Part 2:  The Tests */
@@ -70,9 +74,11 @@ describe.only("notification bar", function() {
 
   after(async() => driver.quit());
 
+  /*
   async function getNotification(driver) {
     return utils.getChromeElementBy.tagName(driver, "notification");
   }
+
   async function getFirstButton(driver) {
     return utils.getChromeElementBy.className(driver, "notification-button");
     // console.log(await nb.getLocation(), await nb.getAttribute("label"));
@@ -86,6 +92,7 @@ describe.only("notification bar", function() {
     out["shield-study-addon"] = await utils.getTelemetryPings(driver, {type: "shield-study-addon"});
     return out;
   }
+  */
 
 
   /* Expected behaviour:
@@ -100,6 +107,7 @@ describe.only("notification bar", function() {
 
 
   // TODO, this could be a better test, but it's SOMETHING.
+  /*
   it("'first button' does the right thing", async() => {
     const notice = await getNotification(driver);
 
@@ -167,4 +175,5 @@ describe.only("notification bar", function() {
     assert.equal(payloads[0].branch, noticeConfig.name);
 
   });
+  */
 });
