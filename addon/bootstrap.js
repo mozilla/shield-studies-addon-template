@@ -146,8 +146,8 @@ function install(addonData, reason) {
 // helper to let Dev or QA set the variation name
 function getVariationFromPref(weightedVariations) {
   const key = "shield.test.variation";
-  const name = Services.prefs.getCharPref(key, null);
-  if (name) {
+  const name = Services.prefs.getCharPref(key, "");
+  if (name !== "") {
     const variation = weightedVariations.filter(x => x.name === name)[0];
     if (!variation) {
       throw new Error(`about:config => shield.test.variation set to ${name}, but not variation with that name exists`);

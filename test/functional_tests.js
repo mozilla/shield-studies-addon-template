@@ -10,15 +10,17 @@ process.on("unhandledRejection", r => console.log(r)); // eslint-disable-line no
 
 const assert = require("assert");
 const utils = require("./utils");
-const clipboardy = require("clipboardy");
+//const clipboardy = require("clipboardy");
 const webdriver = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
 
 const By = webdriver.By;
 const Context = firefox.Context;
 const until = webdriver.until;
+/*
 const MAX_TIMES_TO_SHOW = 5; // this must match MAX_TIMES_TO_SHOW in bootstrap.js
 const MOZILLA_ORG = "http://mozilla.org";
+*/
 
 // TODO create new profile per test?
 // then we can test with a clean profile every time
@@ -26,6 +28,7 @@ const MOZILLA_ORG = "http://mozilla.org";
 
 /* Part 1:  Test helpers */
 
+/*
 async function postTestReset(driver) {
   // wait for the animation to end before running subsequent tests
   await utils.waitForAnimationEnd(driver);
@@ -47,16 +50,18 @@ async function postTestReset(driver) {
     callback();
   });
 }
+*/
 
 
 /* Part 2:  The Tests */
 
-describe.only("notification bar", function() {
+describe.only("basic functional tests", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(15000);
 
   let driver;
   let addonId;
+  let pings;
 
   before(async() => {
     driver = await utils.promiseSetupDriver();
@@ -66,13 +71,19 @@ describe.only("notification bar", function() {
     addonId = await utils.installAddon(driver);
     // add the share-button to the toolbar
     // await utils.addShareButton(driver);
+    // allow our shield study addon some time to send initial pings
+    await driver.sleep(1000);
+    // collect sent pings
+    pings = await getPings(driver);
   });
 
   after(async() => driver.quit());
 
+  /*
   async function getNotification(driver) {
     return utils.getChromeElementBy.tagName(driver, "notification");
   }
+
   async function getFirstButton(driver) {
     return utils.getChromeElementBy.className(driver, "notification-button");
     // console.log(await nb.getLocation(), await nb.getAttribute("label"));
@@ -80,12 +91,9 @@ describe.only("notification bar", function() {
   }
 
   async function getPings(driver) {
-    const ar = ["shield-study", "shield-study-addon"];
-    const out = {};
-    out["shield-study"] = await utils.getTelemetryPings(driver, {type: "shield-study"});
-    out["shield-study-addon"] = await utils.getTelemetryPings(driver, {type: "shield-study-addon"});
-    return out;
+    return utils.getTelemetryPings(driver, ["shield-study", "shield-study-addon"]);
   }
+  */
 
 
   /* Expected behaviour:
@@ -98,8 +106,32 @@ describe.only("notification bar", function() {
 
   // afterEach(async() => postTestReset(driver));
 
+  it("should send shield telemetry pings", async() => {
+
+    assert(pings.length > 0, "at least one shield telemetry ping");
+
+  });
+
+  it("at least one shield-study telemetry ping with study_state=installed", async() => {
+
+    const foundPings = utils.searchTelemetry([
+      ping => ping.type === "shield-study" && ping.payload.data.study_state === "installed",
+    ], pings);
+    assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=installed");
+
+  });
+
+  it("at least one shield-study telemetry ping with study_state=enter", async() => {
+
+    const foundPings = utils.searchTelemetry([
+      ping => ping.type === "shield-study" && ping.payload.data.study_state === "enter",
+    ], pings);
+    assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=enter");
+
+  });
 
   // TODO, this could be a better test, but it's SOMETHING.
+  /*
   it("'first button' does the right thing", async() => {
     const notice = await getNotification(driver);
 
@@ -167,4 +199,5 @@ describe.only("notification bar", function() {
     assert.equal(payloads[0].branch, noticeConfig.name);
 
   });
+  */
 });

@@ -485,6 +485,16 @@ I am on Windows.  How can I build?
 
 
 
+### The lifecycle and deployment of the add-on once it gets released
+
+The add-on for the experiment is remotely installed to the users which are selected for the experiment. (Note that this leads to an environment-change and a subsequent main ping)
+
+Main telemetry is tagged with the user's currently running experiments so that the main telemetry data and shield ping data can be cross-referenced later. 
+
+After the experiment, the add-on is remotely uninstalled. In rare occasions, it remains installed until a new Firefox update is released.  
+
+
+
 ### Legacy Addons
 
 Debugging `Cu.import`.
