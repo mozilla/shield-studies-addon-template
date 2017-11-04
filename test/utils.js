@@ -87,12 +87,13 @@ module.exports.promiseSetupDriver = async() => {
 
 
 /* let's actually just make this a constant */
-const MODIFIER = (function getModifierKey() {
+const MODIFIER_KEY = (function getModifierKey() {
   const modifierKey = process.platform === "darwin" ?
     webdriver.Key.COMMAND : webdriver.Key.CONTROL;
   return modifierKey;
 })();
 
+module.exports.MODIFIER_KEY = MODIFIER_KEY;
 
 
 // TODO glind general wrapper for 'async with callback'?
@@ -219,6 +220,11 @@ class getChromeElementBy {
 }
 module.exports.getChromeElementBy = getChromeElementBy;
 
+module.exports.promiseUrlBar = (driver) => {
+  driver.setContext(Context.CHROME);
+  return driver.wait(until.elementLocated(
+    By.id("urlbar")), 1000);
+};
 
 module.exports.takeScreenshot = async(driver, filepath = "./screenshot.png") => {
   try {
@@ -256,16 +262,14 @@ module.exports.searchTelemetry = (conditionArray, telemetryArray) => {
   return resultingPings;
 };
 
-
-
 // TODO glind, specific to share-button-study but useful to demo patterns.
 // TODO glind, generalize, document, or destroy
 
 // module.exports.copyUrlBar = async(driver) => {
 //   const urlBar = await getChromeElementBy.id(driver,'urlbar');
 //   const urlBar = await module.exports.promiseUrlBar(driver);
-//   await urlBar.sendKeys(webdriver.Key.chord(MODIFIER, "A"));
-//   await urlBar.sendKeys(webdriver.Key.chord(MODIFIER, "C"));
+//   await urlBar.sendKeys(webdriver.Key.chord(MODIFIER_KEY, "A"));
+//   await urlBar.sendKeys(webdriver.Key.chord(MODIFIER_KEY, "C"));
 // };
 
 // module.exports.testAnimation = async(driver) => {
