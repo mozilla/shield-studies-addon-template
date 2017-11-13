@@ -56,9 +56,6 @@ async function promiseActualBinary(binary) {
   }
 }
 
-
-
-
 module.exports.promiseSetupDriver = async() => {
   const profile = new firefox.Profile();
 
@@ -166,9 +163,16 @@ module.exports.allAddons = async(driver) => {
 };
 */
 
-// Returns array of pings of type `type` in sorted order by timestamp
-// first element is most recent ping
-// as seen in shield-study-addon-util's `utils.jsm`
+/** Returns array of pings of type `type` in reverse sorted order by timestamp
+  * first element is most recent ping
+  *
+  * as seen in shield-study-addon-util's `utils.jsm`
+  * options
+  * - type:  string or array of ping types
+  * - n:  positive integer. at most n pings.
+  * - timestamp:  only pings after this timestamp.
+  * - headersOnly: boolean, just the 'headers' for the pings, not the full bodies.
+  */
 module.exports.getTelemetryPings = async(driver, options) => {
   // callback is how you get the return back from the script
   return driver.executeAsyncScript(async(options, callback) => {

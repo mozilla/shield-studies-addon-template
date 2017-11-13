@@ -1,7 +1,7 @@
 "use strict";
 
 /* global  __SCRIPT_URI_SPEC__  */
-/* global Feature, Services */ // Cu.import
+/* global feature, Services */ // Cu.import
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(startup|shutdown|install|uninstall)" }]*/
 
 const { utils: Cu } = Components;
@@ -20,7 +20,6 @@ const REASONS = studyUtils.REASONS;
 // QA NOTE: Study Specific Modules - package.json:addon.chromeResouce
 const BASE = `template-shield-study-button-study`;
 XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Feature.jsm`);
-
 
 // var log = createLog(studyConfig.study.studyName, config.log.bootstrap.level);  // defined below.
 // log("LOG started!");
@@ -100,8 +99,8 @@ async function startup(addonData, reason) {
   // log what the study variation and other info is.
   console.log(`info ${JSON.stringify(studyUtils.info())}`);
 
-  // Actually Start up your feature
-  new Feature({variation, studyUtils, reasonName: REASONS[reason]});
+  // Start up your feature, with specific variation info.
+  this.feature = new Feature({variation, studyUtils, reasonName: REASONS[reason]});
 }
 
 /** Shutdown needs to distinguish between USER-DISABLE and other
@@ -123,8 +122,8 @@ function shutdown(addonData, reason) {
     // normal shutdown, or 2nd uninstall request
 
     // QA NOTE:  unload addon specific modules here.
-    Cu.unload();
-
+    Cu.unload(`resource://${BASE}/lib/Feature.jsm`);
+    this.feature.shutdown();
 
     // clean up our modules.
     Cu.unload(CONFIGPATH);
@@ -140,7 +139,6 @@ function install(addonData, reason) {
   console.log("install", REASONS[reason] || reason);
   // handle ADDON_UPGRADE (if needful) here
 }
-
 
 
 // helper to let Dev or QA set the variation name

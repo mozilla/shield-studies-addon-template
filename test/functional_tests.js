@@ -52,6 +52,37 @@ async function postTestReset(driver) {
 }
 */
 
+async function getShieldPingsAfterTimestamp(driver, ts) {
+  return utils.getTelemetryPings(driver, {type: ["shield-study", "shield-study-addon"], timestamp: ts});
+}
+
+function pingsReport (pings) {
+  if (pings.length == 0) {
+    return {"report": "No pings found"}
+  }
+  const p0 = pings[0].payload;
+  // print common fields
+
+  const report = `
+# Shield-Study/Shield-Study-Addon Pings Report
+
+## common fields for shield
+
+variation     ${p0.branch}
+study_name    ${p0.study_name}
+addon_version ${p0.addon_version}
+ping_format   ${p0.version}
+
+lint:
+- same common for all pings: TBD
+
+` + pings.map((p,i)=>`${i} ${p.creationDate} ${p.payload.type}
+${JSON.stringify(p.payload.data,null,2)}
+`).join('\n');
+
+  return {"report": report};
+}
+
 
 /* Part 2:  The Tests */
 
@@ -62,8 +93,10 @@ describe.only("basic functional tests", function() {
   let driver;
   let addonId;
   let pings;
+  let startTime;
 
   before(async() => {
+    const beginTime = Date.now();
     driver = await utils.promiseSetupDriver();
     // await setTreatment(driver, "doorHangerAddToToolbar");
 
@@ -74,10 +107,14 @@ describe.only("basic functional tests", function() {
     // allow our shield study addon some time to send initial pings
     await driver.sleep(1000);
     // collect sent pings
-    pings = await getPings(driver);
+    pings = await getShieldPingsAfterTimestamp(driver, beginTime);
+    console.log(pingsReport(pings).report);
+
   });
 
-  after(async() => driver.quit());
+  after(async() => {
+    driver.quit()
+  });
 
   /*
   async function getNotification(driver) {
@@ -88,10 +125,6 @@ describe.only("basic functional tests", function() {
     return utils.getChromeElementBy.className(driver, "notification-button");
     // console.log(await nb.getLocation(), await nb.getAttribute("label"));
     // return nb;
-  }
-
-  async function getPings(driver) {
-    return utils.getTelemetryPings(driver, ["shield-study", "shield-study-addon"]);
   }
   */
 
@@ -162,7 +195,7 @@ describe.only("basic functional tests", function() {
     // const addons = await utils.allAddons(driver);
     // console.log(`addons ${addons}`);
 
-    const pings = await getPings(driver);
+    const pings = await getShieldPingsAfterTimestamp(driver);
 
     assert(true);
 
