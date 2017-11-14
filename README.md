@@ -1,5 +1,7 @@
 # Shield Study Embedded Web Extension Template
 
+![CircleCI badge](https://img.shields.io/circleci/project/github/marcrowo/share-button-study/master.svg?label=CircleCI)
+
 **Note**:  This is toy / demonstration [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Legacy Addon.  Use this as a template for yours
 
 
