@@ -96,7 +96,7 @@ class BrowserActionButtonChoiceFeature {
 
     // telemetry: FIRST CLICK
     if (this.timesClickedInSession == 1) {
-      this.telemetry({ "event": "button-first-click-in-session" });
+      telemetry({ "event": "button-first-click-in-session" });
     }
 
     // telemetry EVERY CLICK
