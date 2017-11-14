@@ -18,16 +18,18 @@ const { studyUtils } = Cu.import(STUDYUTILSPATH, {});
 
 const REASONS = studyUtils.REASONS;
 
-// logging
+// logging for bootstrap.js, pref sets how verbose
 const PREF_LOGGING_LEVEL = "shield.testing.logging.level";
 const BOOTSTRAP_LOGGER_NAME = `shield-study-${config.study.studyName}`;
 const log = Log.repository.getLogger(BOOTSTRAP_LOGGER_NAME);
 log.addAppender(new Log.ConsoleAppender(new Log.BasicFormatter()));
 log.level = Services.prefs.getIntPref(PREF_LOGGING_LEVEL, Log.Level.Warn);
 
+
 // QA NOTE: Study Specific Modules - package.json:addon.chromeResource
 const BASE = `button-icon-preference`;
 XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Feature.jsm`);
+
 
 /* Example addon-specific module imports.  Remember to Unload during shutdown!
 
@@ -47,7 +49,7 @@ XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Featu
 
 async function startup(addonData, reason) {
   // `addonData`: Array [ "id", "version", "installPath", "resourceURI", "instanceID", "webExtension" ]  bootstrap.js:48
-  log.info("startup", REASONS[reason] || reason);
+  log.debug("startup", REASONS[reason] || reason);
 
   /* Configuration of Study Utils*/
   studyUtils.setup({
@@ -60,7 +62,7 @@ async function startup(addonData, reason) {
       config.weightedVariations
     );
   studyUtils.setVariation(variation);
-  log.info(`studyUtils has config and variation.name: ${variation.name}.  Ready to send telemetry`);
+  log.debug(`studyUtils has config and variation.name: ${variation.name}.  Ready to send telemetry`);
 
 
   /** addon_install ONLY:
@@ -102,7 +104,7 @@ async function startup(addonData, reason) {
   }
 
   // log what the study variation and other info is.
-  log.info(`info ${JSON.stringify(studyUtils.info())}`);
+  log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
   // Start up your feature, with specific variation info.
   this.feature = new Feature({variation, studyUtils, reasonName: REASONS[reason]});
@@ -114,13 +116,13 @@ async function startup(addonData, reason) {
   * studyUtils._isEnding means this is a '2nd shutdown'.
   */
 function shutdown(addonData, reason) {
-  log.info("shutdown", REASONS[reason] || reason);
+  log.debug("shutdown", REASONS[reason] || reason);
   // FRAGILE: handle uninstalls initiated by USER or by addon
   if (reason === REASONS.ADDON_UNINSTALL || reason === REASONS.ADDON_DISABLE) {
-    log.info("uninstall or disable");
+    log.debug("uninstall or disable");
     if (!studyUtils._isEnding) {
       // we are the first 'uninstall' requestor => must be user action.
-      log.info("probably: user requested shutdown");
+      log.debug("probably: user requested shutdown");
       studyUtils.endStudy({reason: "user-disable"});
       return;
     }
@@ -137,11 +139,11 @@ function shutdown(addonData, reason) {
 }
 
 function uninstall(addonData, reason) {
-  log.info("uninstall", REASONS[reason] || reason);
+  log.debug("uninstall", REASONS[reason] || reason);
 }
 
 function install(addonData, reason) {
-  log.info("install", REASONS[reason] || reason);
+  log.debug("install", REASONS[reason] || reason);
   // handle ADDON_UPGRADE (if needful) here
 }
 

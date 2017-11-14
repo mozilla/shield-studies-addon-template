@@ -118,6 +118,7 @@ class Feature {
       null
     );
 
+    // used by testing to confirm the bar is set with the correct config
     notice.setAttribute("data-study-config", JSON.stringify(this.variation));
     feature.telemetry({
       event: "introduction-shown",
