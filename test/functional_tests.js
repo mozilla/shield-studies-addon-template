@@ -10,227 +10,170 @@ process.on("unhandledRejection", r => console.log(r)); // eslint-disable-line no
 
 const assert = require("assert");
 const utils = require("./utils");
-//const clipboardy = require("clipboardy");
-const webdriver = require("selenium-webdriver");
-const firefox = require("selenium-webdriver/firefox");
-
-const By = webdriver.By;
-const Context = firefox.Context;
-const until = webdriver.until;
-/*
-const MAX_TIMES_TO_SHOW = 5; // this must match MAX_TIMES_TO_SHOW in bootstrap.js
-const MOZILLA_ORG = "http://mozilla.org";
-*/
 
 // TODO create new profile per test?
 // then we can test with a clean profile every time
 
-
-/* Part 1:  Test helpers */
-
-/*
-async function postTestReset(driver) {
-  // wait for the animation to end before running subsequent tests
-  await utils.waitForAnimationEnd(driver);
-  // close the popup
-  await utils.closePanel(driver);
-  // reset the counter pref to 0 so that the treatment is always shown
-  // reset the addedBool pref
-  await driver.executeAsyncScript((...args) => {
-    const callback = args[args.length - 1];
-    Components.utils.import("resource://gre/modules/Preferences.jsm");
-    const COUNTER_PREF = "extensions.sharebuttonstudy.counter";
-    const ADDED_BOOL_PREF = "extensions.sharebuttonstudy.addedBool";
-    if (Preferences.has(COUNTER_PREF)) {
-      Preferences.set(COUNTER_PREF, 0);
-    }
-    if (Preferences.has(ADDED_BOOL_PREF)) {
-      Preferences.set(ADDED_BOOL_PREF, false);
-    }
-    callback();
-  });
-}
-*/
+/* Part 1:  Utilities */
 
 async function getShieldPingsAfterTimestamp(driver, ts) {
   return utils.getTelemetryPings(driver, {type: ["shield-study", "shield-study-addon"], timestamp: ts});
 }
 
-function pingsReport (pings) {
-  if (pings.length == 0) {
-    return {"report": "No pings found"}
-  }
-  const p0 = pings[0].payload;
-  // print common fields
+function summarizePings(pings) { return pings.map(p => [p.payload.type, p.payload.data]); }
 
-  const report = `
-# Shield-Study/Shield-Study-Addon Pings Report
 
-## common fields for shield
+async function getNotification(driver) {
+  return utils.getChromeElementBy.tagName(driver, "notification");
+}
 
-variation     ${p0.branch}
-study_name    ${p0.study_name}
-addon_version ${p0.addon_version}
-ping_format   ${p0.version}
-
-lint:
-- same common for all pings: TBD
-
-` + pings.map((p,i)=>`${i} ${p.creationDate} ${p.payload.type}
-${JSON.stringify(p.payload.data,null,2)}
-`).join('\n');
-
-  return {"report": report};
+async function getFirstButton(driver) {
+  return utils.getChromeElementBy.className(driver, "notification-button");
 }
 
 
 /* Part 2:  The Tests */
 
-describe.only("basic functional tests", function() {
+describe("basic functional tests", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(15000);
 
   let driver;
-  let addonId;
   let pings;
-  let startTime;
 
+  // runs ONCE
   before(async() => {
     const beginTime = Date.now();
     driver = await utils.promiseSetupDriver();
     // await setTreatment(driver, "doorHangerAddToToolbar");
 
     // install the addon
-    addonId = await utils.installAddon(driver);
+    await utils.installAddon(driver);
     // add the share-button to the toolbar
     // await utils.addShareButton(driver);
     // allow our shield study addon some time to send initial pings
     await driver.sleep(1000);
     // collect sent pings
     pings = await getShieldPingsAfterTimestamp(driver, beginTime);
-    console.log(pingsReport(pings).report);
+    // console.log(pingsReport(pings).report);
 
   });
 
   after(async() => {
-    driver.quit()
+    driver.quit();
   });
 
-  /*
-  async function getNotification(driver) {
-    return utils.getChromeElementBy.tagName(driver, "notification");
-  }
-
-  async function getFirstButton(driver) {
-    return utils.getChromeElementBy.className(driver, "notification-button");
-    // console.log(await nb.getLocation(), await nb.getAttribute("label"));
-    // return nb;
-  }
-  */
-
+  beforeEach(async() => {});
+  afterEach(async() => {});
 
   /* Expected behaviour:
 
   - after install
   - get one of many treatments
-  - shield agrees on which treatment. // TODO, make shield listen on global channel
+  - shield agrees on which treatment.
 
   */
 
-  // afterEach(async() => postTestReset(driver));
+  // TODO glind, this is an incomplete set of tests
 
   it("should send shield telemetry pings", async() => {
-
     assert(pings.length > 0, "at least one shield telemetry ping");
-
   });
 
   it("at least one shield-study telemetry ping with study_state=installed", async() => {
-
     const foundPings = utils.searchTelemetry([
       ping => ping.type === "shield-study" && ping.payload.data.study_state === "installed",
     ], pings);
     assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=installed");
-
   });
 
   it("at least one shield-study telemetry ping with study_state=enter", async() => {
-
     const foundPings = utils.searchTelemetry([
       ping => ping.type === "shield-study" && ping.payload.data.study_state === "enter",
     ], pings);
     assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=enter");
-
   });
 
-  // TODO, this could be a better test, but it's SOMETHING.
-  /*
-  it("'first button' does the right thing", async() => {
-    const notice = await getNotification(driver);
-
-    const noticeConfig = JSON.parse(await notice.getAttribute("data-study-config"));
-
-    function expectedVoteAttributes(config, label) {
-      const score = {
-        "yes": "1",
-        "not sure": "0",
-        "no": "-1",
-      };
-      return {
-        event: "answered",
-        label,
-        score: score[label],
-        yesFirst: "" + Number(label == "yes"),
-        promptType: config.promptType,
-        branch: config.name,
-        message: config.message,
-      };
-    }
-
-
-    const nb = await getFirstButton(driver);
-    const label = await nb.getAttribute("label");
-    await nb.click();
-
-    // const addons = await utils.allAddons(driver);
-    // console.log(`addons ${addons}`);
-
-    const pings = await getShieldPingsAfterTimestamp(driver);
-
-    assert(true);
-
-    // assert these things:
-    // 1. addon isn't there.
-    //   TODO broken b/c can't figure out utils.allAddons
-
-    // 2.pings are correct (
-
-    // 2a. order
-    const states = pings["shield-study"].map(x => x.payload.data).reverse();
-    const expected_states = [
-      { study_state: "enter" },
-      { study_state: "installed" },
-
-      // note: it is a VOTED!
-      { study_state: "ended-neutral", study_state_fullname: "voted" },
-      { study_state: "exit" },
+  it("telemetry: has entered, installed, shown", function() {
+    // Telemetry:  order, and summary of pings is good.
+    const observed = summarizePings(pings);
+    const expected = [
+      [
+        "shield-study-addon",
+        {
+          "attributes": {
+            "event": "introduction-shown",
+          },
+        },
+      ],
+      [
+        "shield-study",
+        {
+          "study_state": "installed",
+        },
+      ],
+      [
+        "shield-study",
+        {
+          "study_state": "enter",
+        },
+      ],
     ];
-
-    assert.deepEqual(expected_states, states, "study states is wrong");
-
-    // 2b. addon ping payloads
-    const attributes = pings["shield-study-addon"].map(x => x.payload.data.attributes).reverse();
-
-    var expected_addon_attributes = [
-      { event: "prompted", promptType: "notificationBox-strings-1" },
-      expectedVoteAttributes(noticeConfig, label),
-    ];
-    assert.deepEqual(expected_addon_attributes, attributes, "study-addon attributes are wrong");
-
-    // 2c.  Normal parts of the payload are correct.
-    const payloads = pings["shield-study-addon"].map(x => x.payload).reverse();
-    assert.equal(payloads[0].branch, noticeConfig.name);
-
+    assert.deepEqual(expected, observed, "telemetry pings do not match");
   });
-  */
+
+  describe("introduction / orientation bar", function() {
+    it("exists, carries study config", async() => {
+      const notice = await getNotification(driver);
+      const noticeConfig = JSON.parse(await notice.getAttribute("data-study-config"));
+      assert(noticeConfig.name);
+      assert(noticeConfig.weight);
+    });
+
+    it("okay button looks fine.", async() => {
+      const firstButton = await getFirstButton(driver);
+      const label = await firstButton.getAttribute("label");
+      assert.equal(label, "Thanks!");
+    })
+
+    it("clicking okay gives telemetry", async() => {
+      const startTime = Date.now();
+      const firstButton = await getFirstButton(driver);
+      await firstButton.click();
+      await driver.sleep(100);
+
+      const pings = await getShieldPingsAfterTimestamp(driver, startTime);
+      observed = summarizePings(pings);
+
+      const expected = [
+        [
+          "shield-study-addon",
+          {
+            "attributes": {
+              "event": "introduction-accept"
+            }
+          }
+        ]
+      ]
+      // this would add new telemetry
+      assert.deepEqual(expected, observed, "telemetry pings do not match");
+
+    });
+
+    it("TBD click on NO uninstalls addon", async() => {
+      assert(true);
+    });
+  });
+
+  describe("ui button (browserAction)", function() {
+    it("TBD exists", async() => {
+      assert(true);
+    });
+    it("TBD responds to clicks", async() => {
+      assert(true);
+    });
+    it("TBD sends correct telemetry", async() => {
+      assert(true);
+    });
+  });
 });

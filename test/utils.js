@@ -73,7 +73,7 @@ module.exports.promiseSetupDriver = async() => {
     .setFirefoxOptions(options);
 
   const binaryLocation = await promiseActualBinary(process.env.FIREFOX_BINARY || "nightly");
-  //console.log(binaryLocation);
+  // console.log(binaryLocation);
   await options.setBinary(new firefox.Binary(binaryLocation));
   const driver = await builder.build();
   // Firefox will be started up by now
@@ -174,16 +174,17 @@ module.exports.allAddons = async(driver) => {
   * - timestamp:  only pings after this timestamp.
   * - headersOnly: boolean, just the 'headers' for the pings, not the full bodies.
   */
-module.exports.getTelemetryPings = async(driver, options) => {
+module.exports.getTelemetryPings = async(driver, passedOptions) => {
   // callback is how you get the return back from the script
   return driver.executeAsyncScript(async(options, callback) => {
-    let {type, n, timestamp, headersOnly} = options;
+    let {type} = options;
+    const { n, timestamp, headersOnly} = options;
     Components.utils.import("resource://gre/modules/TelemetryArchive.jsm");
     // {type, id, timestampCreated}
     let pings = await TelemetryArchive.promiseArchivedPingList();
     if (type) {
       if (!(type instanceof Array)) {
-        type = [type];  // Array-ify if it's a string
+        type = [type]; // Array-ify if it's a string
       }
     }
     if (type) pings = pings.filter(p => type.includes(p.type));
@@ -195,7 +196,7 @@ module.exports.getTelemetryPings = async(driver, options) => {
     const pingData = headersOnly ? pings : pings.map(ping => TelemetryArchive.promiseArchivedPingById(ping.id));
 
     callback(await Promise.all(pingData));
-  }, options);
+  }, passedOptions);
 };
 
 
@@ -212,7 +213,7 @@ class getChromeElementBy {
         By[method](selector)), 1000);
     } catch (e) {
       // if there an error, the button was not found
-      console.log(e);
+      console.error(e);
       return null;
     }
   }

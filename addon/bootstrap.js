@@ -1,11 +1,12 @@
 "use strict";
 
 /* global  __SCRIPT_URI_SPEC__  */
-/* global feature, Services */ // Cu.import
+/* global Feature, Services */ // Cu.import
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(startup|shutdown|install|uninstall)" }]*/
 
 const { utils: Cu } = Components;
 Cu.import("resource://gre/modules/Console.jsm");
+Cu.import("resource://gre/modules/Log.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
@@ -17,12 +18,18 @@ const { studyUtils } = Cu.import(STUDYUTILSPATH, {});
 
 const REASONS = studyUtils.REASONS;
 
-// QA NOTE: Study Specific Modules - package.json:addon.chromeResouce
-const BASE = `template-shield-study-button-study`;
+// logging for bootstrap.js, pref sets how verbose
+const PREF_LOGGING_LEVEL = "shield.testing.logging.level";
+const BOOTSTRAP_LOGGER_NAME = `shield-study-${config.study.studyName}`;
+const log = Log.repository.getLogger(BOOTSTRAP_LOGGER_NAME);
+log.addAppender(new Log.ConsoleAppender(new Log.BasicFormatter()));
+log.level = Services.prefs.getIntPref(PREF_LOGGING_LEVEL, Log.Level.Warn);
+
+
+// QA NOTE: Study Specific Modules - package.json:addon.chromeResource
+const BASE = `button-icon-preference`;
 XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Feature.jsm`);
 
-// var log = createLog(studyConfig.study.studyName, config.log.bootstrap.level);  // defined below.
-// log("LOG started!");
 
 /* Example addon-specific module imports.  Remember to Unload during shutdown!
 
@@ -42,7 +49,7 @@ XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Featu
 
 async function startup(addonData, reason) {
   // `addonData`: Array [ "id", "version", "installPath", "resourceURI", "instanceID", "webExtension" ]  bootstrap.js:48
-  console.log("startup", REASONS[reason] || reason);
+  log.debug("startup", REASONS[reason] || reason);
 
   /* Configuration of Study Utils*/
   studyUtils.setup({
@@ -55,7 +62,7 @@ async function startup(addonData, reason) {
       config.weightedVariations
     );
   studyUtils.setVariation(variation);
-  console.log(`studyUtils has config and variation.name: ${variation.name}.  Ready to send telemetry`);
+  log.debug(`studyUtils has config and variation.name: ${variation.name}.  Ready to send telemetry`);
 
 
   /** addon_install ONLY:
@@ -97,7 +104,7 @@ async function startup(addonData, reason) {
   }
 
   // log what the study variation and other info is.
-  console.log(`info ${JSON.stringify(studyUtils.info())}`);
+  log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
   // Start up your feature, with specific variation info.
   this.feature = new Feature({variation, studyUtils, reasonName: REASONS[reason]});
@@ -109,13 +116,13 @@ async function startup(addonData, reason) {
   * studyUtils._isEnding means this is a '2nd shutdown'.
   */
 function shutdown(addonData, reason) {
-  console.log("shutdown", REASONS[reason] || reason);
+  log.debug("shutdown", REASONS[reason] || reason);
   // FRAGILE: handle uninstalls initiated by USER or by addon
   if (reason === REASONS.ADDON_UNINSTALL || reason === REASONS.ADDON_DISABLE) {
-    console.log("uninstall or disable");
+    log.debug("uninstall or disable");
     if (!studyUtils._isEnding) {
       // we are the first 'uninstall' requestor => must be user action.
-      console.log("probably: user requested shutdown");
+      log.debug("probably: user requested shutdown");
       studyUtils.endStudy({reason: "user-disable"});
       return;
     }
@@ -132,11 +139,11 @@ function shutdown(addonData, reason) {
 }
 
 function uninstall(addonData, reason) {
-  console.log("uninstall", REASONS[reason] || reason);
+  log.debug("uninstall", REASONS[reason] || reason);
 }
 
 function install(addonData, reason) {
-  console.log("install", REASONS[reason] || reason);
+  log.debug("install", REASONS[reason] || reason);
   // handle ADDON_UPGRADE (if needful) here
 }
 
@@ -156,12 +163,4 @@ function getVariationFromPref(weightedVariations) {
 }
 
 
-// logging, unfinished
-// function createLog(name, levelWord) {
-//  Cu.import("resource://gre/modules/Log.jsm");
-//  var L = Log.repository.getLogger(name);
-//  L.addAppender(new Log.ConsoleAppender(new Log.BasicFormatter()));
-//  L.level = Log.Level[levelWord] || Log.Level.Debug; // should be a config / pref
-//  return L;
-// }
 

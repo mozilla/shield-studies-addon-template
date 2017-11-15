@@ -88,7 +88,7 @@ class Feature {
     if (!notificationBox) return;
 
     // api: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/appendNotification
-    notificationBox.appendNotification(
+    const notice = notificationBox.appendNotification(
       "Welcome to the new feature! Look for changes!",
       "feature orienation",
       null, // icon
@@ -97,7 +97,8 @@ class Feature {
       [{
         label: "Thanks!",
         isDefault: true,
-        acceptButton() {
+        callback: function acceptButton() {
+          console.log("clicked THANKS!");
           feature.telemetry({
             event: "introduction-accept",
           });
@@ -105,16 +106,20 @@ class Feature {
       },
       {
         label: "I do not want this.",
-        leaveStudyButton() {
+        callback: function leaveStudyButton() {
+          console.log("clicked NO!");
           feature.telemetry({
             event: "introduction-leave-study",
           });
-          feature.studyUtils.endStudy("");
+          feature.studyUtils.endStudy("introduction-leave-study");
         },
       }],
       // callback for nb events
       null
     );
+
+    // used by testing to confirm the bar is set with the correct config
+    notice.setAttribute("data-study-config", JSON.stringify(this.variation));
     feature.telemetry({
       event: "introduction-shown",
     });
@@ -126,7 +131,7 @@ class Feature {
   }
 
   /* no-op shutdown */
-  shutdown () {}
+  shutdown() {}
 }
 
 
