@@ -134,7 +134,7 @@ describe("basic functional tests", function() {
       const firstButton = await getFirstButton(driver);
       const label = await firstButton.getAttribute("label");
       assert.equal(label, "Thanks!");
-    })
+    });
 
     it("clicking okay gives telemetry", async() => {
       const startTime = Date.now();
@@ -142,19 +142,19 @@ describe("basic functional tests", function() {
       await firstButton.click();
       await driver.sleep(100);
 
-      const pings = await getShieldPingsAfterTimestamp(driver, startTime);
-      observed = summarizePings(pings);
+      const newPings = await getShieldPingsAfterTimestamp(driver, startTime);
+      const observed = summarizePings(newPings);
 
       const expected = [
         [
           "shield-study-addon",
           {
             "attributes": {
-              "event": "introduction-accept"
-            }
-          }
-        ]
-      ]
+              "event": "introduction-accept",
+            },
+          },
+        ],
+      ];
       // this would add new telemetry
       assert.deepEqual(expected, observed, "telemetry pings do not match");
 

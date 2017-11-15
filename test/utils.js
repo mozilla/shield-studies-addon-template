@@ -45,7 +45,8 @@ const FIREFOX_PREFERENCES = {
 // useful if we need to test on a specific version of Firefox
 async function promiseActualBinary(binary) {
   try {
-    const normalizedBinary = await FxRunnerUtils.normalizeBinary(binary);
+    let normalizedBinary = await FxRunnerUtils.normalizeBinary(binary);
+    normalizedBinary = path.resolve(normalizedBinary);
     await Fs.stat(normalizedBinary);
     return normalizedBinary;
   } catch (ex) {
@@ -56,6 +57,10 @@ async function promiseActualBinary(binary) {
   }
 }
 
+/**
+  * Uses process.env.FIREFOX_BINARY
+  *
+  */
 module.exports.promiseSetupDriver = async() => {
   const profile = new firefox.Profile();
 
@@ -72,7 +77,9 @@ module.exports.promiseSetupDriver = async() => {
     .forBrowser("firefox")
     .setFirefoxOptions(options);
 
+  //
   const binaryLocation = await promiseActualBinary(process.env.FIREFOX_BINARY || "nightly");
+
   // console.log(binaryLocation);
   await options.setBinary(new firefox.Binary(binaryLocation));
   const driver = await builder.build();

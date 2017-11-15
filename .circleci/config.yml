@@ -4,24 +4,41 @@ jobs:
     docker:
       - image: circleci/node:latest-browsers
         environment:
-          DISPLAY: :10
-          FIREFOX_BINARY: /firefox/firefox
+          FIREFOX_BINARY: /home/circleci/checkout/firefox/firefox-bin
 
-    working_directory: /shield-studies-addon-tempate
+    working_directory: ~/checkout
 
     steps:
-      - run:
-          name: xvfb and openbox
-          command: Xvfb $DISPLAY -ac & sleep 1 & openbox
-          background: true
-
       - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
 
       - run: npm install
 
       - run:
+          name:  Get nightly
+          command: |
+            if [ -d ./firefox ]; then
+              echo "firefox dir exists, must be from cache"
+            else
+              ./node_modules/.bin/get-firefox -b nightly -p linux -e
+              ls ./firefox/firefox-bin
+            fi
+
+      - save_cache:
+          paths:
+            - node_modules
+            - firefox
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
           name: Lint
-          command: npm run lint
+          command: npm run eslint
 
       - run:
           name: Build .XPI
@@ -33,6 +50,3 @@ jobs:
 
       - store_artifacts:
           path: "dist"
-
-      - store_artifacts:
-          path: "artiacts"
