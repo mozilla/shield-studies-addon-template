@@ -2,34 +2,43 @@ version: 2
 jobs:
   build:
     docker:
-      - image: marcrowo/share-button-study-base:8
+      - image: circleci/node:latest-browsers
         environment:
-          DISPLAY: :10
-          FIREFOX_BINARY: /firefox/firefox
+          FIREFOX_BINARY: /home/circleci/checkout/firefox/firefox-bin
 
-    working_directory: /share-button-study
+    working_directory: ~/checkout
 
     steps:
-      - run:
-          name: xvfb and openbox
-          command: Xvfb $DISPLAY -ac & sleep 1 & openbox
-          background: true
-
       - checkout
 
+      # Download and cache dependencies
       - restore_cache:
-          key: projectname-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
 
-      - run: yarn install
+      - run: npm install
+
+      - run:
+          name:  Get nightly
+          command: |
+            if [ -d ./firefox ]; then
+              echo "firefox dir exists, must be from cache"
+            else
+              ./node_modules/.bin/get-firefox -b nightly -p linux -e
+              ls ./firefox/firefox-bin
+            fi
 
       - save_cache:
-          key: projectname-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
-            - "/home/ubuntu/.yarn-cache"
+            - node_modules
+            - firefox
+          key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
           name: Lint
-          command: npm run lint
+          command: npm run eslint
 
       - run:
           name: Build .XPI
@@ -40,4 +49,4 @@ jobs:
           command: npm run test
 
       - store_artifacts:
-          path: "extension/share-button-study.xpi"
+          path: "dist"
