@@ -35,6 +35,9 @@ const FIREFOX_PREFERENCES = {
   // NECESSARY for all 57+ builds
   "extensions.legacy.enabled": true,
 
+  // Include log output in browser console
+  "shield.testing.logging.level": 10, // Trace
+
   /** WARNING: gecko webdriver sets many additional prefs at:
     * https://dxr.mozilla.org/mozilla-central/source/testing/geckodriver/src/prefs.rs
     *
