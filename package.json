@@ -20,6 +20,9 @@
   "bugs": {
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
+  "engines": {
+    "node": ">=8.9.0"
+  },
   "devDependencies": {
     "addons-linter": "^0.28.2",
     "ajv": "^5.1.1",
