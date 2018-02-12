@@ -5,7 +5,7 @@
   "author": "Mozilla Gregg Lind <glind@mozilla.com>",
   "addon": {
     "$ABOUT": "use these variables fill the moustache templates",
-    "id": "button-icon-preference@shield-study.mozilla.com",
+    "id": "button-icon-preference@shield.mozilla.org",
     "name": "Button Icon Preference Study (Shield Study Example)",
     "minVersion": "57.0",
     "maxVersion": "*",
