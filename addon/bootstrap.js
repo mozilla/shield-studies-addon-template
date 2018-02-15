@@ -83,12 +83,20 @@ async function startup(addonData, reason) {
   // 2. sets activeExperiments in telemetry environment.
   await studyUtils.startup({ reason });
 
-  // if you have code to handle expiration / long-timers, it could go here
-  (function fakeTrackExpiration() {
-  })();
+  // log what the study variation and other info is.
+  log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
   // initiate the chrome-privileged part of the study add-on
   this.feature = new Feature(variation, studyUtils, REASONS[reason], log);
+
+  // if you have code to handle expiration / long-timers, it could go here
+  /*
+  if (this.feature.hasExpired()) {
+    // Please note that the general study expiration should probably be taken care of by Normandy.
+    await studyUtils.endStudy({ reason: "expired" });
+    return;
+  }
+  */
 
   // IFF your study has an embedded webExtension, start it.
   const { webExtension } = addonData;
@@ -102,9 +110,6 @@ async function startup(addonData, reason) {
       // other browser.runtime.onMessage handlers for your addon, if any
     });
   }
-
-  // log what the study variation and other info is.
-  log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
   // start up the chrome-privileged part of the study
   this.feature.start();

@@ -55,12 +55,13 @@ class Feature {
     this.reasonName = reasonName;
     this.log = log;
 
-    // log what the study variation and other info is.
-    this.log.debug(`info ${JSON.stringify(studyUtils.info())}`);
+    // Example log statement
+    this.log.debug("Feature constructor");
 
   }
 
   start() {
+    this.log.debug("Feature start");
 
     // perform something only during INSTALL and UPGRADE = a new study period begins
     if (this.reasonName === "ADDON_INSTALL" || this.reasonName === "ADDON_UPGRADE") {
