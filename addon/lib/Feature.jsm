@@ -48,11 +48,15 @@ class Feature {
    *  - reasonName: string of bootstrap.js startup/shutdown reason
    *
    */
-  constructor({ variation, studyUtils, reasonName }) {
+  constructor({ variation, studyUtils, reasonName, log }) {
 
     this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
     this.studyUtils = studyUtils;
     this.reasonName = reasonName;
+    this.log = log;
+
+    // log what the study variation and other info is.
+    this.log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
   }
 

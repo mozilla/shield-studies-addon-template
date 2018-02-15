@@ -90,7 +90,7 @@ async function startup(addonData, reason) {
   })();
 
   // initiate the chrome-privileged part of the study add-on
-  this.feature = new Feature({ variation, studyUtils, reasonName: REASONS[reason] });
+  this.feature = new Feature({ variation, studyUtils, reasonName: REASONS[reason], log });
 
   // IFF your study has an embedded webExtension, start it.
   const { webExtension } = addonData;
