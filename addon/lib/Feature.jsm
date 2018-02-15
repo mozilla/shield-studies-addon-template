@@ -1,6 +1,5 @@
 "use strict";
 
-
 /**  Example Feature module for a Shield Study.
  *
  *  UI:
@@ -27,8 +26,11 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 const EXPORTED_SYMBOLS = ["Feature"];
 
-XPCOMUtils.defineLazyModuleGetter(this, "RecentWindow",
-  "resource:///modules/RecentWindow.jsm");
+XPCOMUtils.defineLazyModuleGetter(
+  this,
+  "RecentWindow",
+  "resource:///modules/RecentWindow.jsm",
+);
 
 /** Return most recent NON-PRIVATE browser window, so that we can
  * manipulate chrome elements on it.
@@ -49,7 +51,6 @@ class Feature {
    *
    */
   constructor(variation, studyUtils, reasonName, log) {
-
     this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
     this.studyUtils = studyUtils;
     this.reasonName = reasonName;
@@ -57,17 +58,18 @@ class Feature {
 
     // Example log statement
     this.log.debug("Feature constructor");
-
   }
 
   start() {
     this.log.debug("Feature start");
 
     // perform something only during INSTALL and UPGRADE = a new study period begins
-    if (this.reasonName === "ADDON_INSTALL" || this.reasonName === "ADDON_UPGRADE") {
+    if (
+      this.reasonName === "ADDON_INSTALL" ||
+      this.reasonName === "ADDON_UPGRADE"
+    ) {
       this.introductionNotificationBar();
     }
-
   }
 
   /** Display instrumented 'notification bar' explaining the feature to the user
@@ -92,7 +94,7 @@ class Feature {
     const recentWindow = getMostRecentBrowserWindow();
     const doc = recentWindow.document;
     const notificationBox = doc.querySelector(
-      "#high-priority-global-notificationbox"
+      "#high-priority-global-notificationbox",
     );
 
     if (!notificationBox) return;
@@ -129,7 +131,7 @@ class Feature {
         },
       ],
       // callback for nb events
-      null
+      null,
     );
 
     // used by testing to confirm the bar is set with the correct config
@@ -137,7 +139,6 @@ class Feature {
     feature.telemetry({
       event: "introduction-shown",
     });
-
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
@@ -148,10 +149,8 @@ class Feature {
   /**
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
    */
-  shutdown() {
-  }
+  shutdown() {}
 }
-
 
 // webpack:`libraryTarget: 'this'`
 this.EXPORTED_SYMBOLS = EXPORTED_SYMBOLS;

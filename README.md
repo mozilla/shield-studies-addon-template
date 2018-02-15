@@ -14,11 +14,11 @@ In an effort to move to WebExtensions, we are also working on making a Shield st
 
 ## About This Study
 
-**Note**:  This is toy / demonstration [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Legacy Addon.  Use this as a template for yours
+**Note**: This is toy / demonstration [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Legacy Addon. Use this as a template for yours
 
 (Note: get these from your PHD).
 
-Goal:  Determine which if any TOOLBAR BUTTONS DESIGNS is the most enticing to the user.
+Goal: Determine which if any TOOLBAR BUTTONS DESIGNS is the most enticing to the user.
 
 ## Seeing the add-on in action
 
@@ -27,7 +27,8 @@ See [TESTPLAN.md](./TESTPLAN.md) for more details on how to get the add-on insta
 ## Data Collected / Telemetry Pings
 
 Measure:
-- Button (BrowserAction) usage.
+
+* Button (BrowserAction) usage.
 
 See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by this add-on.
 
@@ -35,7 +36,7 @@ See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by th
 
 Telemetry pings are loaded into S3 and re:dash. Sample query:
 
- * [All pings](https://sql.telemetry.mozilla.org/queries/{#your-id}/source#table)
+* [All pings](https://sql.telemetry.mozilla.org/queries/{#your-id}/source#table)
 
 ## Improving this add-on
 

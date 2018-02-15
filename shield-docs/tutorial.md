@@ -1,27 +1,26 @@
-# Tutorial Study:  Fake button study.
-
+# Tutorial Study: Fake button study.
 
 Learner goals:
-1.  build a shield-instrumented Embedded Web Extension
-2.  understand how probes, analysis, code relate
 
+1. build a shield-instrumented Embedded Web Extension
+2. understand how probes, analysis, code relate
 
 Concepts:
-- technical terms
-  - web extension
-  - embedded web extension
-  - Legacy (bootstrap) addon
-- debugging techniques
-  - `web-ext`
-  - `about:debugging`
-  - `run-firefox.js`
 
+* technical terms
+  * web extension
+  * embedded web extension
+  * Legacy (bootstrap) addon
+* debugging techniques
+  * `web-ext`
+  * `about:debugging`
+  * `run-firefox.js`
 
 ## Questions?
 
-- start from empty dir, or from the finished project?
-- how much to build in the first step.
-- how to display the order of the steps?
+* start from empty dir, or from the finished project?
+* how much to build in the first step.
+* how to display the order of the steps?
 
 (Steps, order unclear)
 
@@ -49,10 +48,10 @@ Plumb the listener
 
 ### incorporating shield to listen
 
-- PERMANENT Randomization, revisited.
-- Telemetry sending
-- debugging
-- helper addon
+* PERMANENT Randomization, revisited.
+* Telemetry sending
+* debugging
+* helper addon
 
 ## Advanced
 
@@ -60,12 +59,9 @@ Plumb the listener
 
 ## good probes
 
-- good probes mirror the analysis.
-- Analysis wants to be sql.  Try to make the probes reflect that.
+* good probes mirror the analysis.
+* Analysis wants to be sql. Try to make the probes reflect that.
 
 ## Why Shield-Utils?
 
 ## surveys?
-
-
-

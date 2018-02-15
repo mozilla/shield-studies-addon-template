@@ -34,6 +34,7 @@ After cloning the repo, you can run the following commands from the top level di
 $ npm install
 $ npm run build
 ```
+
 This packages the add-on into an xpi file which is stored in `dist/`. This file is what you load into Firefox.
 
 ## General notes on Shield Study Engineering
@@ -52,8 +53,8 @@ You can have Firefox automatically launched and the add-on installed by running:
 
 To load the extension manually instead, open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/) and load the `.xpi` using the following steps:
 
-* Navigate to *about:config* and set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
-* Navigate to *about:debugging* in your URL bar
+* Navigate to _about:config_ and set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
+* Navigate to _about:debugging_ in your URL bar
 * Select "Load Temporary Add-on"
 * Find and select the latest xpi file you just built.
 
@@ -61,7 +62,7 @@ To load the extension manually instead, open (preferably) the [Developer Edition
 
 To debug installation and loading of the add-on:
 
-* Navigate to *about:config* and set `shield.testing.logging.level` to `10`. This permits shield-add-on log output in browser console
+* Navigate to _about:config_ and set `shield.testing.logging.level` to `10`. This permits shield-add-on log output in browser console
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
 
 See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in action and hot it is expected to behave.
@@ -74,11 +75,11 @@ Note: This runs in a recently created profile. To have the study run despite the
 
 ## Automated testing
 
-`npm run test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the *commonest path* though the study for a user
+`npm run test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user
 
-- prove the notification bar ui opens
-- *clicking on the left-most button presented*.
-- verifying that sent Telemetry is correct.
+* prove the notification bar ui opens
+* _clicking on the left-most button presented_.
+* verifying that sent Telemetry is correct.
 
 Code at [/test/functional_test.js](/test/functional_test.js).
 
@@ -92,7 +93,7 @@ You can automatically build recent changes and package them into a `.xpi` by run
 
 `$ npm run watch`
 
-Now, anytime a file is changed and saved, node will repackage the add-on. You must reload the add-on as before, or by clicking the "Reload" under the add-on in *about:debugging*. Note that a hard re-load is recommended to clear local storage. To do this, simply remove the add-on and reload as before.
+Now, anytime a file is changed and saved, node will repackage the add-on. You must reload the add-on as before, or by clicking the "Reload" under the add-on in _about:debugging_. Note that a hard re-load is recommended to clear local storage. To do this, simply remove the add-on and reload as before.
 
 Note: This is currently only useful if you load the extension manually - it has no effect when running `npm run firefox`.
 
@@ -154,7 +155,6 @@ Note: This is currently only useful if you load the extension manually - it has 
 └── tutorial.md
 
 >> tree -a -I 'node_modules|.git|.DS_Store'
-
 ```
 
 This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `addon/lib`, `addon/webextension` and `addon/Config.jsm`.

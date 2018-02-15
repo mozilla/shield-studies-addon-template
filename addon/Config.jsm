@@ -12,7 +12,7 @@ var EXPORTED_SYMBOLS = ["config"];
 
 var config = {
   // required STUDY key
-  "study": {
+  study: {
     /** Required for studyUtils.setup():
      *
      * - studyName
@@ -28,7 +28,7 @@ var config = {
     // required keys: studyName, endings, telemetry
 
     // will be used activeExperiments tagging
-    "studyName": "buttonFeatureExperiment",
+    studyName: "buttonFeatureExperiment",
 
     /** **endings**
      * - keys indicate the 'endStudy' even that opens these.
@@ -37,47 +37,47 @@ var config = {
      * - If there is no key for an endStudy reason, no url will open.
      * - usually surveys, orientations, explanations
      */
-    "endings": {
+    endings: {
       /** standard endings */
       "user-disable": {
-        "baseUrl": "http://www.example.com/?reason=user-disable",
+        baseUrl: "http://www.example.com/?reason=user-disable",
       },
-      "ineligible": {
-        "baseUrl": "http://www.example.com/?reason=ineligible",
+      ineligible: {
+        baseUrl: "http://www.example.com/?reason=ineligible",
       },
-      "expired": {
-        "baseUrl": "http://www.example.com/?reason=expired",
+      expired: {
+        baseUrl: "http://www.example.com/?reason=expired",
       },
       /** User defined endings */
       "used-often": {
-        "baseUrl": "http://www.example.com/?reason=used-often",
-        "study_state": "ended-positive",  // neutral is default
+        baseUrl: "http://www.example.com/?reason=used-often",
+        study_state: "ended-positive", // neutral is default
       },
       "a-non-url-opening-ending": {
-        "study_state": "ended-neutral",
-        "baseUrl": null,
+        study_state: "ended-neutral",
+        baseUrl: null,
       },
       "introduction-leave-study": {
-        "study_state": "ended-negative",
-        "baseUrl": "http://www.example.com/?reason=introduction-leave-study",
+        study_state: "ended-negative",
+        baseUrl: "http://www.example.com/?reason=introduction-leave-study",
       },
     },
-    "telemetry": {
-      "send": true, // assumed false. Actually send pings?
-      "removeTestingFlag": false,  // Marks pings to be discarded, set true for to have the pings processed in the pipeline
+    telemetry: {
+      send: true, // assumed false. Actually send pings?
+      removeTestingFlag: false, // Marks pings to be discarded, set true for to have the pings processed in the pipeline
       // TODO "onInvalid": "throw"  // invalid packet for schema?  throw||log
     },
   },
 
   // required LOG key
-  "log": {
+  log: {
     // Fatal: 70, Error: 60, Warn: 50, Info: 40, Config: 30, Debug: 20, Trace: 10, All: -1,
-    "bootstrap": {
+    bootstrap: {
       // Console.jsm uses "debug", whereas Log.jsm uses "Debug", *sigh*
-      "level": "debug",
+      level: "debug",
     },
-    "studyUtils": {
-      "level": "Trace",
+    studyUtils: {
+      level: "Trace",
     },
   },
 
@@ -85,7 +85,7 @@ var config = {
 
   // a place to put an 'isEligible' function
   // Will run only during first install attempt
-  "isEligible": async function() {
+  async isEligible() {
     // get whatever prefs, addons, telemetry, anything!
     // Cu.import can see 'firefox things', but not package things.
     return true;
@@ -96,21 +96,21 @@ var config = {
        - downweight lizards.  Lizards is a 'poison' branch, meant to
          help control for novelty effect
   */
-  "weightedVariations": [
+  weightedVariations: [
     {
-      "name": "kittens",
-      "weight": 1.5,
+      name: "kittens",
+      weight: 1.5,
     },
     {
-      "name": "puppers",
-      "weight": 1.5,
+      name: "puppers",
+      weight: 1.5,
     },
     {
-      "name": "lizard",
-      "weight": 1,
-    },  // we want more puppers in our sample
+      name: "lizard",
+      weight: 1,
+    }, // we want more puppers in our sample
   ],
 
   // Optional: relative to bootstrap.js in the xpi
-  "studyUtilsPath": `./StudyUtils.jsm`,
+  studyUtilsPath: `./StudyUtils.jsm`,
 };

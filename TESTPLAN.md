@@ -9,7 +9,7 @@
 ### Install the add-on and enroll in the study
 
 * (Create profile: <https://developer.mozilla.org/Firefox/Multiple_profiles>, or via some other method)
-* Navigate to *about:config* and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String or Integer depending on the type of preference)
+* Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String or Integer depending on the type of preference)
 * Set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
 * Set `shield.test.variation` to `kitten`.
 * Go to [this study's tracking bug](tbd: replace with your studys launch bug link in bugzilla) and install the latest signed XPI
@@ -18,17 +18,17 @@
 
 Users see:
 
-- an icon in the browser address bar (webExtension BrowserAction) with one of 3 images (Cat, Dog, Lizard)
+* an icon in the browser address bar (webExtension BrowserAction) with one of 3 images (Cat, Dog, Lizard)
 
 Clicking on the button:
 
-- changes the badge
-- sends telemetry
+* changes the badge
+* sends telemetry
 
 ONCE ONLY users see:
 
-- a notification bar, introducing the featur
-- allowing them to opt out
+* a notification bar, introducing the featur
+* allowing them to opt out
 
 Icon will be the same every run.
 
@@ -36,61 +36,61 @@ If the user clicks on the badge more than 3 times, it ends the study.
 
 ### Do these tests
 
-1.  UI APPEARANCE.  OBSERVE a notification bar with these traits:
+1. UI APPEARANCE. OBSERVE a notification bar with these traits:
 
-    *  Icon is 'heartbeat'
-    *  Text is one of 8 selected "questions", such as:  "Do you like Firefox?".  These are listed in [/addon/Config.jsm](/addon/Config.jsm) as the variable `weightedVariations`.
-    *  clickable buttons with labels 'yes | not sure | no'  OR 'no | not sure | yes' (50/50 chance of each)
-    *  an `x` button at the right that closes the notice.
+   * Icon is 'heartbeat'
+   * Text is one of 8 selected "questions", such as: "Do you like Firefox?". These are listed in [/addon/Config.jsm](/addon/Config.jsm) as the variable `weightedVariations`.
+   * clickable buttons with labels 'yes | not sure | no' OR 'no | not sure | yes' (50/50 chance of each)
+   * an `x` button at the right that closes the notice.
 
-    Test fails IF:
+   Test fails IF:
 
-    - there is no bar.
-    - elements are not correct or are not displaye
+   * there is no bar.
+   * elements are not correct or are not displaye
 
-2.  UI functionality: VOTE
+2. UI functionality: VOTE
 
-    Expect:  Click on a 'vote' button (any of: `yes | not sure | no`) has all these effects
+   Expect: Click on a 'vote' button (any of: `yes | not sure | no`) has all these effects
 
-    - notice closes
-    - addon uninstalls
-    - no additional tabs open
-    - telemetry pings are 'correct' with this SPECIFIC `study_state` as the ending
+   * notice closes
+   * addon uninstalls
+   * no additional tabs open
+   * telemetry pings are 'correct' with this SPECIFIC `study_state` as the ending
 
-        - ending is `voted`
-        - 'vote' is correct.
+     * ending is `voted`
+     * 'vote' is correct.
 
-3.  UI functionality: 'X' button
+3. UI functionality: 'X' button
 
-    Click on the 'x' button.
+   Click on the 'x' button.
 
-    - notice closes
-    - addon uninstalls
-    - no additional tabs open
-    - telemetry pings are 'correct' with this SPECIFIC ending
+   * notice closes
+   * addon uninstalls
+   * no additional tabs open
+   * telemetry pings are 'correct' with this SPECIFIC ending
 
-      - ending is `notification-x`
+     * ending is `notification-x`
 
-4.  UI functionality  'close window'
+4. UI functionality 'close window'
 
-    1.  Open a 2nd Firefox window.
-    2.  Close the initial window.
+   1. Open a 2nd Firefox window.
+   2. Close the initial window.
 
-    Then observe:
+   Then observe:
 
-    - notice closes
-    - addon uninstalls
-    - no additional tabs open
-    - telemetry pings are 'correct' with this SPECIFIC ending
+   * notice closes
+   * addon uninstalls
+   * no additional tabs open
+   * telemetry pings are 'correct' with this SPECIFIC ending
 
-      - ending is `window-or-fx-closed`
+     * ending is `window-or-fx-closed`
 
-5.  UI functionality  'too-popular'
+5. UI functionality 'too-popular'
 
-    * Click on the web extension's icon three times
-    * Verify that the study ends
-    * Verify that sent Telemetry is correct
-    * Verify that the user is sent to the URL specified in `addon/Config.jsm` under `endings -> too-popular`.
+   * Click on the web extension's icon three times
+   * Verify that the study ends
+   * Verify that sent Telemetry is correct
+   * Verify that the user is sent to the URL specified in `addon/Config.jsm` under `endings -> too-popular`.
 
 ### Note: checking "sent Telemetry is correct"
 
@@ -102,7 +102,7 @@ See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by th
 
 To debug installation and loading of the add-on:
 
-* Navigate to *about:config* and set `shield.testing.logging.level` to `10`. This permits shield-add-on log output in browser console (If the preference does not exist, create it be right-clicking in the white area and selecting New -> Integer)
+* Navigate to _about:config_ and set `shield.testing.logging.level` to `10`. This permits shield-add-on log output in browser console (If the preference does not exist, create it be right-clicking in the white area and selecting New -> Integer)
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
 
 Example log output after installing the addon:
