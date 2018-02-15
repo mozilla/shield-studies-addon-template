@@ -5,17 +5,29 @@
 
 const { utils: Cu } = Components;
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "Services",
-  "resource://gre/modules/Services.jsm");
+XPCOMUtils.defineLazyModuleGetter(
+  this,
+  "Services",
+  "resource://gre/modules/Services.jsm",
+);
 
 const STUDY = "button-icon-preference";
 
-XPCOMUtils.defineLazyModuleGetter(this, "config",
-  `resource://${STUDY}/Config.jsm`);
-XPCOMUtils.defineLazyModuleGetter(this, "studyUtils",
-  `resource://${STUDY}/StudyUtils.jsm`);
-XPCOMUtils.defineLazyModuleGetter(this, "Feature",
-  `resource://${STUDY}/lib/Feature.jsm`);
+XPCOMUtils.defineLazyModuleGetter(
+  this,
+  "config",
+  `resource://${STUDY}/Config.jsm`,
+);
+XPCOMUtils.defineLazyModuleGetter(
+  this,
+  "studyUtils",
+  `resource://${STUDY}/StudyUtils.jsm`,
+);
+XPCOMUtils.defineLazyModuleGetter(
+  this,
+  "Feature",
+  `resource://${STUDY}/lib/Feature.jsm`,
+);
 
 /* Example addon-specific module imports.  Remember to Unload during shutdown() below.
 
@@ -32,7 +44,6 @@ XPCOMUtils.defineLazyModuleGetter(this, "Feature",
 */
 
 this.Bootstrap = {
-
   VARIATION_OVERRIDE_PREF: "extensions.button_icon_preference.variation",
 
   /**
@@ -41,7 +52,6 @@ this.Bootstrap = {
    * @returns {Promise<void>}
    */
   async startup(addonData, reason) {
-
     this.REASONS = studyUtils.REASONS;
 
     this.initLog();
@@ -58,7 +68,10 @@ this.Bootstrap = {
     // Check if the user is eligible to run this study using the |isEligible|
     // function when the study is initialized (install or upgrade, the latter
     // being interpreted as a new install).
-    if (reason === this.REASONS.ADDON_INSTALL || reason === this.REASONS.ADDON_UPGRADE) {
+    if (
+      reason === this.REASONS.ADDON_INSTALL ||
+      reason === this.REASONS.ADDON_UPGRADE
+    ) {
       //  telemetry "enter" ONCE
       studyUtils.firstSeen();
       const eligible = await config.isEligible();
@@ -82,7 +95,12 @@ this.Bootstrap = {
     this.log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
     // initiate the chrome-privileged part of the study add-on
-    this.feature = new Feature(variation, studyUtils, this.REASONS[reason], this.log);
+    this.feature = new Feature(
+      variation,
+      studyUtils,
+      this.REASONS[reason],
+      this.log,
+    );
 
     // if you have code to handle expiration / long-timers, it could go here
     /*
@@ -101,14 +119,15 @@ this.Bootstrap = {
         /** spec for messages intended for Shield =>
          * {shield:true,msg=[info|endStudy|telemetry],data=data}
          */
-        browser.runtime.onMessage.addListener(studyUtils.respondToWebExtensionMessage);
+        browser.runtime.onMessage.addListener(
+          studyUtils.respondToWebExtensionMessage,
+        );
         // other browser.runtime.onMessage handlers for your addon, if any
       });
     }
 
     // start up the chrome-privileged part of the study
     this.feature.start();
-
   },
 
   /*
@@ -117,8 +136,8 @@ this.Bootstrap = {
   */
   initLog() {
     XPCOMUtils.defineLazyGetter(this, "log", () => {
-      const ConsoleAPI =
-        Cu.import("resource://gre/modules/Console.jsm", {}).ConsoleAPI;
+      const ConsoleAPI = Cu.import("resource://gre/modules/Console.jsm", {})
+        .ConsoleAPI;
       const consoleOptions = {
         maxLogLevel: config.log.bootstrap.level,
         prefix: "TPStudy",
@@ -136,8 +155,9 @@ this.Bootstrap = {
 
   // choose the variation for this particular user, then set it.
   async selectVariation() {
-    const variation = this.getVariationFromPref(config.weightedVariations) ||
-      await studyUtils.deterministicVariation(config.weightedVariations);
+    const variation =
+      this.getVariationFromPref(config.weightedVariations) ||
+      (await studyUtils.deterministicVariation(config.weightedVariations));
     studyUtils.setVariation(variation);
     this.log.debug(`studyUtils has config and variation.name: ${variation.name}.
       Ready to send telemetry`);
@@ -150,7 +170,9 @@ this.Bootstrap = {
     if (name !== "") {
       const variation = weightedVariations.filter(x => x.name === name)[0];
       if (!variation) {
-        throw new Error(`about:config => ${this.VARIATION_OVERRIDE_PREF} set to ${name},
+        throw new Error(`about:config => ${
+          this.VARIATION_OVERRIDE_PREF
+        } set to ${name},
           but no variation with that name exists.`);
       }
       return variation;
@@ -167,8 +189,9 @@ this.Bootstrap = {
   async shutdown(addonData, reason) {
     this.log.debug("shutdown", this.REASONS[reason] || reason);
 
-    const isUninstall = (reason === this.REASONS.ADDON_UNINSTALL
-      || reason === this.REASONS.ADDON_DISABLE);
+    const isUninstall =
+      reason === this.REASONS.ADDON_UNINSTALL ||
+      reason === this.REASONS.ADDON_DISABLE;
     if (isUninstall) {
       this.log.debug("uninstall or disable");
     }

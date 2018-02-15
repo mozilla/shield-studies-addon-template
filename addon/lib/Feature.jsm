@@ -126,7 +126,7 @@ class Feature {
             });
             feature.studyUtils.endStudy("introduction-leave-study");
           },
-        }
+        },
       ],
       // callback for nb events
       null

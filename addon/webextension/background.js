@@ -13,7 +13,6 @@
  *   - Only the webExtension can initiate messages.  see `msgStudyUtils("info")` below.
  */
 
-
 /**  Re-usable code for talking to `studyUtils` using `browser.runtime.sendMessage`
  *  - Host listens and responds at `bootstrap.js`:
  *
@@ -27,7 +26,8 @@
  */
 async function msgStudyUtils(msg, data) {
   const allowed = ["endStudy", "telemetry", "info"];
-  if (!allowed.includes(msg)) throw new Error(`shieldUtils doesn't know ${msg}, only knows ${allowed}`);
+  if (!allowed.includes(msg))
+    throw new Error(`shieldUtils doesn't know ${msg}, only knows ${allowed}`);
   try {
     // the "shield" key is how the Host listener knows it's for shield.
     return await browser.runtime.sendMessage({ shield: true, msg, data });
@@ -56,16 +56,16 @@ function telemetry(data) {
   function throwIfInvalid(obj) {
     // Check: all keys and values must be strings,
     for (const k in obj) {
-      if (typeof k !== 'string') throw new Error(`key ${k} not a string`);
-      if (typeof obj[k] !== 'string') throw new Error(`value ${k} ${obj[k]} not a string`);
+      if (typeof k !== "string") throw new Error(`key ${k} not a string`);
+      if (typeof obj[k] !== "string")
+        throw new Error(`value ${k} ${obj[k]} not a string`);
     }
-    return true
+    return true;
   }
 
   throwIfInvalid(data);
   return msgStudyUtils("telemetry", data);
 }
-
 
 class BrowserActionButtonChoiceFeature {
   /**
@@ -73,11 +73,14 @@ class BrowserActionButtonChoiceFeature {
    * - tell Legacy Addon to send
    */
   constructor(variation) {
-    console.log("initilizing BrowserActionButtonChoiceFeature:", variation.name);
+    console.log(
+      "initilizing BrowserActionButtonChoiceFeature:",
+      variation.name,
+    );
     this.timesClickedInSession = 0;
 
     // modify BrowserAction (button) ui for this particular {variation}
-    console.log("path:", `icons/${variation.name}.svg`)
+    console.log("path:", `icons/${variation.name}.svg`);
     browser.browserAction.setIcon({ path: `icons/${variation.name}.svg` });
     browser.browserAction.setTitle({ title: variation.name });
     browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
@@ -92,15 +95,20 @@ class BrowserActionButtonChoiceFeature {
     // note: doesn't persist across a session, unless you use localStorage or similar.
     this.timesClickedInSession += 1;
     console.log("got a click", this.timesClickedInSession);
-    browser.browserAction.setBadgeText({ text: this.timesClickedInSession.toString() });
+    browser.browserAction.setBadgeText({
+      text: this.timesClickedInSession.toString(),
+    });
 
     // telemetry: FIRST CLICK
     if (this.timesClickedInSession == 1) {
-      telemetry({ "event": "button-first-click-in-session" });
+      telemetry({ event: "button-first-click-in-session" });
     }
 
     // telemetry EVERY CLICK
-    telemetry({ "event": "button-click", timesClickedInSession: "" + this.timesClickedInSession });
+    telemetry({
+      event: "button-click",
+      timesClickedInSession: "" + this.timesClickedInSession,
+    });
 
     // webExtension-initiated ending for "used-often"
     //
@@ -119,13 +127,15 @@ class BrowserActionButtonChoiceFeature {
  *  3. initialize the feature, using our specific variation
  */
 function runOnce() {
-  msgStudyUtils("info").then(
-    ({ variation }) => new BrowserActionButtonChoiceFeature(variation)
-  ).catch(function defaultSetup() {
-    // Errors here imply that this is NOT embedded.
-    console.log("you must be running as part of `web-ext`.  You get 'corn dog'!");
-    new BrowserActionButtonChoiceFeature({ "name": "isolatedcorndog" })
-  });
+  msgStudyUtils("info")
+    .then(({ variation }) => new BrowserActionButtonChoiceFeature(variation))
+    .catch(function defaultSetup() {
+      // Errors here imply that this is NOT embedded.
+      console.log(
+        "you must be running as part of `web-ext`.  You get 'corn dog'!",
+      );
+      new BrowserActionButtonChoiceFeature({ name: "isolatedcorndog" });
+    });
 }
 
 // actually start

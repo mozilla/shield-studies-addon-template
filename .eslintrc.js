@@ -7,18 +7,17 @@
  */
 
 module.exports = {
-  "parserOptions": {
-    "ecmaVersion": 8,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": false,
-      "experimentalObjectRestSpread": true,
+  parserOptions: {
+    ecmaVersion: 8,
+    sourceType: "module",
+    ecmaFeatures: {
+      jsx: false,
+      experimentalObjectRestSpread: true,
     },
   },
   env: {
-    "es6": true,
+    es6: true,
     // 'browser-window': false
-
   },
   extends: [
     "eslint:recommended",
@@ -28,16 +27,13 @@ module.exports = {
     "plugin:mozilla/recommended",
   ],
 
-  plugins: [
-    "json",
-    "mozilla",
-  ],
+  plugins: ["json", "mozilla"],
 
   rules: {
     "babel/new-cap": "off",
     "comma-dangle": ["error", "always-multiline"],
-    "eqeqeq": "error",
-    "indent": ["warn", 2, { SwitchCase: 1 }],
+    eqeqeq: "error",
+    indent: ["warn", 2, { SwitchCase: 1 }],
     "mozilla/no-aArgs": "warn",
     "mozilla/balanced-listeners": 0,
     "no-console": "warn",
@@ -45,6 +41,6 @@ module.exports = {
     "no-unused-vars": "error",
     "prefer-const": "warn",
     "prefer-spread": "error",
-    "semi": ["error", "always"],
+    semi: ["error", "always"],
   },
 };

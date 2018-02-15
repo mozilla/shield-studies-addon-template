@@ -24,7 +24,6 @@ const {
   MODIFIER_KEY,
 } = require("./test/utils");
 
-
 const HELP = `
 env vars:
 
@@ -44,11 +43,10 @@ Future will clean up this interface a bit!
 `;
 
 const minimistHandler = {
-  boolean: [ "help" ],
+  boolean: ["help"],
   alias: { h: "help", v: "version" },
   "--": true,
 };
-
 
 (async() => {
   const minimist = require("minimist");
@@ -80,8 +78,9 @@ const minimistHandler = {
     const openBrowserConsole = Key.chord(MODIFIER_KEY, Key.SHIFT, "j");
     await urlBar.sendKeys(openBrowserConsole);
 
-    console.log("The addon should now be loaded and you should be able to interact with the addon in the newly opened Firefox instance.");
-
+    console.log(
+      "The addon should now be loaded and you should be able to interact with the addon in the newly opened Firefox instance.",
+    );
   } catch (e) {
     console.error(e);
   }

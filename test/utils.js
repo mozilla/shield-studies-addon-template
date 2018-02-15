@@ -42,12 +42,12 @@ const FIREFOX_PREFERENCES = {
   "extensions.button_icon_preference.variation": "kittens",
 
   /** WARNING: gecko webdriver sets many additional prefs at:
-    * https://dxr.mozilla.org/mozilla-central/source/testing/geckodriver/src/prefs.rs
-    *
-    * In, particular, this DISABLES actual telemetry uploading
-    * ("toolkit.telemetry.server", Pref::new("https://%(server)s/dummy/telemetry/")),
-    *
-    */
+   * https://dxr.mozilla.org/mozilla-central/source/testing/geckodriver/src/prefs.rs
+   *
+   * In, particular, this DISABLES actual telemetry uploading
+   * ("toolkit.telemetry.server", Pref::new("https://%(server)s/dummy/telemetry/")),
+   *
+   */
 };
 
 // useful if we need to test on a specific version of Firefox
@@ -66,14 +66,14 @@ async function promiseActualBinary(binary) {
 }
 
 /**
-  * Uses process.env.FIREFOX_BINARY
-  *
-  */
+ * Uses process.env.FIREFOX_BINARY
+ *
+ */
 module.exports.promiseSetupDriver = async() => {
   const profile = new firefox.Profile();
 
   // TODO, allow 'actually send telemetry' here.
-  Object.keys(FIREFOX_PREFERENCES).forEach((key) => {
+  Object.keys(FIREFOX_PREFERENCES).forEach(key => {
     profile.setPreference(key, FIREFOX_PREFERENCES[key]);
   });
 
@@ -85,7 +85,9 @@ module.exports.promiseSetupDriver = async() => {
     .forBrowser("firefox")
     .setFirefoxOptions(options);
 
-  const binaryLocation = await promiseActualBinary(process.env.FIREFOX_BINARY || "nightly");
+  const binaryLocation = await promiseActualBinary(
+    process.env.FIREFOX_BINARY || "nightly",
+  );
 
   // console.log(binaryLocation);
   await options.setBinary(new firefox.Binary(binaryLocation));
@@ -96,25 +98,24 @@ module.exports.promiseSetupDriver = async() => {
   return driver;
 };
 
-
 /* let's actually just make this a constant */
 const MODIFIER_KEY = (function getModifierKey() {
-  const modifierKey = process.platform === "darwin" ?
-    webdriver.Key.COMMAND : webdriver.Key.CONTROL;
+  const modifierKey =
+    process.platform === "darwin"
+      ? webdriver.Key.COMMAND
+      : webdriver.Key.CONTROL;
   return modifierKey;
 })();
 
 module.exports.MODIFIER_KEY = MODIFIER_KEY;
 
-
 // TODO glind general wrapper for 'async with callback'?
-
 
 /* Firefox UI helper functions */
 
 // such as:  "social-share-button"
 module.exports.addButtonFromCustomizePanel = async(driver, buttonId) =>
-  driver.executeAsyncScript((callback) => {
+  driver.executeAsyncScript(callback => {
     // see https://dxr.mozilla.org/mozilla-central/rev/211d4dd61025c0a40caea7a54c9066e051bdde8c/browser/base/content/browser-social.js#193
     Components.utils.import("resource:///modules/CustomizableUI.jsm");
     CustomizableUI.addWidgetToArea(buttonId, CustomizableUI.AREA_NAVBAR);
@@ -123,7 +124,7 @@ module.exports.addButtonFromCustomizePanel = async(driver, buttonId) =>
 
 module.exports.removeButtonFromNavbar = async(driver, buttonId) => {
   try {
-    await driver.executeAsyncScript((callback) => {
+    await driver.executeAsyncScript(callback => {
       Components.utils.import("resource:///modules/CustomizableUI.jsm");
       CustomizableUI.removeWidgetFromArea(buttonId);
       callback();
@@ -136,7 +137,7 @@ module.exports.removeButtonFromNavbar = async(driver, buttonId) => {
     if (e.name === "TimeoutError") {
       return false;
     }
-    throw (e);
+    throw e;
   }
 };
 
@@ -147,24 +148,35 @@ module.exports.installAddon = async(driver, fileLocation) => {
   fileLocation = fileLocation || path.join(process.cwd(), process.env.XPI);
 
   const executor = driver.getExecutor();
-  executor.defineCommand("installAddon", "POST", "/session/:sessionId/moz/addon/install");
+  executor.defineCommand(
+    "installAddon",
+    "POST",
+    "/session/:sessionId/moz/addon/install",
+  );
   const installCmd = new cmd.Command("installAddon");
 
   const session = await driver.getSession();
-  installCmd.setParameters({ sessionId: session.getId(), path: fileLocation, temporary: true });
+  installCmd.setParameters({
+    sessionId: session.getId(),
+    path: fileLocation,
+    temporary: true,
+  });
   return executor.execute(installCmd);
 };
 
 module.exports.uninstallAddon = async(driver, id) => {
   const executor = driver.getExecutor();
-  executor.defineCommand("uninstallAddon", "POST", "/session/:sessionId/moz/addon/uninstall");
+  executor.defineCommand(
+    "uninstallAddon",
+    "POST",
+    "/session/:sessionId/moz/addon/uninstall",
+  );
   const uninstallCmd = new cmd.Command("uninstallAddon");
 
   const session = await driver.getSession();
   uninstallCmd.setParameters({ sessionId: session.getId(), id });
   await executor.execute(uninstallCmd);
 };
-
 
 /* this is NOT WORKING FOR UNKNOWN HARD TO EXLAIN REASONS
 => Uncaught WebDriverError: InternalError: too much recursion
@@ -179,20 +191,20 @@ module.exports.allAddons = async(driver) => {
 */
 
 /** Returns array of pings of type `type` in reverse sorted order by timestamp
-  * first element is most recent ping
-  *
-  * as seen in shield-study-addon-util's `utils.jsm`
-  * options
-  * - type:  string or array of ping types
-  * - n:  positive integer. at most n pings.
-  * - timestamp:  only pings after this timestamp.
-  * - headersOnly: boolean, just the 'headers' for the pings, not the full bodies.
-  */
+ * first element is most recent ping
+ *
+ * as seen in shield-study-addon-util's `utils.jsm`
+ * options
+ * - type:  string or array of ping types
+ * - n:  positive integer. at most n pings.
+ * - timestamp:  only pings after this timestamp.
+ * - headersOnly: boolean, just the 'headers' for the pings, not the full bodies.
+ */
 module.exports.getTelemetryPings = async(driver, passedOptions) => {
   // callback is how you get the return back from the script
   return driver.executeAsyncScript(async(options, callback) => {
-    let {type} = options;
-    const { n, timestamp, headersOnly} = options;
+    let { type } = options;
+    const { n, timestamp, headersOnly } = options;
     Components.utils.import("resource://gre/modules/TelemetryArchive.jsm");
     // {type, id, timestampCreated}
     let pings = await TelemetryArchive.promiseArchivedPingList();
@@ -207,49 +219,57 @@ module.exports.getTelemetryPings = async(driver, passedOptions) => {
 
     pings.sort((a, b) => b.timestampCreated - a.timestampCreated);
     if (n) pings = pings.slice(0, n);
-    const pingData = headersOnly ? pings : pings.map(ping => TelemetryArchive.promiseArchivedPingById(ping.id));
+    const pingData = headersOnly
+      ? pings
+      : pings.map(ping => TelemetryArchive.promiseArchivedPingById(ping.id));
 
     callback(await Promise.all(pingData));
   }, passedOptions);
 };
 
-
-
-
 // TODO glind, this interface feels janky
 // this feels like it wants to be $ like.
 // not obvious right now, moving on!
 class getChromeElementBy {
-  static async _get1(driver, method, selector ) {
+  static async _get1(driver, method, selector) {
     driver.setContext(Context.CHROME);
     try {
-      return await driver.wait(until.elementLocated(
-        By[method](selector)), 1000);
+      return await driver.wait(
+        until.elementLocated(By[method](selector)),
+        1000,
+      );
     } catch (e) {
       // if there an error, the button was not found
       console.error(e);
       return null;
     }
   }
-  static async id(driver, id) { return this._get1(driver, "id", id); }
+  static async id(driver, id) {
+    return this._get1(driver, "id", id);
+  }
 
-  static async className(driver, className) { return this._get1(driver, "className", className); }
+  static async className(driver, className) {
+    return this._get1(driver, "className", className);
+  }
 
-  static async tagName(driver, tagName) { return this._get1(driver, "tagName", tagName); }
+  static async tagName(driver, tagName) {
+    return this._get1(driver, "tagName", tagName);
+  }
 }
 module.exports.getChromeElementBy = getChromeElementBy;
 
-module.exports.promiseUrlBar = (driver) => {
+module.exports.promiseUrlBar = driver => {
   driver.setContext(Context.CHROME);
-  return driver.wait(until.elementLocated(
-    By.id("urlbar")), 1000);
+  return driver.wait(until.elementLocated(By.id("urlbar")), 1000);
 };
 
-module.exports.takeScreenshot = async(driver, filepath = "./screenshot.png") => {
+module.exports.takeScreenshot = async(
+  driver,
+  filepath = "./screenshot.png",
+) => {
   try {
     const data = await driver.takeScreenshot();
-    return await Fs.outputFile(filepath,
-      data, "base64");
+    return await Fs.outputFile(filepath, data, "base64");
   } catch (screenshotError) {
     throw screenshotError;
   }
@@ -275,7 +295,9 @@ module.exports.searchTelemetry = (conditionArray, telemetryArray) => {
   const resultingPings = [];
   for (const condition of conditionArray) {
     const index = telemetryArray.findIndex(ping => condition(ping));
-    if (index === -1) { throw new SearchError(condition); }
+    if (index === -1) {
+      throw new SearchError(condition);
+    }
     resultingPings.push(telemetryArray[index]);
   }
   return resultingPings;
@@ -328,7 +350,6 @@ module.exports.searchTelemetry = (conditionArray, telemetryArray) => {
 //  }
 // };
 
-
 // module.exports.testPanel = async(driver, panelId) => {
 //   driver.setContext(Context.CHROME);
 //   try { // if we can't find the panel, return false
@@ -350,7 +371,6 @@ module.exports.searchTelemetry = (conditionArray, telemetryArray) => {
 //     throw e;
 //   }
 // };
-
 
 // module.exports.closePanel = async(driver, target = null) => {
 //   if (target !== null) {

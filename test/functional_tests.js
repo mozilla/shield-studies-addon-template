@@ -17,13 +17,15 @@ const utils = require("./utils");
 /* Part 1:  Utilities */
 
 async function getShieldPingsAfterTimestamp(driver, ts) {
-  return utils.getTelemetryPings(driver, { type: ["shield-study", "shield-study-addon"], timestamp: ts });
+  return utils.getTelemetryPings(driver, {
+    type: ["shield-study", "shield-study-addon"],
+    timestamp: ts,
+  });
 }
 
 function summarizePings(pings) {
   return pings.map(p => [p.payload.type, p.payload.data]);
 }
-
 
 async function getNotification(driver) {
   return utils.getChromeElementBy.tagName(driver, "notification");
@@ -32,7 +34,6 @@ async function getNotification(driver) {
 async function getFirstButton(driver) {
   return utils.getChromeElementBy.className(driver, "notification-button");
 }
-
 
 /* Part 2:  The Tests */
 
@@ -58,17 +59,14 @@ describe("basic functional tests", function() {
     // collect sent pings
     pings = await getShieldPingsAfterTimestamp(driver, beginTime);
     // console.log(pingsReport(pings).report);
-
   });
 
   after(async() => {
     driver.quit();
   });
 
-  beforeEach(async() => {
-  });
-  afterEach(async() => {
-  });
+  beforeEach(async() => {});
+  afterEach(async() => {});
 
   /* Expected behaviour:
 
@@ -85,17 +83,33 @@ describe("basic functional tests", function() {
   });
 
   it("at least one shield-study telemetry ping with study_state=installed", async() => {
-    const foundPings = utils.searchTelemetry([
-      ping => ping.type === "shield-study" && ping.payload.data.study_state === "installed",
-    ], pings);
-    assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=installed");
+    const foundPings = utils.searchTelemetry(
+      [
+        ping =>
+          ping.type === "shield-study" &&
+          ping.payload.data.study_state === "installed",
+      ],
+      pings,
+    );
+    assert(
+      foundPings.length > 0,
+      "at least one shield-study telemetry ping with study_state=installed",
+    );
   });
 
   it("at least one shield-study telemetry ping with study_state=enter", async() => {
-    const foundPings = utils.searchTelemetry([
-      ping => ping.type === "shield-study" && ping.payload.data.study_state === "enter",
-    ], pings);
-    assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=enter");
+    const foundPings = utils.searchTelemetry(
+      [
+        ping =>
+          ping.type === "shield-study" &&
+          ping.payload.data.study_state === "enter",
+      ],
+      pings,
+    );
+    assert(
+      foundPings.length > 0,
+      "at least one shield-study telemetry ping with study_state=enter",
+    );
   });
 
   it("telemetry: has entered, installed, etc", function() {
@@ -105,21 +119,21 @@ describe("basic functional tests", function() {
       [
         "shield-study-addon",
         {
-          "attributes": {
-            "event": "introduction-shown",
+          attributes: {
+            event: "introduction-shown",
           },
         },
       ],
       [
         "shield-study",
         {
-          "study_state": "installed",
+          study_state: "installed",
         },
       ],
       [
         "shield-study",
         {
-          "study_state": "enter",
+          study_state: "enter",
         },
       ],
     ];
@@ -129,7 +143,9 @@ describe("basic functional tests", function() {
   describe("introduction / orientation bar", function() {
     it("exists, carries study config", async() => {
       const notice = await getNotification(driver);
-      const noticeConfig = JSON.parse(await notice.getAttribute("data-study-config"));
+      const noticeConfig = JSON.parse(
+        await notice.getAttribute("data-study-config"),
+      );
       assert(noticeConfig.name);
       assert(noticeConfig.weight);
     });
@@ -153,15 +169,14 @@ describe("basic functional tests", function() {
         [
           "shield-study-addon",
           {
-            "attributes": {
-              "event": "introduction-accept",
+            attributes: {
+              event: "introduction-accept",
             },
           },
         ],
       ];
       // this would add new telemetry
       assert.deepEqual(expected, observed, "telemetry pings do not match");
-
     });
 
     it("TBD click on NO uninstalls addon", async() => {
