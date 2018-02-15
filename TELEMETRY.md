@@ -1,17 +1,13 @@
-# Telemetry sent by Addon
-
-
+# Telemetry sent by this add-on
 
 ## Usual Firefox Telemetry is unaffected.
 
-- No change: `main` and other pings are UNAFFECTED by this addon.
+- No change: `main` and other pings are UNAFFECTED by this add-on.
 - Respects telemetry preferences.  If user has disabled telemetry, no telemetry will be sent.
 
+##  Study-specific endings
 
-
-## `shield-study` pings (common to all shield-studies)
-
-`shield-studies-addon-utils` sends the usual packets.
+This study has no surveys and as such has NO SPECIFIC ENDINGS.
 
 The STUDY SPECIFIC ENDINGS this study supports are:
 
@@ -19,6 +15,9 @@ The STUDY SPECIFIC ENDINGS this study supports are:
 - "notification-x"
 - "window-or-fx-closed"
 
+## `shield-study` pings (common to all shield-studies)
+
+[shield-studies-addon-utils](https://github.com/mozilla/shield-studies-addon-utils) sends the usual packets.
 
 ## `shield-study-addon` pings, specific to THIS study.
 
@@ -81,5 +80,3 @@ version       3
   "study_state": "exit"
 }
 ```
-
-
