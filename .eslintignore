@@ -1,4 +1,5 @@
 addon/StudyUtils.jsm
+addon/PioneerUtils.jsm
 # for circleCI; don't eslint code in the Firefox directory
 firefox
 dist
