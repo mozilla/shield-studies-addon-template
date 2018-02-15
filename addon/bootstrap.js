@@ -62,14 +62,14 @@ async function startup(addonData, reason) {
   studyUtils.setVariation(variation);
   log.debug(`studyUtils has config and variation.name: ${variation.name}.  Ready to send telemetry`);
 
-
-  /** addon_install ONLY:
-    * - note first seen,
-    * - check eligible
-    */
-  if ((REASONS[reason]) === "ADDON_INSTALL") {
-    //  telemetry "enter" ONCE
+  /** addon_install and addon_upgrade (which is considered a new study) ONLY:
+   * - note first seen,
+   * - check eligible
+   */
+  if (reason === REASONS.ADDON_INSTALL || reason === REASONS.ADDON_UPGRADE) {
+    //  telemetry "enter" ONCE per new study period
     studyUtils.firstSeen();
+    // check user eligibility ONCE per new study period
     const eligible = await config.isEligible(); // addon-specific
     if (!eligible) {
       // 1. uses config.endings.ineligible.url if any,

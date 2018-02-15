@@ -53,8 +53,8 @@ class Feature {
     this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
     this.studyUtils = studyUtils;
 
-    // only during INSTALL
-    if (reasonName === "ADDON_INSTALL") {
+    // perform something only during INSTALL and UPGRADE = a new study period begins
+    if (reasonName === "ADDON_INSTALL" || reasonName === "ADDON_UPGRADE") {
       this.introductionNotificationBar();
     }
   }
