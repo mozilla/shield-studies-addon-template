@@ -29,6 +29,11 @@ Events instrumented in this study:
 - Interactions
     - voted
 
+All interactions with the UI create sequences of Telemetry Pings.
+
+All UI `shield-study` `study_state` sequences look like this:
+
+- `enter => install => (one of: "voted" | "notification-x" |  "window-or-fx-closed") => exit`.
 
 ## Example sequence for a 'voted => not sure' interaction
 
