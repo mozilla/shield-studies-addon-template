@@ -43,6 +43,7 @@
     "npm-run-all": "^4.1.1",
     "nsp": "^2.8.1",
     "onchange": "^3.2.1",
+    "prettier": "^1.10.2",
     "selenium-webdriver": "^3.5.0",
     "shield-studies-addon-utils": "^4.1.0"
   },
@@ -67,6 +68,7 @@
     "eslint": "eslint . --ext jsm --ext js --ext json",
     "eslint-fix": "eslint . --ext jsm --ext js --ext json --fix",
     "firefox": "export XPI=dist/linked-addon.xpi && npm run build && node run-firefox.js",
+    "format": "prettier '**/*.{css,js,json}' --trailing-comma=all --ignore-path=.eslintignore --print-width 160 --write",
     "harness_test": "export XPI=dist/linked-addon.xpi && mocha test/functional_tests.js --retry 2 --reporter json",
     "lint": "npm-run-all lint:*",
     "lint-build:addons-linter": "# actually a post build test:  bin/addonLintTest ' + require('./package.json').name",
