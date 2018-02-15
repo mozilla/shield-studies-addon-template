@@ -1,178 +1,208 @@
 "use strict";
 
-/* global  __SCRIPT_URI_SPEC__  */
-/* global Feature, Services */ // Cu.import
+/* global config, studyUtils, Feature */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(startup|shutdown|install|uninstall)" }]*/
 
 const { utils: Cu } = Components;
-Cu.import("resource://gre/modules/Console.jsm");
-Cu.import("resource://gre/modules/Log.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "Services",
+  "resource://gre/modules/Services.jsm");
 
-const CONFIGPATH = `${__SCRIPT_URI_SPEC__}/../Config.jsm`;
-const { config } = Cu.import(CONFIGPATH, {});
+const STUDY = "button-icon-preference";
 
-const STUDYUTILSPATH = `${__SCRIPT_URI_SPEC__}/../${config.studyUtilsPath}`;
-const { studyUtils } = Cu.import(STUDYUTILSPATH, {});
-
-const REASONS = studyUtils.REASONS;
-
-// logging for bootstrap.js, pref sets how verbose
-const PREF_LOGGING_LEVEL = "shield.testing.logging.level";
-const BOOTSTRAP_LOGGER_NAME = `shield-study-${config.study.studyName}`;
-const log = Log.repository.getLogger(BOOTSTRAP_LOGGER_NAME);
-log.addAppender(new Log.ConsoleAppender(new Log.BasicFormatter()));
-log.level = Services.prefs.getIntPref(PREF_LOGGING_LEVEL, Log.Level.Warn);
-
-
-// QA NOTE: Study Specific Modules - package.json:addon.chromeResource
-const BASE = `button-icon-preference`;
-XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Feature.jsm`);
-
+XPCOMUtils.defineLazyModuleGetter(this, "config",
+  `resource://${STUDY}/Config.jsm`);
+XPCOMUtils.defineLazyModuleGetter(this, "studyUtils",
+  `resource://${STUDY}/StudyUtils.jsm`);
+XPCOMUtils.defineLazyModuleGetter(this, "Feature",
+  `resource://${STUDY}/lib/Feature.jsm`);
 
 /* Example addon-specific module imports.  Remember to Unload during shutdown() below.
 
   // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Using
 
-   Ideally, put ALL your feature code in a Feature.jsm file,
-   NOT in this bootstrap.js.
+  Ideally, put ALL your feature code in a Feature.jsm file,
+  NOT in this bootstrap.js.
 
-  XPCOMUtils.defineLazyModuleGetter(this, "SomeExportedSymbol",
-    `resource://${BASE}/SomeModule.jsm");
+  XPCOMUtils.defineLazyModuleGetter(this, "SomeModule",
+  `resource://${STUDY}/lib/SomeModule.jsm`);
 
   XPCOMUtils.defineLazyModuleGetter(this, "Preferences",
     "resource://gre/modules/Preferences.jsm");
 */
 
-async function startup(addonData, reason) {
-  // `addonData`: Array [ "id", "version", "installPath", "resourceURI", "instanceID", "webExtension" ]  bootstrap.js:48
-  log.debug("startup", REASONS[reason] || reason);
+this.Bootstrap = {
 
-  /* Configuration of Study Utils*/
-  studyUtils.setup({
-    ...config,
-    addon: { id: addonData.id, version: addonData.version },
-  });
-  // choose the variation for this particular user, then set it.
-  const variation = getVariationFromPref(config.weightedVariations) ||
-    await studyUtils.deterministicVariation(
-      config.weightedVariations
-    );
-  studyUtils.setVariation(variation);
-  log.debug(`studyUtils has config and variation.name: ${variation.name}.  Ready to send telemetry`);
+  VARIATION_OVERRIDE_PREF: "extensions.button_icon_preference.variation",
 
-  // Check if the user is eligible to run this study using the |isEligible|
-  // function when the study is initialized (install or upgrade, the latter
-  // being interpreted as a new install).
-  if (reason === REASONS.ADDON_INSTALL || reason === REASONS.ADDON_UPGRADE) {
-    //  telemetry "enter" ONCE
-    studyUtils.firstSeen();
-    const eligible = await config.isEligible();
-    if (!eligible) {
-      // 1. uses config.endings.ineligible.url if any,
-      // 2. sends UT for "ineligible"
-      // 3. then uninstalls addon
-      await studyUtils.endStudy({ reason: "ineligible" });
+  /**
+   * @param addonData Array [ "id", "version", "installPath", "resourceURI", "instanceID", "webExtension" ]  bootstrap.js:48
+   * @param reason
+   * @returns {Promise<void>}
+   */
+  async startup(addonData, reason) {
+
+    this.REASONS = studyUtils.REASONS;
+
+    this.initLog();
+
+    this.log.debug("startup", this.REASONS[reason] || reason);
+
+    this.initStudyUtils(addonData.id, addonData.version);
+
+    // choose and set variation
+    const variation = await this.selectVariation();
+    this.variation = variation;
+    this.reason = reason;
+
+    // Check if the user is eligible to run this study using the |isEligible|
+    // function when the study is initialized (install or upgrade, the latter
+    // being interpreted as a new install).
+    if (reason === this.REASONS.ADDON_INSTALL || reason === this.REASONS.ADDON_UPGRADE) {
+      //  telemetry "enter" ONCE
+      studyUtils.firstSeen();
+      const eligible = await config.isEligible();
+      if (!eligible) {
+        this.log.debug("User is ineligible, ending study.");
+        // 1. uses config.endings.ineligible.url if any,
+        // 2. sends UT for "ineligible"
+        // 3. then uninstalls addon
+        await studyUtils.endStudy({ reason: "ineligible" });
+        return;
+      }
+    }
+
+    /*
+    * Adds the study to the active list of telemetry experiments,
+    * and sends the "installed" telemetry ping if applicable
+    */
+    await studyUtils.startup({ reason });
+
+    // log what the study variation and other info is.
+    this.log.debug(`info ${JSON.stringify(studyUtils.info())}`);
+
+    // initiate the chrome-privileged part of the study add-on
+    this.feature = new Feature(variation, studyUtils, this.REASONS[reason], this.log);
+
+    // if you have code to handle expiration / long-timers, it could go here
+    /*
+    if (this.feature.hasExpired()) {
+      // Please note that the general study expiration should probably be taken care of by Normandy.
+      await studyUtils.endStudy({ reason: "expired" });
       return;
     }
-  }
+    */
 
-  // startup for eligible users.
-  // 1. sends `install` ping IFF ADDON_INSTALL.
-  // 2. sets activeExperiments in telemetry environment.
-  await studyUtils.startup({ reason });
+    // IF your study has an embedded webExtension, start it.
+    const { webExtension } = addonData;
+    if (webExtension) {
+      webExtension.startup().then(api => {
+        const { browser } = api;
+        /** spec for messages intended for Shield =>
+         * {shield:true,msg=[info|endStudy|telemetry],data=data}
+         */
+        browser.runtime.onMessage.addListener(studyUtils.respondToWebExtensionMessage);
+        // other browser.runtime.onMessage handlers for your addon, if any
+      });
+    }
 
-  // log what the study variation and other info is.
-  log.debug(`info ${JSON.stringify(studyUtils.info())}`);
+    // start up the chrome-privileged part of the study
+    this.feature.start();
 
-  // initiate the chrome-privileged part of the study add-on
-  this.feature = new Feature(variation, studyUtils, REASONS[reason], log);
+  },
 
-  // if you have code to handle expiration / long-timers, it could go here
   /*
-  if (this.feature.hasExpired()) {
-    // Please note that the general study expiration should probably be taken care of by Normandy.
-    await studyUtils.endStudy({ reason: "expired" });
-    return;
-  }
+  * Create a new instance of the ConsoleAPI, so we can control
+  * the maxLogLevel with Config.jsm.
   */
-
-  // IFF your study has an embedded webExtension, start it.
-  const { webExtension } = addonData;
-  if (webExtension) {
-    webExtension.startup().then(api => {
-      const { browser } = api;
-      /** spec for messages intended for Shield =>
-       * {shield:true,msg=[info|endStudy|telemetry],data=data}
-       */
-      browser.runtime.onMessage.addListener(studyUtils.respondToWebExtensionMessage);
-      // other browser.runtime.onMessage handlers for your addon, if any
+  initLog() {
+    XPCOMUtils.defineLazyGetter(this, "log", () => {
+      const ConsoleAPI =
+        Cu.import("resource://gre/modules/Console.jsm", {}).ConsoleAPI;
+      const consoleOptions = {
+        maxLogLevel: config.log.bootstrap.level,
+        prefix: "TPStudy",
+      };
+      return new ConsoleAPI(consoleOptions);
     });
-  }
+  },
 
-  // start up the chrome-privileged part of the study
-  this.feature.start();
+  initStudyUtils(id, version) {
+    // validate study config
+    studyUtils.setup({ ...config, addon: { id, version } });
+    // TODO bdanforth: patch studyUtils to setLoggingLevel as part of setup method
+    studyUtils.setLoggingLevel(config.log.studyUtils.level);
+  },
 
-}
-
-/** Shutdown needs to distinguish between USER-DISABLE and other
- * times that `endStudy` is called.
- *
- * studyUtils._isEnding means this is a '2nd shutdown'.
- */
-function shutdown(addonData, reason) {
-  log.debug("shutdown", REASONS[reason] || reason);
-  // FRAGILE: handle uninstalls initiated by USER or by addon
-  if (reason === REASONS.ADDON_UNINSTALL || reason === REASONS.ADDON_DISABLE) {
-    log.debug("uninstall or disable");
-
-    if (this.feature) {
-      this.feature.shutdown();
-    }
-
-    if (!studyUtils._isEnding) {
-      // we are the first 'uninstall' requestor => must be user action.
-      log.debug("probably: user requested shutdown");
-      studyUtils.endStudy({ reason: "user-disable" });
-      // We want to handle both "uninstall" and "user disabled" the same way,
-      // by ending the study and uninstalling the addon. That's why we're not
-      // returning here.
-    }
-
-  }
-
-  // normal shutdown, or 2nd uninstall request
-
-  // QA NOTE:  unload addon specific modules here.
-  Cu.unload(`resource://${BASE}/lib/Feature.jsm`);
-
-  // clean up our modules.
-  Cu.unload(CONFIGPATH);
-  Cu.unload(STUDYUTILSPATH);
-
-}
-
-function uninstall(addonData, reason) {
-  log.debug("uninstall", REASONS[reason] || reason);
-}
-
-function install(addonData, reason) {
-  log.debug("install", REASONS[reason] || reason);
-  // handle ADDON_UPGRADE (if needful) here
-}
-
-
-// helper to let Dev or QA set the variation name
-function getVariationFromPref(weightedVariations) {
-  const key = "shield.test.variation";
-  const name = Services.prefs.getCharPref(key, "");
-  if (name !== "") {
-    const variation = weightedVariations.filter(x => x.name === name)[0];
-    if (!variation) {
-      throw new Error(`about:config => shield.test.variation set to ${name}, but not variation with that name exists`);
-    }
+  // choose the variation for this particular user, then set it.
+  async selectVariation() {
+    const variation = this.getVariationFromPref(config.weightedVariations) ||
+      await studyUtils.deterministicVariation(config.weightedVariations);
+    studyUtils.setVariation(variation);
+    this.log.debug(`studyUtils has config and variation.name: ${variation.name}.
+      Ready to send telemetry`);
     return variation;
-  }
-  return name; // undefined
+  },
+
+  // helper to let Dev or QA set the variation name
+  getVariationFromPref(weightedVariations) {
+    const name = Services.prefs.getCharPref(this.VARIATION_OVERRIDE_PREF, "");
+    if (name !== "") {
+      const variation = weightedVariations.filter(x => x.name === name)[0];
+      if (!variation) {
+        throw new Error(`about:config => ${this.VARIATION_OVERRIDE_PREF} set to ${name},
+          but no variation with that name exists.`);
+      }
+      return variation;
+    }
+    return name;
+  },
+
+  /**
+   * Shutdown needs to distinguish between USER-DISABLE and other
+   * times that `endStudy` is called.
+   *
+   * studyUtils._isEnding means this is a '2nd shutdown'.
+   */
+  async shutdown(addonData, reason) {
+    this.log.debug("shutdown", this.REASONS[reason] || reason);
+
+    const isUninstall = (reason === this.REASONS.ADDON_UNINSTALL
+      || reason === this.REASONS.ADDON_DISABLE);
+    if (isUninstall) {
+      this.log.debug("uninstall or disable");
+    }
+
+    if (isUninstall && !studyUtils._isEnding) {
+      // we are the first 'uninstall' requestor => must be user action.
+      this.log.debug("probably: user requested shutdown");
+      studyUtils.endStudy({ reason: "user-disable" });
+    }
+
+    // normal shutdown, or 2nd uninstall request
+
+    // If clause neccessary since study could end due to user ineligible or study expired, in which case feature is not initialized
+    if (this.feature) {
+      await this.feature.shutdown();
+    }
+
+    // Unload addon-specific modules
+    Cu.unload(`resource://${STUDY}/lib/Feature.jsm`);
+    Cu.unload(`resource://${STUDY}/Config.jsm`);
+    Cu.unload(`resource://${STUDY}/StudyUtils.jsm`);
+  },
+
+  uninstall() {
+    this.log.debug("uninstall", this.REASONS[this.reason] || this.reason);
+  },
+
+  install() {
+    this.log.debug("install", this.REASONS[this.reason] || this.reason);
+    // handle ADDON_UPGRADE (if needful) here
+  },
+};
+
+// Expose bootstrap methods on the global
+for (const methodName of ["install", "startup", "shutdown", "uninstall"]) {
+  this[methodName] = Bootstrap[methodName].bind(Bootstrap);
 }
