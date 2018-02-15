@@ -37,7 +37,7 @@ module.exports = {
     "babel/new-cap": "off",
     "comma-dangle": ["error", "always-multiline"],
     "eqeqeq": "error",
-    "indent": ["warn", 2, {SwitchCase: 1}],
+    "indent": ["warn", 2, { SwitchCase: 1 }],
     "mozilla/no-aArgs": "warn",
     "mozilla/balanced-listeners": 0,
     "no-console": "warn",

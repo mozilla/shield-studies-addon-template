@@ -31,15 +31,13 @@ const BASE = `button-icon-preference`;
 XPCOMUtils.defineLazyModuleGetter(this, "Feature", `resource://${BASE}/lib/Feature.jsm`);
 
 
-/* Example addon-specific module imports.  Remember to Unload during shutdown!
+/* Example addon-specific module imports.  Remember to Unload during shutdown() below.
 
   // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Using
-
 
    Ideally, put ALL your feature code in a Feature.jsm file,
    NOT in this bootstrap.js.
 
-  const BASE=`template-shield-study`;
   XPCOMUtils.defineLazyModuleGetter(this, "SomeExportedSymbol",
     `resource://${BASE}/SomeModule.jsm");
 
@@ -77,7 +75,7 @@ async function startup(addonData, reason) {
       // 1. uses config.endings.ineligible.url if any,
       // 2. sends UT for "ineligible"
       // 3. then uninstalls addon
-      await studyUtils.endStudy({reason: "ineligible"});
+      await studyUtils.endStudy({ reason: "ineligible" });
       return;
     }
   }
@@ -85,19 +83,20 @@ async function startup(addonData, reason) {
   // startup for eligible users.
   // 1. sends `install` ping IFF ADDON_INSTALL.
   // 2. sets activeExperiments in telemetry environment.
-  await studyUtils.startup({reason});
+  await studyUtils.startup({ reason });
 
   // if you have code to handle expiration / long-timers, it could go here
-  (function fakeTrackExpiration() {})();
+  (function fakeTrackExpiration() {
+  })();
 
   // IFF your study has an embedded webExtension, start it.
   const { webExtension } = addonData;
   if (webExtension) {
     webExtension.startup().then(api => {
-      const {browser} = api;
+      const { browser } = api;
       /** spec for messages intended for Shield =>
-        * {shield:true,msg=[info|endStudy|telemetry],data=data}
-        */
+       * {shield:true,msg=[info|endStudy|telemetry],data=data}
+       */
       browser.runtime.onMessage.addListener(studyUtils.respondToWebExtensionMessage);
       // other browser.runtime.onMessage handlers for your addon, if any
     });
@@ -111,10 +110,10 @@ async function startup(addonData, reason) {
 }
 
 /** Shutdown needs to distinguish between USER-DISABLE and other
-  * times that `endStudy` is called.
-  *
-  * studyUtils._isEnding means this is a '2nd shutdown'.
-  */
+ * times that `endStudy` is called.
+ *
+ * studyUtils._isEnding means this is a '2nd shutdown'.
+ */
 function shutdown(addonData, reason) {
   log.debug("shutdown", REASONS[reason] || reason);
   // FRAGILE: handle uninstalls initiated by USER or by addon
@@ -161,6 +160,3 @@ function getVariationFromPref(weightedVariations) {
   }
   return name; // undefined
 }
-
-
-

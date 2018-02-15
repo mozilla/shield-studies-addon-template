@@ -14,16 +14,16 @@ var config = {
   // required STUDY key
   "study": {
     /** Required for studyUtils.setup():
-      *
-      * - studyName
-      * - endings:
-      *   - map of endingName: configuration
-      * - telemetry
-      *   - boolean send
-      *   - boolean removeTestingFlag
-      *
-      * All other keys are optional.
-      */
+     *
+     * - studyName
+     * - endings:
+     *   - map of endingName: configuration
+     * - telemetry
+     *   - boolean send
+     *   - boolean removeTestingFlag
+     *
+     * All other keys are optional.
+     */
 
     // required keys: studyName, endings, telemetry
 
@@ -31,12 +31,12 @@ var config = {
     "studyName": "buttonFeatureExperiment",
 
     /** **endings**
-      * - keys indicate the 'endStudy' even that opens these.
-      * - urls should be static (data) or external, because they have to
-      *   survive uninstall
-      * - If there is no key for an endStudy reason, no url will open.
-      * - usually surveys, orientations, explanations
-      */
+     * - keys indicate the 'endStudy' even that opens these.
+     * - urls should be static (data) or external, because they have to
+     *   survive uninstall
+     * - If there is no key for an endStudy reason, no url will open.
+     * - usually surveys, orientations, explanations
+     */
     "endings": {
       /** standard endings */
       "user-disable": {
@@ -55,7 +55,7 @@ var config = {
       },
       "a-non-url-opening-ending": {
         "study_state": "ended-neutral",
-        "baseUrl":  null,
+        "baseUrl": null,
       },
       "introduction-leave-study": {
         "study_state": "ended-negative",
@@ -72,7 +72,7 @@ var config = {
   // required LOG key
   "log": {
     // Fatal: 70, Error: 60, Warn: 50, Info: 40, Config: 30, Debug: 20, Trace: 10, All: -1,
-    "studyUtils":  {
+    "studyUtils": {
       "level": "Trace",
     },
   },
@@ -93,14 +93,19 @@ var config = {
          help control for novelty effect
   */
   "weightedVariations": [
-    {"name": "kittens",
-      "weight": 1.5},
-    {"name": "puppers",
-      "weight": 1.5},
-    {"name": "lizard",
-      "weight": 1},  // we want more puppers in our sample
+    {
+      "name": "kittens",
+      "weight": 1.5,
+    },
+    {
+      "name": "puppers",
+      "weight": 1.5,
+    },
+    {
+      "name": "lizard",
+      "weight": 1,
+    },  // we want more puppers in our sample
   ],
-
 
   // Optional: relative to bootstrap.js in the xpi
   "studyUtilsPath": `./StudyUtils.jsm`,

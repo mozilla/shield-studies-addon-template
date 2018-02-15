@@ -17,10 +17,12 @@ const utils = require("./utils");
 /* Part 1:  Utilities */
 
 async function getShieldPingsAfterTimestamp(driver, ts) {
-  return utils.getTelemetryPings(driver, {type: ["shield-study", "shield-study-addon"], timestamp: ts});
+  return utils.getTelemetryPings(driver, { type: ["shield-study", "shield-study-addon"], timestamp: ts });
 }
 
-function summarizePings(pings) { return pings.map(p => [p.payload.type, p.payload.data]); }
+function summarizePings(pings) {
+  return pings.map(p => [p.payload.type, p.payload.data]);
+}
 
 
 async function getNotification(driver) {
@@ -63,8 +65,10 @@ describe("basic functional tests", function() {
     driver.quit();
   });
 
-  beforeEach(async() => {});
-  afterEach(async() => {});
+  beforeEach(async() => {
+  });
+  afterEach(async() => {
+  });
 
   /* Expected behaviour:
 
@@ -94,7 +98,7 @@ describe("basic functional tests", function() {
     assert(foundPings.length > 0, "at least one shield-study telemetry ping with study_state=enter");
   });
 
-  it("telemetry: has entered, installed, shown", function() {
+  it("telemetry: has entered, installed, etc", function() {
     // Telemetry:  order, and summary of pings is good.
     const observed = summarizePings(pings);
     const expected = [
