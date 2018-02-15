@@ -14,7 +14,7 @@ In an effort to move to WebExtensions, we are also working on making a Shield st
 
 ## About This Study
 
-**Note**: This is toy / demonstration [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Legacy Addon. Use this as a template for yours
+**Note**: This is toy / demonstration [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Legacy Add-on. Use this as a template for yours
 
 (Note: get these from your PHD).
 

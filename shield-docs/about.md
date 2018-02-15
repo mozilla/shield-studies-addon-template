@@ -1,6 +1,6 @@
 # Shield Study Template
 
-`Shield-Study-Template` contains files for for making a **Shield Study Addon**. Shield Study Addons are **LEGACY ADDONS** for Firefox that include the **SHIELD-STUDIES-ADDON-UTILS** (`studyUtils.jsm`) file (4.1.x series).
+`Shield-Study-Template` contains files for for making a **Shield Study Add-on**. Shield Study Add-ons are **LEGACY ADD-ONS** for Firefox that include the **SHIELD-STUDIES-ADDON-UTILS** (`studyUtils.jsm`) file (4.1.x series).
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -14,7 +14,7 @@
 * [Folder Contents](#folder-contents)
 * [Parts of A Shield Study (General)](#parts-of-a-shield-study-general)
   * [Shield-Studies-Addon-Utils (`studyUtils.jsm`)](#shield-studies-addon-utils-studyutilsjsm)
-  * [Legacy Addons](#legacy-addons)
+  * [Legacy Add-ons](#legacy-addons)
   * [Building Your Feature, with Variations](#building-your-feature-with-variations)
 * [<span id="shield-telemetry">All About Shield Telemetry</span>](#span-idshield-telemetryall-about-shield-telemetryspan)
   * [Shield Study Telemetry Probe Life cycle](#shield-study-telemetry-probe-life-cycle)
@@ -30,7 +30,7 @@
 * [Gotchas / FAQ / Ranting](#gotchas--faq--ranting)
   * [General](#general)
   * [studyUtils](#studyutils)
-  * [Legacy Addons](#legacy-addons-1)
+  * [Legacy Add-ons](#legacy-addons-1)
   * [s.t.m.o - sql.telemetry.mozilla.org](#stmo---sqltelemetrymozillaorg)
 * [Glossary](#glossary)
 * [OTHER DOCS](#other-docs)
@@ -57,12 +57,12 @@
 
 ## What is a Shield Study?
 
-**Shield Study Addons** do these actions:
+**Shield Study Add-ons** do these actions:
 
 * implement variations (1+) of a feature
-* report common study and addon lifecycle events to Telemetry
+* report common study and add-on lifecycle events to Telemetry
 * report study-specific data about how users react to and interact with a specific variations
-* respond coherently to addon life-cycle events (`install`, `startup`, `disable`, `uninstall`).
+* respond coherently to add-on life-cycle events (`install`, `startup`, `disable`, `uninstall`).
 
 ## tl;dr - Running the Template Study
 

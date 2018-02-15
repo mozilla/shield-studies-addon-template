@@ -1,6 +1,6 @@
 # Windows Development and Testing
 
-The Shield Studies Addon Template makes some assumptions about your environment that can be challenging to meet on Windows machines. So far the most promising approach uses the **Windows Subsystem for Linux (WSL)**. WSL is a young project with bugs and unexpected pitfalls; caveat emptor.
+The Shield Studies Add-on Template makes some assumptions about your environment that can be challenging to meet on Windows machines. So far the most promising approach uses the **Windows Subsystem for Linux (WSL)**. WSL is a young project with bugs and unexpected pitfalls; caveat emptor.
 
 ## Requirements
 

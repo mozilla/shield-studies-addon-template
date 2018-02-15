@@ -53,7 +53,7 @@ If the user clicks on the badge more than 3 times, it ends the study.
    Expect: Click on a 'vote' button (any of: `yes | not sure | no`) has all these effects
 
    * notice closes
-   * addon uninstalls
+   * add-on uninstalls
    * no additional tabs open
    * telemetry pings are 'correct' with this SPECIFIC `study_state` as the ending
 
@@ -65,7 +65,7 @@ If the user clicks on the badge more than 3 times, it ends the study.
    Click on the 'x' button.
 
    * notice closes
-   * addon uninstalls
+   * add-on uninstalls
    * no additional tabs open
    * telemetry pings are 'correct' with this SPECIFIC ending
 
@@ -79,7 +79,7 @@ If the user clicks on the badge more than 3 times, it ends the study.
    Then observe:
 
    * notice closes
-   * addon uninstalls
+   * add-on uninstalls
    * no additional tabs open
    * telemetry pings are 'correct' with this SPECIFIC ending
 
@@ -105,7 +105,7 @@ To debug installation and loading of the add-on:
 * Navigate to _about:config_ and set `shield.testing.logging.level` to `10`. This permits shield-add-on log output in browser console (If the preference does not exist, create it be right-clicking in the white area and selecting New -> Integer)
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
 
-Example log output after installing the addon:
+Example log output after installing the add-on:
 
 ```
 install 5  bootstrap.js:125

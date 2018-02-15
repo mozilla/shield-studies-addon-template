@@ -10,7 +10,7 @@ Concepts:
 * technical terms
   * web extension
   * embedded web extension
-  * Legacy (bootstrap) addon
+  * Legacy (bootstrap) add-on
 * debugging techniques
   * `web-ext`
   * `about:debugging`
@@ -51,7 +51,7 @@ Plumb the listener
 * PERMANENT Randomization, revisited.
 * Telemetry sending
 * debugging
-* helper addon
+* helper add-on
 
 ## Advanced
 

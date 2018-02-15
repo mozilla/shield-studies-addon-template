@@ -40,7 +40,7 @@ You can:
 
 As you look up, a light rain starts to fall. You wonder how you will make a fire to keep warm, as your clothes start to soak. The first chills of hypothermia ripple your flesh.
 
-Legacy addon development has challenges.
+Legacy add-on development has challenges.
 
 > examine handbook.
 
@@ -63,7 +63,7 @@ Everything in a SHIELD STUDY leads to allowing ANALYSTS to get data quickly, rel
 * for Which VARIATION of a feature
 * did users 'do best'.
 
-Your SHIELD-STUDY Legacy Addon is a DELIVERY MECHANISM to collect that data.
+Your SHIELD-STUDY Legacy Add-on is a DELIVERY MECHANISM to collect that data.
 
 An example analysis table
 
@@ -83,7 +83,7 @@ Don't we all?! Mocks are fun! Styling is fun!
 
 starting with Telemetry makes soe of the... unexpected decisions make sense.
 
-## Wait, did you say legacy addon?
+## Wait, did you say legacy add-on?
 
 Yes. Web Extensions CAN'T SEND TELEMETRY. We need Firefox (chrome) privileges to access the `TelemetryController.jsm`. That meanss
 
@@ -139,7 +139,7 @@ Send message / signal mirror / telemetry?
 
 A monkey appears. It is curious about you
 
-(Helper addon for QA telemetry)
+(Helper add-on for QA telemetry)
 
 ## Full List of All Shield Telemetry Spoilers
 
