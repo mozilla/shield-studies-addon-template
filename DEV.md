@@ -117,12 +117,6 @@ It is recommended to build necessary logic and user interface using in the conte
 For more information, see [./about.md]
 
 
-### Similar repositories
-
-[https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example]() - A repository that was created this week specifically to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
-[https://github.com/gregglind/template-shield-study]() - The incubation repo for the updated structure and contents of this repo. Use this repo instead.
-
-
 ### Description of what goes on when this addon is started
 
 During `bootstrap.js:startup(data, reason)`:
@@ -150,3 +144,10 @@ Run the following to run the example set of functional tests:
 Note: The functional tests are using async/await, so make sure you are running Node 7.6+
 
 The functional testing set-up is imported from [https://github.com/mozilla/share-button-study]() which contains plenty of examples of functional tests relevant to Shield study addons.
+
+### Legacy repositories
+
+Repositories that should no longer be used as templates for new studies:
+
+[https://github.com/gregglind/template-shield-study]() - The incubation repo for the updated structure and contents of this repo, implemented in late 2017.
+[https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example]() - A repository that was created in 2017 to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
