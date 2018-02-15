@@ -38,6 +38,9 @@ const FIREFOX_PREFERENCES = {
   // Include log output in browser console
   "shield.testing.logging.level": 10, // Trace
 
+  // Force variation for testing
+  "extensions.button_icon_preference.variation": "kittens",
+
   /** WARNING: gecko webdriver sets many additional prefs at:
     * https://dxr.mozilla.org/mozilla-central/source/testing/geckodriver/src/prefs.rs
     *
