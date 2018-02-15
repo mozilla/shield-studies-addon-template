@@ -1,5 +1,78 @@
 # Test Plan for the 57-Perception-Study Addon
 
+## User Experience / Functionality
+
+During INSTALL ONLY users see:
+
+- a notification bar
+
+    -  introducing the feature.
+    -  allowing them to opt out
+
+During FIRST INSTALL and EVERY OTHER STARTUP, users see:
+
+- a 'toolbar button' (webExtension BrowserAction)
+
+    - with one of 3 images (Cat, Dog, Lizard)
+
+Clicking on the button
+
+- changes the badge
+- sends telemetry
+
+Icon will be the same every run.
+
+If the user clicks on the badge more than 3 times, it ends the study.
+
+### Loading the Web Extension in Firefox
+
+You can have Firefox automatically launched and the add-on installed by running:
+
+`$ npm run firefox`
+
+To load the extension manually instead, open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/) and load the `.xpi` using the following steps:
+
+* Navigate to *about:config* and set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
+* Navigate to *about:debugging* in your URL bar
+* Select "Load Temporary Add-on"
+* Find and select the `linked-addon.xpi` file you just built.
+
+### Seeing the add-on in action
+
+To debug installation and loading of extensions loaded in this manner, use the Browser Console which can be open from Firefox's top toolbar in `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and `console.log()` output from the extensions that we build.
+
+You should see a green puzzle piece icon in the browser address bar. You should also see the following in the Browser Console (`Tools > Web Developer > Browser Console`), which comes from this add-on:
+
+```
+install 5  bootstrap.js:125
+startup ADDON_INSTALL  bootstrap.js:33
+info {"studyName":"mostImportantExperiment","addon":{"id":"template-shield-study@mozilla.com","version":"1.0.0"},"variation":{"name":"kittens"},"shieldId":"8bb19b5c-99d0-cc48-ba95-c73f662bd9b3"}  bootstrap.js:67
+1508111525396	shield-study-utils	DEBUG	log made: shield-study-utils
+1508111525398	shield-study-utils	DEBUG	setting up!
+1508111525421	shield-study-utils	DEBUG	firstSeen
+1508111525421	shield-study-utils	DEBUG	telemetry in:  shield-study {"study_state":"enter"}
+1508111525421	shield-study-utils	DEBUG	getting info
+1508111525423	shield-study-utils	DEBUG	telemetry: {"version":3,"study_name":"mostImportantExperiment","branch":"kittens","addon_version":"1.0.0","shield_version":"4.1.0","type":"shield-study","data":{"study_state":"enter"},"testing":true}
+1508111525430	shield-study-utils	DEBUG	startup 5
+1508111525431	shield-study-utils	DEBUG	getting info
+1508111525431	shield-study-utils	DEBUG	marking TelemetryEnvironment: mostImportantExperiment
+1508111525476	shield-study-utils	DEBUG	telemetry in:  shield-study {"study_state":"installed"}
+1508111525477	shield-study-utils	DEBUG	getting info
+1508111525477	shield-study-utils	DEBUG	telemetry: {"version":3,"study_name":"mostImportantExperiment","branch":"kittens","addon_version":"1.0.0","shield_version":"4.1.0","type":"shield-study","data":{"study_state":"installed"},"testing":true}
+1508111525479	shield-study-utils	DEBUG	getting info
+1508111525686	shield-study-utils	DEBUG	getting info
+1508111525686	shield-study-utils	DEBUG	respondingTo: info
+init kittens  background.js:29:5
+```
+
+Note: This add-on force assigns users to the `kitten` group/variation (in `addon/Config.jsm`), which is why the console will always report `init kittens`.
+
+Click on the web extension's green 'puzzle piece' icon to trigger additional console output and sending of telemetry data.
+
+To end early: Click on button multiple times until the 'too-popular' endpoint is reached. This will result in the uninstallation of the extension, and the user will be sent to the URL specified in `addon/Config.jsm` under `endings -> too-popular`.
+
+That's it! The rest is up to you. Fork the repo and hack away.
+
 ## Automated Testing
 
 `npm test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the *commonest path* though the study for a user
