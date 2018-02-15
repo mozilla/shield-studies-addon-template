@@ -9,6 +9,8 @@
  * reloading, as the .xpi file has not been recreated.
  */
 
+console.log("Starting up firefox");
+
 const firefox = require("selenium-webdriver/firefox");
 const path = require("path");
 const Context = firefox.Context;
@@ -77,6 +79,8 @@ const minimistHandler = {
     const urlBar = await promiseUrlBar(driver);
     const openBrowserConsole = Key.chord(MODIFIER_KEY, Key.SHIFT, "j");
     await urlBar.sendKeys(openBrowserConsole);
+
+    console.log("The addon should now be loaded and you should be able to interact with the addon in the newly opened Firefox instance.");
 
   } catch (e) {
     console.error(e);
