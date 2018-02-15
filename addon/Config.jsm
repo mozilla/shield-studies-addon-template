@@ -64,7 +64,7 @@ var config = {
     },
     "telemetry": {
       "send": true, // assumed false. Actually send pings?
-      "removeTestingFlag": false,  // Marks pings as testing, set true for actual release
+      "removeTestingFlag": false,  // Marks pings to be discarded, set true for to have the pings processed in the pipeline
       // TODO "onInvalid": "throw"  // invalid packet for schema?  throw||log
     },
   },
