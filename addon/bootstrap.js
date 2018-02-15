@@ -62,15 +62,13 @@ async function startup(addonData, reason) {
   studyUtils.setVariation(variation);
   log.debug(`studyUtils has config and variation.name: ${variation.name}.  Ready to send telemetry`);
 
-  /** addon_install and addon_upgrade (which is considered a new study) ONLY:
-   * - note first seen,
-   * - check eligible
-   */
+  // Check if the user is eligible to run this study using the |isEligible|
+  // function when the study is initialized (install or upgrade, the latter
+  // being interpreted as a new install).
   if (reason === REASONS.ADDON_INSTALL || reason === REASONS.ADDON_UPGRADE) {
-    //  telemetry "enter" ONCE per new study period
+    //  telemetry "enter" ONCE
     studyUtils.firstSeen();
-    // check user eligibility ONCE per new study period
-    const eligible = await config.isEligible(); // addon-specific
+    const eligible = await config.isEligible();
     if (!eligible) {
       // 1. uses config.endings.ineligible.url if any,
       // 2. sends UT for "ineligible"
@@ -90,7 +88,7 @@ async function startup(addonData, reason) {
   })();
 
   // initiate the chrome-privileged part of the study add-on
-  this.feature = new Feature({ variation, studyUtils, reasonName: REASONS[reason], log });
+  this.feature = new Feature(variation, studyUtils, REASONS[reason], log);
 
   // IFF your study has an embedded webExtension, start it.
   const { webExtension } = addonData;
@@ -109,7 +107,8 @@ async function startup(addonData, reason) {
   log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
   // start up the chrome-privileged part of the study
-  this.feature.privilegedStartup();
+  this.feature.start();
+
 }
 
 /** Shutdown needs to distinguish between USER-DISABLE and other
@@ -131,7 +130,11 @@ function shutdown(addonData, reason) {
       // we are the first 'uninstall' requestor => must be user action.
       log.debug("probably: user requested shutdown");
       studyUtils.endStudy({ reason: "user-disable" });
+      // We want to handle both "uninstall" and "user disabled" the same way,
+      // by ending the study and uninstalling the addon. That's why we're not
+      // returning here.
     }
+
   }
 
   // normal shutdown, or 2nd uninstall request
@@ -142,6 +145,7 @@ function shutdown(addonData, reason) {
   // clean up our modules.
   Cu.unload(CONFIGPATH);
   Cu.unload(STUDYUTILSPATH);
+
 }
 
 function uninstall(addonData, reason) {

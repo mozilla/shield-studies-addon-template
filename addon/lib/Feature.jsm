@@ -48,7 +48,7 @@ class Feature {
    *  - reasonName: string of bootstrap.js startup/shutdown reason
    *
    */
-  constructor({ variation, studyUtils, reasonName, log }) {
+  constructor(variation, studyUtils, reasonName, log) {
 
     this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
     this.studyUtils = studyUtils;
@@ -60,7 +60,7 @@ class Feature {
 
   }
 
-  privilegedStartup() {
+  start() {
 
     // perform something only during INSTALL and UPGRADE = a new study period begins
     if (this.reasonName === "ADDON_INSTALL" || this.reasonName === "ADDON_UPGRADE") {
@@ -144,7 +144,9 @@ class Feature {
     this.studyUtils.telemetry(stringStringMap);
   }
 
-  /* called at end of study */
+  /**
+   * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
+   */
   shutdown() {
   }
 }
