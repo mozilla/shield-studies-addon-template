@@ -60,7 +60,7 @@ const minimistHandler = {
 
   try {
     const driver = await promiseSetupDriver();
-    console.log("Starting up firefox");
+    console.log("Firefox started");
 
     // install the addon
     if (process.env.XPI) {
