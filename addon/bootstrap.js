@@ -89,6 +89,9 @@ async function startup(addonData, reason) {
   (function fakeTrackExpiration() {
   })();
 
+  // initiate the chrome-privileged part of the study add-on
+  this.feature = new Feature({ variation, studyUtils, reasonName: REASONS[reason] });
+
   // IFF your study has an embedded webExtension, start it.
   const { webExtension } = addonData;
   if (webExtension) {
@@ -105,8 +108,8 @@ async function startup(addonData, reason) {
   // log what the study variation and other info is.
   log.debug(`info ${JSON.stringify(studyUtils.info())}`);
 
-  // Start up your feature, with specific variation info.
-  this.feature = new Feature({variation, studyUtils, reasonName: REASONS[reason]});
+  // start up the chrome-privileged part of the study
+  this.feature.privilegedStartup();
 }
 
 /** Shutdown needs to distinguish between USER-DISABLE and other
