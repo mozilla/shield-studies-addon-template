@@ -48,7 +48,7 @@ class Feature {
    *  - reasonName: string of bootstrap.js startup/shutdown reason
    *
    */
-  constructor({variation, studyUtils, reasonName}) {
+  constructor({ variation, studyUtils, reasonName }) {
 
     this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
     this.studyUtils = studyUtils;
@@ -93,28 +93,30 @@ class Feature {
       null, // icon
       notificationBox.PRIORITY_INFO_HIGH, // priority
       // buttons
-      [{
-        label: "Thanks!",
-        isDefault: true,
-        callback: function acceptButton() {
-          // eslint-disable-next-line no-console
-          console.log("clicked THANKS!");
-          feature.telemetry({
-            event: "introduction-accept",
-          });
+      [
+        {
+          label: "Thanks!",
+          isDefault: true,
+          callback: function acceptButton() {
+            // eslint-disable-next-line no-console
+            console.log("clicked THANKS!");
+            feature.telemetry({
+              event: "introduction-accept",
+            });
+          },
         },
-      },
-      {
-        label: "I do not want this.",
-        callback: function leaveStudyButton() {
-          // eslint-disable-next-line no-console
-          console.log("clicked NO!");
-          feature.telemetry({
-            event: "introduction-leave-study",
-          });
-          feature.studyUtils.endStudy("introduction-leave-study");
-        },
-      }],
+        {
+          label: "I do not want this.",
+          callback: function leaveStudyButton() {
+            // eslint-disable-next-line no-console
+            console.log("clicked NO!");
+            feature.telemetry({
+              event: "introduction-leave-study",
+            });
+            feature.studyUtils.endStudy("introduction-leave-study");
+          },
+        }
+      ],
       // callback for nb events
       null
     );
