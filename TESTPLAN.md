@@ -92,16 +92,6 @@ If the user clicks on the badge more than 3 times, it ends the study.
     * Verify that sent Telemetry is correct
     * Verify that the user is sent to the URL specified in `addon/Config.jsm` under `endings -> too-popular`.
 
-## Automated Testing
-
-`npm run test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the *commonest path* though the study for a user
-
-- prove the notification bar ui opens
-- *clicking on the left-most button presented*.
-- verifying that sent Telemetry is correct.
-
-Code at [/test/functional_test.js](/test/functional_test.js).
-
 ### Note: checking "sent Telemetry is correct"
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) log output from the add-on.
