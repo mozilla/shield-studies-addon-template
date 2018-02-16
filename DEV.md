@@ -188,4 +188,4 @@ Tip: For more insight on what is study-specific, compare the source code of prev
 Repositories that should no longer be used as templates for new studies:
 
 <https://github.com/gregglind/template-shield-study> - The incubation repo for the updated structure and contents of this repo, implemented in late 2017.
-<https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example> - A repository that was created in 2017 to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
+<https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example> - A repository that was created in 2017 to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose add-on template, which makes it's file structure hard to follow.
