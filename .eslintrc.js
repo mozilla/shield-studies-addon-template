@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 "use strict";
 
 /* All Mozilla specific rules and enviroments at:
@@ -6,15 +8,15 @@
 
 module.exports = {
   "parserOptions": {
-      "ecmaVersion": 8,
-      "sourceType": "module",
-      "ecmaFeatures": {
-          "jsx": false,
-          "experimentalObjectRestSpread": true
-      }
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": false,
+      "experimentalObjectRestSpread": true,
+    },
   },
   env: {
-    'es6': true,
+    "es6": true,
     // 'browser-window': false
 
   },
@@ -28,7 +30,7 @@ module.exports = {
 
   plugins: [
     "json",
-    "mozilla"
+    "mozilla",
   ],
 
   rules: {

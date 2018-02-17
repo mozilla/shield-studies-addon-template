@@ -98,6 +98,7 @@ class Feature {
         label: "Thanks!",
         isDefault: true,
         callback: function acceptButton() {
+          // eslint-disable-next-line no-console
           console.log("clicked THANKS!");
           feature.telemetry({
             event: "introduction-accept",
@@ -107,6 +108,7 @@ class Feature {
       {
         label: "I do not want this.",
         callback: function leaveStudyButton() {
+          // eslint-disable-next-line no-console
           console.log("clicked NO!");
           feature.telemetry({
             event: "introduction-leave-study",
