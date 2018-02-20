@@ -64,9 +64,7 @@ class Feature {
     this.log.debug("Feature start");
 
     // perform something only during INSTALL = a new study period begins
-    if (
-      this.reasonName === "ADDON_INSTALL"
-    ) {
+    if (this.reasonName === "ADDON_INSTALL") {
       this.introductionNotificationBar();
     }
   }

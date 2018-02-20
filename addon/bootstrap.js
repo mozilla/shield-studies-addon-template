@@ -67,9 +67,7 @@ this.Bootstrap = {
 
     // Check if the user is eligible to run this study using the |isEligible|
     // function when the study is initialized
-    if (
-      reason === this.REASONS.ADDON_INSTALL
-    ) {
+    if (reason === this.REASONS.ADDON_INSTALL) {
       //  telemetry "enter" ONCE
       studyUtils.firstSeen();
       const eligible = await config.isEligible();
