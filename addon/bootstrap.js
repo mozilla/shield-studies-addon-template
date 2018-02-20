@@ -47,14 +47,17 @@ this.Bootstrap = {
   VARIATION_OVERRIDE_PREF: "extensions.button_icon_preference.variation",
 
   /**
+   * Use console as our logger until there is a log() method in studyUtils that we can rely on
+   */
+  log: console,
+
+  /**
    * @param addonData Array [ "id", "version", "installPath", "resourceURI", "instanceID", "webExtension" ]  bootstrap.js:48
    * @param reason
    * @returns {Promise<void>}
    */
   async startup(addonData, reason) {
     this.REASONS = studyUtils.REASONS;
-
-    this.initLog();
 
     this.log.debug("startup", this.REASONS[reason] || reason);
 
@@ -124,22 +127,6 @@ this.Bootstrap = {
 
     // start up the chrome-privileged part of the study
     this.feature.start();
-  },
-
-  /*
-  * Create a new instance of the ConsoleAPI, so we can control
-  * the maxLogLevel with Config.jsm.
-  */
-  initLog() {
-    XPCOMUtils.defineLazyGetter(this, "log", () => {
-      const ConsoleAPI = Cu.import("resource://gre/modules/Console.jsm", {})
-        .ConsoleAPI;
-      const consoleOptions = {
-        maxLogLevel: config.log.bootstrap.level,
-        prefix: "TPStudy",
-      };
-      return new ConsoleAPI(consoleOptions);
-    });
   },
 
   initStudyUtils(id, version) {
