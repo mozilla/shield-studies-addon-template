@@ -57,9 +57,7 @@ this.Bootstrap = {
    * @returns {Promise<void>}
    */
   async startup(addonData, reason) {
-    this.REASONS = studyUtils.REASONS;
-
-    this.log.debug("startup", this.REASONS[reason] || reason);
+    this.log.debug("startup", studyUtils.REASONS[reason] || reason);
 
     this.initStudyUtils(addonData.id, addonData.version);
 
@@ -69,7 +67,7 @@ this.Bootstrap = {
 
     // Check if the user is eligible to run this study using the |isEligible|
     // function when the study is initialized
-    if (reason === this.REASONS.ADDON_INSTALL) {
+    if (reason === studyUtils.REASONS.ADDON_INSTALL) {
       //  telemetry "enter" ONCE
       studyUtils.firstSeen();
       const eligible = await config.isEligible();
@@ -96,7 +94,7 @@ this.Bootstrap = {
     this.feature = new Feature(
       variation,
       studyUtils,
-      this.REASONS[reason],
+      studyUtils.REASONS[reason],
       this.log,
     );
 
@@ -169,11 +167,11 @@ this.Bootstrap = {
    * studyUtils._isEnding means this is a '2nd shutdown'.
    */
   async shutdown(addonData, reason) {
-    this.log.debug("shutdown", this.REASONS[reason] || reason);
+    this.log.debug("shutdown", studyUtils.REASONS[reason] || reason);
 
     const isUninstall =
-      reason === this.REASONS.ADDON_UNINSTALL ||
-      reason === this.REASONS.ADDON_DISABLE;
+      reason === studyUtils.REASONS.ADDON_UNINSTALL ||
+      reason === studyUtils.REASONS.ADDON_DISABLE;
     if (isUninstall) {
       this.log.debug("uninstall or disable");
     }
@@ -198,11 +196,11 @@ this.Bootstrap = {
   },
 
   uninstall(addonData, reason) {
-    this.log.debug("uninstall", this.REASONS[reason] || reason);
+    this.log.debug("uninstall", studyUtils.REASONS[reason] || reason);
   },
 
   install(addonData, reason) {
-    this.log.debug("install", this.REASONS[reason] || reason);
+    this.log.debug("install", studyUtils.REASONS[reason] || reason);
     // handle ADDON_UPGRADE (if needful) here
   },
 };
