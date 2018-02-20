@@ -196,11 +196,11 @@ this.Bootstrap = {
   },
 
   uninstall(addonData, reason) {
-    this.log.debug("uninstall", studyUtils.REASONS[reason] || reason);
+    this.log.debug("uninstall", reason);
   },
 
   install(addonData, reason) {
-    this.log.debug("install", studyUtils.REASONS[reason] || reason);
+    this.log.debug("install", reason);
     // handle ADDON_UPGRADE (if needful) here
   },
 };
