@@ -44,6 +44,9 @@ XPCOMUtils.defineLazyModuleGetter(
 */
 
 this.Bootstrap = {
+  /**
+   * Preferences used by bootstrap.js
+   */
   VARIATION_OVERRIDE_PREF: "extensions.button_icon_preference.variation",
 
   /**
@@ -52,7 +55,7 @@ this.Bootstrap = {
   log: console,
 
   /**
-   * @param addonData Array [ "id", "version", "installPath", "resourceURI", "instanceID", "webExtension" ]  bootstrap.js:48
+   * @param addonData Array [ "id", "version", "installPath", "resourceURI", "instanceID", "webExtension" ]
    * @param reason
    * @returns {Promise<void>}
    */
