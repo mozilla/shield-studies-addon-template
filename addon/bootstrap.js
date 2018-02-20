@@ -66,7 +66,6 @@ this.Bootstrap = {
     // choose and set variation
     const variation = await this.selectVariation();
     this.variation = variation;
-    this.reason = reason;
 
     // Check if the user is eligible to run this study using the |isEligible|
     // function when the study is initialized
@@ -198,12 +197,12 @@ this.Bootstrap = {
     Cu.unload(`resource://${STUDY}/StudyUtils.jsm`);
   },
 
-  uninstall() {
-    this.log.debug("uninstall", this.REASONS[this.reason] || this.reason);
+  uninstall(addonData, reason) {
+    this.log.debug("uninstall", this.REASONS[reason] || reason);
   },
 
-  install() {
-    this.log.debug("install", this.REASONS[this.reason] || this.reason);
+  install(addonData, reason) {
+    this.log.debug("install", this.REASONS[reason] || reason);
     // handle ADDON_UPGRADE (if needful) here
   },
 };
