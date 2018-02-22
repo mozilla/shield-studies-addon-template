@@ -4,7 +4,7 @@
 
 ### Preparations
 
-* Download a Release version of Firefox (Release is required for the recommendation heuristics to work)
+* Download a Release version of Firefox
 
 ### Install the add-on and enroll in the study
 
