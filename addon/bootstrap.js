@@ -101,10 +101,9 @@ this.Bootstrap = {
       this.log,
     );
 
-    // if you have code to handle expiration / long-timers, it could go here
+    // Expiration checks should be implemented in a very reliable way by the add-on since Normandy does not handle study expiration in a reliable manner
     /*
     if (this.feature.hasExpired()) {
-      // Please note that the general study expiration should probably be taken care of by Normandy.
       await studyUtils.endStudy({ reason: "expired" });
       return;
     }
