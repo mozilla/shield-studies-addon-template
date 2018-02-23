@@ -1,4 +1,6 @@
 addon/StudyUtils.jsm
+# for circleCI; don't eslint code in the Firefox directory
+firefox
 dist
 OLD
 package-lock.json
