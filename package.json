@@ -42,7 +42,6 @@
     "npm-run-all": "^4.1.1",
     "nsp": "^2.8.1",
     "onchange": "^3.2.1",
-    "path": "^0.12.7",
     "selenium-webdriver": "^3.5.0",
     "shield-studies-addon-utils": "^4.1.0"
   },
@@ -64,7 +63,7 @@
     "eslint": "eslint . --ext jsm --ext js --ext json",
     "lint": "npm-run-all lint:*",
     "lint:addons-linter": "# actually a post build test:  bin/addonLintTest ' + require('./package.json').name",
-    "lint:eslint": "npm eslint",
+    "lint:eslint": "npm run eslint",
     "lint:fixpack": "fixpack",
     "lint:nsp": "nsp check",
     "firefox": "export XPI=dist/linked-addon.xpi && npm run build && node run-firefox.js",
