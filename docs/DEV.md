@@ -105,11 +105,7 @@ Note: This is currently only useful if you load the extension manually - it has 
 ├── .eslintignore
 ├── .eslintrc.js          # mozilla, json
 ├── .gitignore
-├── DEV.md
 ├── README.md             # (this file)
-├── TELEMETRY.md          # Telemetry examples for this addon
-├── TESTPLAN.md           # Manual QA test plan
-├── WINDOWS_SETUP.md
 ├── about.md
 ├── addon                 # Files that will go into the addon
 │   ├── Config.jsm        # Study-specific configuration regarding branches, eligibility etc
@@ -134,6 +130,11 @@ Note: This is currently only useful if you load the extension manually - it has 
 │       └── manifest.json
 ├── bin                   # Scripts / commands
 │   └── xpi.sh            # build the XPI
+├── docs
+│   ├── DEV.md
+│   ├── TELEMETRY.md      # Telemetry examples for this addon
+│   ├── TESTPLAN.md       # Manual QA test plan
+│   └── WINDOWS_SETUP.md
 ├── dist                  # built xpis (addons)
 │   ├── .gitignore
 │   ├── @template-button-study.shield.mozilla.com-1.2.0.xpi
@@ -165,27 +166,14 @@ Shield study add-ons are legacy (`addon/bootstrap.js`) add-ons with an optional 
 
 The web extension needs to be packaged together with a legacy add-on in order to be able to access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
 
-It is recommended to build necessary logic and user interface using in the context of the webextension and communicate with the legacy add-on code through messaging whenever privileged access is required.
+It is recommended to build necessary logic and user interface using in the context of the web extension and communicate with the legacy add-on code through messaging whenever privileged access is required.
 
 For more information, see <https://github.com/mozilla/shield-studies-addon-utils/blob/master/docs/engineering.md>.
 
-### Description of what goes on when this add-on is started
+### Legacy / confusing repositories
 
-During `bootstrap.js:startup(data, reason)`:
-
-    a. `shieldUtils` imports and sets configuration from `Config.jsm`
-    b. `bootstrap.js:chooseVariation` explicitly and deterministically chooses a variation from `studyConfig.weightedVariations`
-    c.  the WebExtension starts up
-    d.  `boostrap.js` listens for requests from the `webExtension` that are study related:  `["info", "telemetry", "endStudy"]`
-    e.  `webExtension` (`background.js`) asks for `info` from `studyUtils` using `askShield` function.
-    f.  Feature starts using the `variation` from that info.
-    g.  Feature instruments user button to send `telemetry` and to `endStudy` if the button is clicked enough.
-
-Tip: For more insight on what is study-specific, compare the source code of previously deployed shield studies with this template (and each other) to get an idea of what is actually relevant to change between studies vs what is mostly untouched boilerplate.
-
-### Legacy repositories
-
-Repositories that should no longer be used as templates for new studies:
+Repositories that should not be used as templates for new studies:
 
 <https://github.com/gregglind/template-shield-study> - The incubation repo for the updated structure and contents of this repo, implemented in late 2017.
 <https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example> - A repository that was created in 2017 to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose add-on template, which makes it's file structure hard to follow.
+<https://github.com/johngruen/shield-template> - Despite its name, this repo is for static amo consent pages and does not contain any template for Shield studies
