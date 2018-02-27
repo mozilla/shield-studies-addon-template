@@ -186,7 +186,8 @@ this.Bootstrap = {
 
     // normal shutdown, or 2nd uninstall request
 
-    // If clause neccessary since study could end due to user ineligible or study expired, in which case feature is not initialized
+    // Run shutdown-related code in Feature.jsm
+    // We check if feature exists because it's possible the study is shutting down before it has instantiated the feature. Ex: if the user is ineligible or if the study has expired.
     if (this.feature) {
       await this.feature.shutdown();
     }
