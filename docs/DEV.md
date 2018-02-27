@@ -167,7 +167,7 @@ The web extension needs to be packaged together with a legacy add-on in order to
 
 It is recommended to build necessary logic and user interface using in the context of the webextension and communicate with the legacy add-on code through messaging whenever privileged access is required.
 
-For more information, see [./about.md]
+For more information, see <https://github.com/mozilla/shield-studies-addon-utils/blob/master/docs/engineering.md>.
 
 ### Description of what goes on when this add-on is started
 
