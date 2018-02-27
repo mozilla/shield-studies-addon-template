@@ -22,7 +22,7 @@ Goal: Determine which if any TOOLBAR BUTTONS DESIGNS is the most enticing to the
 
 ## Seeing the add-on in action
 
-See [TESTPLAN.md](./TESTPLAN.md) for more details on how to get the add-on installed and tested.
+See [TESTPLAN.md](./docs/TESTPLAN.md) for more details on how to get the add-on installed and tested.
 
 ## Data Collected / Telemetry Pings
 
@@ -30,7 +30,7 @@ Measure:
 
 * Button (BrowserAction) usage.
 
-See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by this add-on.
+See [TELEMETRY.md](./docs/TELEMETRY.md) for more details on what pings are sent by this add-on.
 
 ## Analyzing data
 
@@ -40,4 +40,4 @@ Telemetry pings are loaded into S3 and re:dash. Sample query:
 
 ## Improving this add-on
 
-See [DEV.md](./DEV.md) for more details on how to work with this add-on as a developer.
+See [DEV.md](./docs/DEV.md) for more details on how to work with this add-on as a developer.
