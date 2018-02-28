@@ -2,13 +2,13 @@
 
 ## Automated Testing
 
-`npm test` verifies the telemetry payload as expected at firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the *commonest path* though the study for a user
+`npm test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the *commonest path* though the study for a user
 
 - prove the notification bar ui opens
 - *clicking on the left-most button presented*.
 - verifying that sent Telemetry is correct.
 
-Code at [./test/functional_test.js].
+Code at [/test/functional_tests.js](/test/functional_tests.js).
 
 ## Manual / QA TEST Instructions
 
@@ -18,14 +18,14 @@ Assumptions / Thoughts
 
 ### BEFORE EACH TEST: INSTALL THE ADDON to a CLEAN (NEW) PROFILE
 
-0.  (create profile:  https://developer.mozilla.org/en-US/Firefox/Multiple_profiles, or via some other method)
-1.  In your Firefox profile
-2.  `about:debugging` > `install temporary addon`
+1. (create profile: <https://developer.mozilla.org/Firefox/Multiple_profiles>, or via some other method)
+2. In your Firefox profile
+3. `about:debugging` > `install temporary addon`
 
-As an alternative (command line) cli method:
+As an alternative (command line) CLI method:
 
 1. `git clone` the directory.
-2. `npm install` then `npm run firefox` from the Github (source) directory.
+2. `npm install` then `npm run firefox` from the GitHub (source) directory.
 
 
 ### Note: checking "Correct Pings"
@@ -36,14 +36,14 @@ All UI `shield-study` `study_state` sequences look like this:
 
 - `enter => install => (one of: "voted" | "notification-x" |  "window-or-fx-closed") => exit`.
 
-(Note: this is complicated to explain, so please ask questions and I will try to write it up better!, see `TELMETRY.md` and EXAMPLE SEQUENCE below.)
+(Note: this is complicated to explain, so please ask questions and I will try to write it up better!, see [TELEMETRY.md](/TELEMETRY.md) and EXAMPLE SEQUENCE below.)
 
 ### Do these tests.
 
 1.  UI APPEARANCE.  OBSERVE a notification bar with these traits:
 
     *  Icon is 'heartbeat'
-    *  Text is one of 8 selected "questions", such as:  "Do you like Firefox?".  These are listed in [./addon/Config.jsm] as the variable `weightedVariations`.
+    *  Text is one of 8 selected "questions", such as:  "Do you like Firefox?".  These are listed in [/addon/Config.jsm](/addon/Config.jsm) as the variable `weightedVariations`.
     *  clickable buttons with labels 'yes | not sure | no'  OR 'no | not sure | yes' (50/50 chance of each)
     *  an `x` button at the right that closes the notice.
 
@@ -78,7 +78,7 @@ All UI `shield-study` `study_state` sequences look like this:
 
 4.  UI functionality  'close window'
 
-    1.  Open a 2nd firefox window.
+    1.  Open a 2nd Firefox window.
     2.  Close the initial window.
 
     Then observe:
@@ -92,6 +92,7 @@ All UI `shield-study` `study_state` sequences look like this:
 
 
 ---
+
 ## Helper code and tips
 
 ### ***To open a Chrome privileged console***
@@ -123,11 +124,11 @@ async function printPings() {
     pings.sort((a, b) => b.timestampCreated - a.timestampCreated);
     if (n) pings = pings.slice(0, n);
     const pingData = headersOnly ? pings : pings.map(ping => TelemetryArchive.promiseArchivedPingById(ping.id));
-    return Promise.all(pingData)
+    return Promise.all(pingData);
   }
   async function getPings() {
     const ar = ["shield-study", "shield-study-addon"];
-    return getTelemetryPings({type: ["shield-study", "shield-study-addon"]});
+    return getTelemetryPings({type: ar});
   }
 
   const pings = (await getPings()).reverse();
@@ -143,19 +144,18 @@ addon_version ${p0.addon_version}
 version       ${p0.version}
 
     `
-  )
+  );
 
-  pings.forEach(p=>{
+  pings.forEach(p => {
     console.log(p.creationDate, p.payload.type);
-    console.log(JSON.stringify(p.payload.data,null,2))
-  })
+    console.log(JSON.stringify(p.payload.data, null, 2));
+  });
 }
 
-printPings()
-
+printPings();
 ```
 
 
 ### Example sequence for a 'voted => not sure' interaction
 
-See [TELEMETRY.md](./TELEMETRY.md), EXAMPLE SEQUENCE section at the bottom.
+See [TELEMETRY.md](/TELEMETRY.md), EXAMPLE SEQUENCE section at the bottom.
