@@ -158,12 +158,4 @@ The web extension needs to be packaged together with a legacy add-on in order to
 
 It is recommended to build necessary logic and user interface using in the context of the web extension and communicate with the legacy add-on code through messaging whenever privileged access is required.
 
-For more information, see <https://github.com/mozilla/shield-studies-addon-utils/blob/master/docs/engineering.md>.
-
-### Legacy / confusing repositories
-
-Repositories that should not be used as templates for new studies:
-
-<https://github.com/gregglind/template-shield-study> - The incubation repo for the updated structure and contents of this repo, implemented in late 2017.
-<https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example> - A repository that was created in 2017 to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose add-on template, which makes it's file structure hard to follow.
-<https://github.com/johngruen/shield-template> - Despite its name, this repo is for static amo consent pages and does not contain any template for Shield studies
+For more information, see <https://github.com/mozilla/shield-studies-addon-utils/> (especially <https://github.com/mozilla/shield-studies-addon-utils/blob/master/docs/engineering.md>).
