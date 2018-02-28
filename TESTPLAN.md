@@ -8,7 +8,7 @@
 - *clicking on the left-most button presented*.
 - verifying that sent Telemetry is correct.
 
-Code at [/test/functional_test.js](/test/functional_test.js).
+Code at [/test/functional_tests.js](/test/functional_tests.js).
 
 ## Manual / QA TEST Instructions
 
