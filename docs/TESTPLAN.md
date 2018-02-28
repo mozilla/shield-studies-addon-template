@@ -11,8 +11,8 @@
 * (Create profile: <https://developer.mozilla.org/Firefox/Multiple_profiles>, or via some other method)
 * Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String or Integer depending on the type of preference)
 * Set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
-* Set `shield.test.variation` to `kitten`.
-* Go to [this study's tracking bug](tbd: replace with your studys launch bug link in bugzilla) and install the latest signed XPI
+* Set `extensions.button_icon_preference.variation` to `kitten` (or any other study variation/branch to test specifically)
+* Go to [this study's tracking bug](tbd: replace with your study's launch bug link in bugzilla) and install the latest signed XPI
 
 ## Expected User Experience / Functionality
 
@@ -102,7 +102,6 @@ See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by th
 
 To debug installation and loading of the add-on:
 
-* Navigate to _about:config_ and set `shield.testing.logging.level` to `10`. This permits shield-add-on log output in browser console (If the preference does not exist, create it be right-clicking in the white area and selecting New -> Integer)
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
 
 Example log output after installing the add-on:

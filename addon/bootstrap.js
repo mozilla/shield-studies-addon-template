@@ -45,7 +45,7 @@ XPCOMUtils.defineLazyModuleGetter(
 
 this.Bootstrap = {
   /**
-   * Preferences used by bootstrap.js
+   * Change this preference to test the add-on behavior in different study variations/branches with different (or remove it to test the automatic assigning of a study variation/branch).
    */
   VARIATION_OVERRIDE_PREF: "extensions.button_icon_preference.variation",
 

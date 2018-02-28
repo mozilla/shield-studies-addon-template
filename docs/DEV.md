@@ -37,14 +37,6 @@ $ npm run build
 
 This packages the add-on into an xpi file which is stored in `dist/`. This file is what you load into Firefox.
 
-## General notes on Shield Study Engineering
-
-Shield study add-ons are legacy (`addon/bootstrap.js`) add-ons with an optional embedded web extension (`addon/webextension/background.js`).
-
-The web extension needs to be packaged together with a legacy add-on in order to be able to access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
-
-It is recommended to build necessary logic and user interface using in the context of the webextension and communicate with the legacy add-on code through messaging whenever privileged access is required.
-
 ## Loading the Web Extension in Firefox
 
 You can have Firefox automatically launched and the add-on installed by running:
@@ -62,7 +54,6 @@ To load the extension manually instead, open (preferably) the [Developer Edition
 
 To debug installation and loading of the add-on:
 
-* Navigate to _about:config_ and set `shield.testing.logging.level` to `10`. This permits shield-add-on log output in browser console
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
 
 See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in action and hot it is expected to behave.
@@ -71,7 +62,7 @@ See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in a
 
 `$ npm run firefox` starts Firefox and automatically installs the add-on in a new profile and opens the browser console automatically.
 
-Note: This runs in a recently created profile. To have the study run despite the eligibility requirement of having at least 1 day old profiles, a config override is set in place to force the study to run.
+Note: This runs in a recently created profile, and the study variation/branch is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
 
 ## Automated testing
 
@@ -105,8 +96,8 @@ Note: This is currently only useful if you load the extension manually - it has 
 ├── .eslintignore
 ├── .eslintrc.js          # mozilla, json
 ├── .gitignore
+├── LICENSE
 ├── README.md             # (this file)
-├── about.md
 ├── addon                 # Files that will go into the addon
 │   ├── Config.jsm        # Study-specific configuration regarding branches, eligibility etc
 │   ├── StudyUtils.jsm    # (copied in during `prebuild`)
@@ -123,6 +114,7 @@ Note: This is currently only useful if you load the extension manually - it has 
 │       │   ├── Anonymous-Lizard.svg
 │       │   ├── DogHazard1.svg
 │       │   ├── Grooming-Cat-Line-Art.svg
+│       │   ├── LICENSE
 │       │   ├── isolatedcorndog.svg
 │       │   ├── kittens.svg
 │       │   ├── lizard.svg
@@ -130,30 +122,28 @@ Note: This is currently only useful if you load the extension manually - it has 
 │       └── manifest.json
 ├── bin                   # Scripts / commands
 │   └── xpi.sh            # build the XPI
+├── dist                  # built xpis (addons)
+│   ├── .gitignore
+│   ├── @template-button-study.shield.mozilla.com-1.2.0.xpi
+│   └── linked-addon.xpi -> @template-button-study.shield.mozilla.com-1.2.0.xpi
 ├── docs
 │   ├── DEV.md
 │   ├── TELEMETRY.md      # Telemetry examples for this addon
 │   ├── TESTPLAN.md       # Manual QA test plan
 │   └── WINDOWS_SETUP.md
-├── dist                  # built xpis (addons)
-│   ├── .gitignore
-│   ├── @template-button-study.shield.mozilla.com-1.2.0.xpi
-│   └── linked-addon.xpi -> @template-button-study.shield.mozilla.com-1.2.0.xpi
 ├── package-lock.json
 ├── package.json
 ├── run-firefox.js        # used by `npm run firefox`
-├── survival.md
 ├── templates             # mustache templates, filled from `package.json`
 │   ├── chrome.manifest.mustache
 │   └── install.rdf.mustache
 └── test                  # Automated tests `npm test` and circle
-│   ├── Dockerfile
-│   ├── docker_setup.sh
-│   ├── functional_tests.js
-│   ├── test_harness.js
-│   ├── test_printer.py
-│   └── utils.js
-└── tutorial.md
+    ├── Dockerfile
+    ├── docker_setup.sh
+    ├── functional_tests.js
+    ├── test_harness.js
+    ├── test_printer.py
+    └── utils.js
 
 >> tree -a -I 'node_modules|.git|.DS_Store'
 ```
