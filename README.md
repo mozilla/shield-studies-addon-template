@@ -4,9 +4,11 @@
 
 ## Important notice
 
-### We are moving to WebExtension Experiments
+### We are moving to Web Extensions
 
-In an effort to move to WebExtensions, we are also working on making a Shield study [WebExtension Experiment](https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/index.html) template. That template will ultimately replace this one.
+In an effort to remove the necessity of creating legacy add-ons for Shield studies, we are working on [supporting a pure Web Extension workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53).
+Until support for those workflows become stable, it is still recommended to use this template as it is and create legacy add-ons for your study.
+Chat with us: #shield on Slack about the latest progress and how to help us progress faster away from legacy add-ons.
 
 ## About This Repository
 
