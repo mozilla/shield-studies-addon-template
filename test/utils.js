@@ -156,7 +156,8 @@ module.exports.installAddon = async(driver, fileLocation) => {
     path: fileLocation,
     temporary: true,
   });
-  return executor.execute(installCmd);
+  await executor.execute(installCmd);
+  console.log(`Add-on at ${fileLocation} installed`);
 };
 
 module.exports.uninstallAddon = async(driver, id) => {

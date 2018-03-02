@@ -5,7 +5,6 @@
 class BrowserActionButtonChoiceFeature {
   /**
    * - set image, text, click handler (telemetry)
-   * - tell Legacy Addon to send
    */
   constructor(variation) {
     console.log(
@@ -29,6 +28,7 @@ class BrowserActionButtonChoiceFeature {
    * - change label
    */
   handleButtonClick() {
+    console.log("handleButtonClick");
     // note: doesn't persist across a session, unless you use localStorage or similar.
     this.timesClickedInSession += 1;
     console.log("got a click", this.timesClickedInSession);

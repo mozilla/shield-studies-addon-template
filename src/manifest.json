@@ -35,6 +35,7 @@
   },
   "browser_action": {
     "browser_style": true,
+    "default_icon": "icons/isolatedcorndog.svg",
     "default_title": "button label"
   }
 }
