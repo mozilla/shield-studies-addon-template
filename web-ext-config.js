@@ -2,7 +2,7 @@ const defaultConfig = {
   // Global options:
   verbose: true,
   sourceDir: './src/',
-  artifactsDir: './web-ext-artifacts/',
+  artifactsDir: './dist/',
   ignoreFiles: [
     '.DS_Store',
   ],
