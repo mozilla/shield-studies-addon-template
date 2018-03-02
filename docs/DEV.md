@@ -2,19 +2,13 @@
 
 ### Preparations
 
-* Download a Developer and Nightly versions of Firefox (only Developer/Nightly will allow running unsigned legacy extensions, and Nightly is the default target for the automated tests)
+* Download Developer and Nightly versions of Firefox (only Developer/Nightly will allow bundled web extension experiments, and Nightly is the default target for the automated tests)
 
 ## Getting started
 
-```bash
+```
 # install dependencies
 npm install
-
-## lint
-npm run lint
-
-## build
-npm run build
 
 ## run
 npm start
@@ -27,23 +21,33 @@ npm run watch -- --pref extensions.button_icon_preference.variation='kittens'
 
 # run and reload on filechanges, with a variation/branch set by preference, with a specific Firefox installation
 npm run watch -- --pref extensions.button_icon_preference.variation='kittens' -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
+
+## lint
+npm run lint
+
+## build
+npm run build
 ```
 
 ## Details
 
 First, make sure you are on NPM 5+ installed so that the proper dependencies are installed using the package-lock.json file.
 
-`$ npm install -g npm`
+```
+npm install -g npm
+```
 
 Clone the repo:
 
-`$ git clone https://github.com/mozilla/shield-studies-addon-template.git`
+```
+git clone https://github.com/mozilla/shield-studies-addon-template.git
+```
 
 After cloning the repo, you can run the following commands from the top level directory, one after another:
 
 ```
-$ npm install
-$ npm run build
+npm install
+npm run build
 ```
 
 This packages the add-on into an zip file which is stored in `dist/`. This file is what you load into Firefox.
@@ -52,38 +56,39 @@ This packages the add-on into an zip file which is stored in `dist/`. This file 
 
 You can have Firefox automatically launched and the add-on installed by running:
 
-`$ npm run once`
+```
+npm start
+```
+
+Note: This runs in a recently created profile, where no changes will be saved. For more information, see <https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Getting_started_with_web-ext>
+
+To automatically reload the extension on file changes:
+
+```
+npm run watch
+```
 
 To load the extension manually instead, open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/) and load the `.zip` using the following steps:
 
-* Navigate to _about:config_ and set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
 * Navigate to _about:debugging_ in your URL bar
 * Select "Load Temporary Add-on"
 * Find and select the latest zip file you just built.
 
 ## Seeing the add-on in action
 
-To debug installation and loading of the add-on:
-
-The Browser Console is automatically opened on start. (Usually accessible using Firefox's top menu at `Tools > Web Developer > Browser Console`).
+To debug installation and loading of the add-on, check the Browser Console that is automatically opened on start. (Usually accessible using Firefox's top menu at `Tools > Web Developer > Browser Console`).
 
 This will display Shield (loading/telemetry) and log output from the add-on.
 
 See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in action and hot it is expected to behave.
 
-## Automated launch of Firefox with add-on installed
-
-`$ npm run once` starts Firefox and automatically installs the add-on in a new profile and opens the browser console automatically.
-
-Note: This runs in a recently created profile, and the study variation/branch is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
-
-To automatically reload the extension on file changes:
-
-`$ npm run watch`
-
 ## Automated testing
 
-`$ npm run test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user
+```
+npm run test
+```
+
+Runs tests using the Selenium driver, verifying the telemetry payload at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user:
 
 * prove the notification bar ui opens
 * _clicking on the left-most button presented_.
@@ -91,7 +96,9 @@ To automatically reload the extension on file changes:
 
 Code at [/test/functional_test.js](/test/functional_test.js).
 
-Note: The functional tests are using async/await, so make sure you are running Node 7.6+
+Note: The study variation/branch during tests is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
+
+(The functional tests are using async/await, so make sure you are running Node 7.6+)
 
 The functional testing set-up is a minimal set of tests imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study addons.
 
@@ -140,7 +147,7 @@ The functional testing set-up is a minimal set of tests imported from <https://g
 │           ├── api.js
 │           ├── jsm
 │           │   ├── StudyUtils.jsm              # (copied in during `prebuild` and `prewatch`)
-│           │   └── StudyUtilsBootstrap.jsm     # Code from legacy Bootstrap.js to be assimilated into StudyUtils
+│           │   └── StudyUtilsBootstrap.jsm     # Code from legacy bootstrap.js to be assimilated into StudyUtils
 │           └── schema.json
 └── test                  # Automated tests `npm test` and circle
 │   ├── Dockerfile
@@ -158,7 +165,7 @@ This structure is set forth in [shield-studies-addon-template](https://github.co
 
 ## General Shield Study Engineering
 
-Shield study add-ons are web extensions (`src/background.js`) with embedded web extension experiments (`src/privileged/*/api.js`) that allows them to run privileged code.
+Shield study add-ons are web extensions (`src/`) with background scripting (`src/background.js`) with embedded web extension experiments (`src/privileged/*/api.js`) that allows them to run privileged code.
 
 Privileged code allows access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
 
