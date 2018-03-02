@@ -1,6 +1,3 @@
-chrome.manifest
-install.rdf
-*.xpi
 node_modules
-addon/StudyUtils.jsm
-addon/PioneerUtils.jsm
+webextension/privileged/shieldUtils/jsm/StudyUtils.jsm
+webextension/privileged/shieldUtils/jsm/PioneerUtils.jsm
