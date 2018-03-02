@@ -51,7 +51,7 @@
   },
   "scripts": {
     "build": "npm run web-ext -- build --overwrite-dest --artifacts-dir ./webextension/web-ext-artifacts/",
-    "bundle-utils": "cp node_modules/shield-studies-addon-utils/dist/StudyUtils.jsm webextension/privileged/shieldUtils/jsm/StudyUtils.jsm",
+    "bundle-utils": "cp node_modules/shield-studies-addon-utils/dist/StudyUtils.jsm src/privileged/shieldUtils/jsm/StudyUtils.jsm",
     "eslint": "eslint . --ext jsm --ext js --ext json",
     "eslint-fix": "npm run eslint -- --fix",
     "firefox": "npm run watch -- --no-reload",
