@@ -10,12 +10,23 @@
 # install dependencies
 npm install
 
-## build
+## lint
 npm run lint
+
+## build
 npm run build
 
-## build and run
+## run
 npm run firefox
+
+## run and reload on filechanges
+npm run watch
+
+# run and reload on filechanges, with a variation/branch set by preference
+npm run watch -- --pref extensions.button_icon_preference.variation='kittens'
+
+# run and reload on filechanges, with a variation/branch set by preference, with a specific Firefox installation
+npm run watch -- --pref extensions.button_icon_preference.variation='kittens' -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
 ```
 
 ## Details
