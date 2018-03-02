@@ -32,9 +32,6 @@ const FIREFOX_PREFERENCES = {
   // Removing warning for `about:config`
   "general.warnOnAboutConfig": false,
 
-  // NECESSARY for all 57+ builds
-  "extensions.legacy.enabled": true,
-
   // Force variation for testing
   "extensions.button_icon_preference.variation": "kittens",
 
@@ -142,7 +139,7 @@ module.exports.installAddon = async(driver, fileLocation) => {
   // references:
   //    https://bugzilla.mozilla.org/show_bug.cgi?id=1298025
   //    https://github.com/mozilla/geckodriver/releases/tag/v0.17.0
-  fileLocation = fileLocation || path.join(process.cwd(), process.env.XPI);
+  fileLocation = fileLocation || path.join(process.cwd(), process.env.ADDON_ZIP);
 
   const executor = driver.getExecutor();
   executor.defineCommand(
