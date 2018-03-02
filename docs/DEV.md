@@ -17,7 +17,7 @@ npm run lint
 npm run build
 
 ## run
-npm run firefox
+npm start
 
 ## run and reload on filechanges
 npm run watch
@@ -46,38 +46,44 @@ $ npm install
 $ npm run build
 ```
 
-This packages the add-on into an xpi file which is stored in `dist/`. This file is what you load into Firefox.
+This packages the add-on into an zip file which is stored in `dist/`. This file is what you load into Firefox.
 
 ## Loading the Web Extension in Firefox
 
 You can have Firefox automatically launched and the add-on installed by running:
 
-`$ npm run firefox`
+`$ npm run once`
 
-To load the extension manually instead, open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/) and load the `.xpi` using the following steps:
+To load the extension manually instead, open (preferably) the [Developer Edition of Firefox](https://www.mozilla.org/firefox/developer/) and load the `.zip` using the following steps:
 
 * Navigate to _about:config_ and set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
 * Navigate to _about:debugging_ in your URL bar
 * Select "Load Temporary Add-on"
-* Find and select the latest xpi file you just built.
+* Find and select the latest zip file you just built.
 
 ## Seeing the add-on in action
 
 To debug installation and loading of the add-on:
 
-* Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
+The Browser Console is automatically opened on start. (Usually accessible using Firefox's top menu at `Tools > Web Developer > Browser Console`).
+
+This will display Shield (loading/telemetry) and log output from the add-on.
 
 See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in action and hot it is expected to behave.
 
 ## Automated launch of Firefox with add-on installed
 
-`$ npm run firefox` starts Firefox and automatically installs the add-on in a new profile and opens the browser console automatically.
+`$ npm run once` starts Firefox and automatically installs the add-on in a new profile and opens the browser console automatically.
 
 Note: This runs in a recently created profile, and the study variation/branch is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
 
+To automatically reload the extension on file changes:
+
+`$ npm run watch`
+
 ## Automated testing
 
-`npm run test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user
+`$ npm run test` verifies the telemetry payload as expected at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user
 
 * prove the notification bar ui opens
 * _clicking on the left-most button presented_.
@@ -87,83 +93,75 @@ Code at [/test/functional_test.js](/test/functional_test.js).
 
 Note: The functional tests are using async/await, so make sure you are running Node 7.6+
 
-The functional testing set-up is imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study addons.
-
-## Watch
-
-You can automatically build recent changes and package them into a `.xpi` by running the following from the top level directory:
-
-`$ npm run watch`
-
-Now, anytime a file is changed and saved, node will repackage the add-on. You must reload the add-on as before, or by clicking the "Reload" under the add-on in _about:debugging_. Note that a hard re-load is recommended to clear local storage. To do this, simply remove the add-on and reload as before.
-
-Note: This is currently only useful if you load the extension manually - it has no effect when running `npm run firefox`.
+The functional testing set-up is a minimal set of tests imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study addons.
 
 ## Directory Structure and Files
 
 ```
-├── .circleci             # setup for .circle ci integration
+├── .circleci             # Setup for .circle ci integration
 │   └── config.yml
 ├── .eslintignore
-├── .eslintrc.js          # mozilla, json
+├── .eslintrc.js          # Linting configuration for mozilla, json etc
 ├── .gitignore
 ├── LICENSE
-├── README.md             # (this file)
-├── addon                 # Files that will go into the addon
-│   ├── Config.jsm        # Study-specific configuration regarding branches, eligibility etc
-│   ├── StudyUtils.jsm    # (copied in during `prebuild`)
-│   ├── bootstrap.js      # LEGACY Bootstrap.js
-│   ├── chrome.manifest   # (derived from templates)
-│   ├── icon.png
-│   ├── install.rdf       # (derived from templates)
-│   ├── lib               # JSM (Firefox modules)
-│   │   └── Feature.jsm   # contains study-specific privileged code
-│   └── webextension      # study-specific embedded webextension
-│       ├── .eslintrc.json
-│       ├── background.js
-│       ├── icons
-│       │   ├── LICENSE
-│       │   ├── isolatedcorndog.svg
-│       │   ├── kittens.svg
-│       │   ├── lizard.svg
-│       │   └── puppers.svg
-│       └── manifest.json
-├── bin                   # Scripts / commands
-│   └── xpi.sh            # build the XPI
-├── dist                  # built xpis (addons)
+├── README.md
+├── dist                  # Built zips (add-ons)
 │   ├── .gitignore
-│   ├── @template-button-study.shield.mozilla.com-1.2.0.xpi
-│   └── linked-addon.xpi -> @template-button-study.shield.mozilla.com-1.2.0.xpi
+│   └── button_icon_preference_study_shield_study_example_-2.0.0.zip
 ├── docs
 │   ├── DEV.md
 │   ├── TELEMETRY.md      # Telemetry examples for this addon
 │   ├── TESTPLAN.md       # Manual QA test plan
-│   └── WINDOWS_SETUP.md
+│   └── WINDOWS_SETUP.md
 ├── package-lock.json
 ├── package.json
-├── run-firefox.js        # used by `npm run firefox`
-├── templates             # mustache templates, filled from `package.json`
-│   ├── chrome.manifest.mustache
-│   └── install.rdf.mustache
+├── src                   # Files that will go into the addon
+│   ├── .eslintrc.json
+│   ├── background.js     # Background scripts, independent of web pages or browser windows
+│   ├── icon.png
+│   ├── icons             # Icons used in the example study (remove in your add-on)
+│   │   ├── Anonymous-Lizard.svg
+│   │   ├── DogHazard1.svg
+│   │   ├── Grooming-Cat-Line-Art.svg
+│   │   ├── LICENSE
+│   │   ├── isolatedcorndog.svg
+│   │   ├── kittens.svg
+│   │   ├── lizard.svg
+│   │   └── puppers.svg
+│   ├── manifest.json     # The only file that every extension using WebExtension APIs must contain
+│   └── privileged
+│       ├── Config.jsm    # Study-specific configuration regarding branches, eligibility, expiration etc
+│       ├── feature
+│       │   ├── api.js
+│       │   ├── jsm
+│       │   │   └── Feature.jsm   # Contains study-specific privileged code
+│       │   └── schema.json
+│       └── shieldUtils
+│           ├── api.js
+│           ├── jsm
+│           │   ├── StudyUtils.jsm              # (copied in during `prebuild` and `prewatch`)
+│           │   └── StudyUtilsBootstrap.jsm     # Code from legacy Bootstrap.js to be assimilated into StudyUtils
+│           └── schema.json
 └── test                  # Automated tests `npm test` and circle
-    ├── Dockerfile
-    ├── docker_setup.sh
-    ├── functional_tests.js
-    ├── test_harness.js
-    ├── test_printer.py
-    └── utils.js
+│   ├── Dockerfile
+│   ├── docker_setup.sh
+│   ├── functional_tests.js
+│   ├── test_harness.js
+│   ├── test_printer.py
+│   └── utils.js
+└── web-ext-config.js     # Configuration options used by the `web-ext` command
 
 >> tree -a -I 'node_modules|.git|.DS_Store'
 ```
 
-This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `addon/lib`, `addon/webextension` and `addon/Config.jsm`.
+This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/background.js`, `src/privileged/feature/` and `src/privileged/Config.jsm`.
 
 ## General Shield Study Engineering
 
-Shield study add-ons are legacy (`addon/bootstrap.js`) add-ons with an optional embedded web extension (`addon/webextension/background.js`).
+Shield study add-ons are web extensions (`src/background.js`) with embedded web extension experiments (`src/privileged/*/api.js`) that allows them to run privileged code.
 
-The web extension needs to be packaged together with a legacy add-on in order to be able to access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
+Privileged code allows access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
 
-It is recommended to build necessary logic and user interface using in the context of the web extension and communicate with the legacy add-on code through messaging whenever privileged access is required.
+It is recommended to build necessary logic and user interface using in the context of the web extension whenever possible and only utilize privileged code when strictly necessary.
 
 For more information, see <https://github.com/mozilla/shield-studies-addon-utils/> (especially <https://github.com/mozilla/shield-studies-addon-utils/blob/master/docs/engineering.md>).
