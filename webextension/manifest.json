@@ -1,9 +1,37 @@
 {
-  "name": "WebExtension-study-BrowserActionButtonChoice",
-  "version": "0.2.0",
+  "name": "Button Icon Preference Study (Shield Study Example)",
+  "version": "2.0.0",
   "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "button-icon-preference@shield.mozilla.org",
+      "strict_min_version": "59.0",
+      "strict_max_version": "*"
+    }
+  },
+  "experiment_apis": {
+    "feature": {
+      "schema": "./privileged/feature/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/feature/api.js",
+        "paths": [["feature"]]
+      }
+    },
+    "shieldUtils": {
+      "schema": "./privileged/shieldUtils/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/shieldUtils/api.js",
+        "paths": [["shieldUtils"]]
+      }
+    }
+  },
   "background": {
     "scripts": ["background.js"]
+  },
+  "icons": {
+    "48": "icon.png"
   },
   "browser_action": {
     "browser_style": true,

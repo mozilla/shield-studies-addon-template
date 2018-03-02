@@ -25,8 +25,6 @@ var config = {
      * All other keys are optional.
      */
 
-    // required keys: studyName, endings, telemetry
-
     // will be used activeExperiments tagging
     studyName: "buttonFeatureExperiment",
 
@@ -81,14 +79,17 @@ var config = {
     },
   },
 
-  // OPTION KEYS
-
-  // a place to put an 'isEligible' function
   // Will run only during first install attempt
   async isEligible() {
     // get whatever prefs, addons, telemetry, anything!
     // Cu.import can see 'firefox things', but not package things.
     return true;
+  },
+
+  // Expiration checks should be implemented in a very reliable way by
+  // the add-on since Normandy does not handle study expiration in a reliable manner
+  async hasExpired() {
+    return false;
   },
 
   /* Button study branches and sample weights
@@ -111,6 +112,10 @@ var config = {
     }, // we want more puppers in our sample
   ],
 
-  // Optional: relative to bootstrap.js in the xpi
-  studyUtilsPath: `./StudyUtils.jsm`,
+  /**
+   * Change this preference to be able to test the add-on behavior in different study
+   * variations/branches (or leave it unset to use the automatic assigning
+   * of a study variation/branch from weightedVariations in Config.jsm)
+   */
+  variationOverridePreference: "extensions.button_icon_preference.variation",
 };

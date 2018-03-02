@@ -2,71 +2,6 @@
 
 "use strict";
 
-/** `background.js` example for embedded webExtensions.
- * - As usual for webExtensions, controls BrowserAction (toolbar button)
- *   look, feel, interactions.
- *
- * - Also handles 2-way communication with the HOST (Legacy Addon)
- *
- *   - all communication to the Legacy Addon is via `browser.runtime.sendMessage`
- *
- *   - Only the webExtension can initiate messages.  see `msgStudyUtils("info")` below.
- */
-
-/**  Re-usable code for talking to `studyUtils` using `browser.runtime.sendMessage`
- *  - Host listens and responds at `bootstrap.js`:
- *
- *   `browser.runtime.onMessage.addListener(studyUtils.respondToWebExtensionMessage)`;
- *
- *  - `msg` calls the corresponding studyUtils API call.
- *
- *     - info: current studyUtils configuration, including 'variation'
- *     - endStudy: for ending a study
- *     - telemetry: send a 'shield-study-addon' packet
- */
-async function msgStudyUtils(msg, data) {
-  const allowed = ["endStudy", "telemetry", "info"];
-  if (!allowed.includes(msg))
-    throw new Error(`shieldUtils doesn't know ${msg}, only knows ${allowed}`);
-  try {
-    // the "shield" key is how the Host listener knows it's for shield.
-    return await browser.runtime.sendMessage({ shield: true, msg, data });
-  } catch (e) {
-    console.error("ERROR msgStudyUtils", msg, data, e);
-    throw e;
-  }
-}
-
-/** `telemetry`
- *
- * - check all pings for validity as "shield-study-addon" pings
- * - tell Legacy Addon to send
- *
- * Good practice: send all Telemetry from one function for easier
- * logging, debugging, validation
- *
- * Note: kyes, values must be strings to fulfill the `shield-study-addon`
- *   ping-type validation.  This allows `payload.data.attributes` to store
- *   correctly at Parquet at s.t.m.o.
- *
- *   Bold claim:  catching errors here
- *
- */
-function telemetry(data) {
-  function throwIfInvalid(obj) {
-    // Check: all keys and values must be strings,
-    for (const k in obj) {
-      if (typeof k !== "string") throw new Error(`key ${k} not a string`);
-      if (typeof obj[k] !== "string")
-        throw new Error(`value ${k} ${obj[k]} not a string`);
-    }
-    return true;
-  }
-
-  throwIfInvalid(data);
-  return msgStudyUtils("telemetry", data);
-}
-
 class BrowserActionButtonChoiceFeature {
   /**
    * - set image, text, click handler (telemetry)
@@ -74,16 +9,18 @@ class BrowserActionButtonChoiceFeature {
    */
   constructor(variation) {
     console.log(
-      "initilizing BrowserActionButtonChoiceFeature:",
+      "Initializing BrowserActionButtonChoiceFeature:",
       variation.name,
     );
     this.timesClickedInSession = 0;
 
     // modify BrowserAction (button) ui for this particular {variation}
     console.log("path:", `icons/${variation.name}.svg`);
+    // TODO: Running into an error "values is undefined" here
     browser.browserAction.setIcon({ path: `icons/${variation.name}.svg` });
     browser.browserAction.setTitle({ title: variation.name });
     browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
+    console.log("initialized");
   }
 
   /** handleButtonClick
@@ -101,11 +38,11 @@ class BrowserActionButtonChoiceFeature {
 
     // telemetry: FIRST CLICK
     if (this.timesClickedInSession == 1) {
-      telemetry({ event: "button-first-click-in-session" });
+      browser.shieldUtils.telemetry({ event: "button-first-click-in-session" });
     }
 
     // telemetry EVERY CLICK
-    telemetry({
+    browser.shieldUtils.telemetry({
       event: "button-click",
       timesClickedInSession: "" + this.timesClickedInSession,
     });
@@ -115,28 +52,55 @@ class BrowserActionButtonChoiceFeature {
     // - 3 timesClickedInSession in a session ends the study.
     // - see `../Config.jsm` for what happens during this ending.
     if (this.timesClickedInSession >= 3) {
-      msgStudyUtils("endStudy", { reason: "used-often" });
+      browser.shieldUtils.endStudy({ reason: "used-often" });
     }
   }
 }
 
-/** CONFIGURE and INSTRUMENT the BrowserAction button for a specific variation
+/**
+ * CONFIGURE and INSTRUMENT the BrowserAction button for a specific variation
  *
- *  1. Request 'info' from the hosting Legacy Extension.
+ *  1. Request 'info' from the shieldUtils
  *  2. We only care about the `variation` key.
  *  3. initialize the feature, using our specific variation
  */
-function runOnce() {
-  msgStudyUtils("info")
-    .then(({ variation }) => new BrowserActionButtonChoiceFeature(variation))
-    .catch(function defaultSetup() {
-      // Errors here imply that this is NOT embedded.
-      console.log(
-        "you must be running as part of `web-ext`.  You get 'corn dog'!",
-      );
-      new BrowserActionButtonChoiceFeature({ name: "isolatedcorndog" });
-    });
+async function runOnce() {
+  // ensure we have configured shieldUtils and are supposed to run our feature
+  await browser.shieldUtils.bootstrapStudy();
+
+  // get study variation
+  const { variation } = await browser.shieldUtils.info();
+
+  // initiate the chrome-privileged part of the study add-on
+  await browser.feature.start(variation);
+
+  // initiate the non-privileged part of the study add-on
+  new BrowserActionButtonChoiceFeature(variation);
 }
+
+/**
+ * Fired when a profile that has this extension installed first starts up.
+ * This event is not fired when a private browsing/incognito profile is started.
+ */
+function handleStartup() {
+  console.log("handleStartup", arguments);
+}
+
+browser.runtime.onStartup.addListener(handleStartup);
+
+/**
+ * Fired when the extension is first installed, when the extension is updated
+ * to a new version, and when the browser is updated to a new version.
+ * @param details
+ */
+function handleInstalled(details) {
+  console.log("handleInstalled", details.reason, details);
+}
+
+browser.runtime.onInstalled.addListener(handleInstalled);
+
+// todo: on shutdown
+// Run shutdown-related non-priviliged code
 
 // actually start
 runOnce();

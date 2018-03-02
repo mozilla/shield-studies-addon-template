@@ -50,11 +50,11 @@ class Feature {
    *  - reasonName: string of bootstrap.js startup/shutdown reason
    *
    */
-  constructor(variation, studyUtils, reasonName, log) {
+  constructor(variation, studyUtils, reasonName) {
     this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
     this.studyUtils = studyUtils;
     this.reasonName = reasonName;
-    this.log = log;
+    this.log = console;
 
     // Example log statement
     this.log.debug("Feature constructor");
