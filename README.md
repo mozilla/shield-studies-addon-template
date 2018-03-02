@@ -1,8 +1,16 @@
-# Shield Study Embedded Web Extension Template
+# Shield Study Web Extension Template
 
 ![CircleCI badge](https://img.shields.io/circleci/project/github/mozilla/shield-studies-addon-template/master.svg?label=CircleCI)
 
-**Note**: This contains an example [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Legacy Add-on. Use this as a template for yours.
+## Important notice
+
+### We are moving to Web Extensions
+
+This is a work in progress branch for [supporting a pure Web Extension workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53).
+
+## About This Repository
+
+**Note**: This contains an example [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Web Extension. Use this as a template for yours.
 
 ## Seeing the add-on in action
 
