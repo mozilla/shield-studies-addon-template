@@ -64,7 +64,6 @@ this.shieldUtils = class extends ExtensionAPI {
          * @returns {Promise<void>}
          */
         async bootstrapStudy() {
-          console.log("bootstrapStudy", extension);
           await bootstrap.startup(extension);
         },
 

@@ -139,7 +139,8 @@ module.exports.installAddon = async(driver, fileLocation) => {
   // references:
   //    https://bugzilla.mozilla.org/show_bug.cgi?id=1298025
   //    https://github.com/mozilla/geckodriver/releases/tag/v0.17.0
-  fileLocation = fileLocation || path.join(process.cwd(), process.env.ADDON_ZIP);
+  fileLocation =
+    fileLocation || path.join(process.cwd(), process.env.ADDON_ZIP);
 
   const executor = driver.getExecutor();
   executor.defineCommand(
