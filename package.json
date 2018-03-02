@@ -1,22 +1,8 @@
 {
   "name": "shield-studies-addon-template",
   "description": "Template Shield Study",
-  "version": "1.3.0",
-  "author": "Mozilla Gregg Lind <glind@mozilla.com>",
-  "addon": {
-    "$ABOUT": "use these variables fill the moustache templates",
-    "id": "button-icon-preference@shield-study.mozilla.com",
-    "name": "Button Icon Preference Study (Shield Study Example)",
-    "minVersion": "57.0",
-    "maxVersion": "*",
-    "multiprocessCompatible": true,
-    "hasEmbeddedWebExtension": true,
-    "chromeResource": "button-icon-preference",
-    "creator": "Gregg Lind <glind@mozilla.com>",
-    "description": "template shield study to serve a as base.  This one is about Toolbar Buttons",
-    "bugzilla": "<tbd: bug to attach for signing>",
-    "iconPath": "icon.png"
-  },
+  "version": "2.0.0",
+  "author": "Mozilla",
   "bugs": {
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
@@ -53,12 +39,11 @@
   "homepage": "http://github.com/mozilla/shield-studies-addon-template",
   "keywords": [
     "firefox",
-    "legacy-addon",
     "mozilla",
-    "shield-study"
+    "shield-study",
+    "template"
   ],
-  "license": "MIT",
-  "main": "index.js",
+  "license": "MPL-2",
   "repository": {
     "type": "git",
     "url": "git://github.com/mozilla/shield-studies-addon-template.git"

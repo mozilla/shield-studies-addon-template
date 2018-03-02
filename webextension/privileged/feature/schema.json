@@ -1,0 +1,28 @@
+[
+  {
+    "namespace": "feature",
+    "description": "the chrome-privileged part of the study add-on",
+    "functions": [
+      {
+        "name": "start",
+        "type": "function",
+        "description": "TODO",
+        "async": true,
+        "parameters": [
+          {
+            "optional": true,
+            "name": "variation",
+            "type": "any"
+          }
+        ]
+      },
+      {
+        "name": "introductionNotificationBar",
+        "type": "function",
+        "description": "TODO",
+        "async": true,
+        "parameters": []
+      }
+    ]
+  }
+]
