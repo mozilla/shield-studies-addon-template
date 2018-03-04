@@ -6,6 +6,9 @@
   "bugs": {
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
+  "dependencies": {
+    "shield-studies-addon-utils": "^4.1.0"
+  },
   "devDependencies": {
     "addons-linter": "^0.28.2",
     "ajv": "^5.1.1",
@@ -31,7 +34,6 @@
     "onchange": "^3.2.1",
     "prettier": "^1.10.2",
     "selenium-webdriver": "^3.5.0",
-    "shield-studies-addon-utils": "^4.1.0",
     "web-ext": "^2.4.0"
   },
   "engines": {
