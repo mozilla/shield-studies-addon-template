@@ -1,8 +1,16 @@
 /* global ExtensionAPI */
 
 this.feature = class extends ExtensionAPI {
-  static onShutdown(shutdownReason) {
+
+  /**
+   * Extension Shutdown
+   * APIs that allocate any resources (e.g., adding elements to the browser’s user interface,
+   * setting up internal event listeners, etc.) must free these resources when the extension
+   * for which they are allocated is shut down.
+   */
+  onShutdown(shutdownReason) {
     console.log("onShutdown", shutdownReason);
+    // TODO: remove any active ui
   }
 
   getAPI(context) {

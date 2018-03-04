@@ -25,7 +25,7 @@
         "parameters": [
           {
             "name": "data",
-            "type": "object"
+            "type": "any"
           }
         ]
       },
@@ -38,7 +38,7 @@
           {
             "optional": true,
             "name": "data",
-            "type": "object"
+            "type": "any"
           }
         ]
       }
