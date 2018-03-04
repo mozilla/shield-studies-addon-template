@@ -105,7 +105,7 @@ this.shieldUtils = class extends ExtensionAPI {
           }
 
           throwIfInvalid(data);
-          return studyUtils.telemetry(data);
+          studyUtils.telemetry(data);
         },
 
         /**
@@ -114,7 +114,7 @@ this.shieldUtils = class extends ExtensionAPI {
          * @returns {Promise<void>}
          */
         async endStudy(data) {
-          return studyUtils.endStudy(data);
+          studyUtils.endStudy(data);
         },
       },
     };
