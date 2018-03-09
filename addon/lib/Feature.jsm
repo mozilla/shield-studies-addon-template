@@ -1,22 +1,21 @@
 "use strict";
 
-
 /**  Example Feature module for a Shield Study.
-  *
-  *  UI:
-  *  - during INSTALL only, show a notification bar with 2 buttons:
-  *    - "Thanks".  Accepts the study (optional)
-  *    - "I don't want this".  Uninstalls the study.
-  *
-  *  Firefox code:
-  *  - Implements the 'introduction' to the 'button choice' study, via notification bar.
-  *
-  *  Demonstrates `studyUtils` API:
-  *
-  *  - `telemetry` to instrument "shown", "accept", and "leave-study" events.
-  *  - `endStudy` to send a custom study ending.
-  *
-  **/
+ *
+ *  UI:
+ *  - during INSTALL only, show a notification bar with 2 buttons:
+ *    - "Thanks".  Accepts the study (optional)
+ *    - "I don't want this".  Uninstalls the study.
+ *
+ *  Firefox code:
+ *  - Implements the 'introduction' to the 'button choice' study, via notification bar.
+ *
+ *  Demonstrates `studyUtils` API:
+ *
+ *  - `telemetry` to instrument "shown", "accept", and "leave-study" events.
+ *  - `endStudy` to send a custom study ending.
+ *
+ **/
 
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(EXPORTED_SYMBOLS|Feature)" }]*/
 
@@ -27,12 +26,15 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 const EXPORTED_SYMBOLS = ["Feature"];
 
-XPCOMUtils.defineLazyModuleGetter(this, "RecentWindow",
-  "resource:///modules/RecentWindow.jsm");
+XPCOMUtils.defineLazyModuleGetter(
+  this,
+  "RecentWindow",
+  "resource:///modules/RecentWindow.jsm",
+);
 
 /** Return most recent NON-PRIVATE browser window, so that we can
-  * maniuplate chrome elements on it.
-  */
+ * manipulate chrome elements on it.
+ */
 function getMostRecentBrowserWindow() {
   return RecentWindow.getMostRecentBrowserWindow({
     private: false,
@@ -40,49 +42,56 @@ function getMostRecentBrowserWindow() {
   });
 }
 
-
 class Feature {
   /** A Demonstration feature.
-    *
-    *  - variation: study info about particular client study variation
-    *  - studyUtils:  the configured studyUtils singleton.
-    *  - reasonName: string of bootstrap.js startup/shutdown reason
-    *
-    */
-  constructor({variation, studyUtils, reasonName}) {
-    // unused.  Some other UI might use the specific variation info for things.
-    this.variation = variation;
+   *
+   *  - variation: study info about particular client study variation
+   *  - studyUtils:  the configured studyUtils singleton.
+   *  - reasonName: string of bootstrap.js startup/shutdown reason
+   *
+   */
+  constructor(variation, studyUtils, reasonName, log) {
+    this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
     this.studyUtils = studyUtils;
+    this.reasonName = reasonName;
+    this.log = log;
 
-    // only during INSTALL
-    if (reasonName === "ADDON_INSTALL") {
+    // Example log statement
+    this.log.debug("Feature constructor");
+  }
+
+  start() {
+    this.log.debug("Feature start");
+
+    // perform something only during INSTALL = a new study period begins
+    if (this.reasonName === "ADDON_INSTALL") {
       this.introductionNotificationBar();
     }
   }
 
   /** Display instrumented 'notification bar' explaining the feature to the user
-    *
-    *   Telemetry Probes:
-    *
-    *   - {event: introduction-shown}
-    *
-    *   - {event: introduction-accept}
-    *
-    *   - {event: introduction-leave-study}
-    *
-    *    Note:  Bar WILL NOT SHOW if the only window open is a private window.
-    *
-    *    Note:  Handling of 'x' is not implemented.  For more complete implementation:
-    *
-    *      https://github.com/gregglind/57-perception-shield-study/blob/680124a/addon/lib/Feature.jsm#L148-L152
-    *
-  */
+   *
+   *   Telemetry Probes:
+   *
+   *   - {event: introduction-shown}
+   *
+   *   - {event: introduction-accept}
+   *
+   *   - {event: introduction-leave-study}
+   *
+   *    Note:  Bar WILL NOT SHOW if the only window open is a private window.
+   *
+   *    Note:  Handling of 'x' is not implemented.  For more complete implementation:
+   *
+   *      https://github.com/gregglind/57-perception-shield-study/blob/680124a/addon/lib/Feature.jsm#L148-L152
+   *
+   */
   introductionNotificationBar() {
     const feature = this;
     const recentWindow = getMostRecentBrowserWindow();
     const doc = recentWindow.document;
     const notificationBox = doc.querySelector(
-      "#high-priority-global-notificationbox"
+      "#high-priority-global-notificationbox",
     );
 
     if (!notificationBox) return;
@@ -94,30 +103,32 @@ class Feature {
       null, // icon
       notificationBox.PRIORITY_INFO_HIGH, // priority
       // buttons
-      [{
-        label: "Thanks!",
-        isDefault: true,
-        callback: function acceptButton() {
-          // eslint-disable-next-line no-console
-          console.log("clicked THANKS!");
-          feature.telemetry({
-            event: "introduction-accept",
-          });
+      [
+        {
+          label: "Thanks!",
+          isDefault: true,
+          callback: function acceptButton() {
+            // eslint-disable-next-line no-console
+            console.log("clicked THANKS!");
+            feature.telemetry({
+              event: "introduction-accept",
+            });
+          },
         },
-      },
-      {
-        label: "I do not want this.",
-        callback: function leaveStudyButton() {
-          // eslint-disable-next-line no-console
-          console.log("clicked NO!");
-          feature.telemetry({
-            event: "introduction-leave-study",
-          });
-          feature.studyUtils.endStudy("introduction-leave-study");
+        {
+          label: "I do not want this.",
+          callback: function leaveStudyButton() {
+            // eslint-disable-next-line no-console
+            console.log("clicked NO!");
+            feature.telemetry({
+              event: "introduction-leave-study",
+            });
+            feature.studyUtils.endStudy("introduction-leave-study");
+          },
         },
-      }],
+      ],
       // callback for nb events
-      null
+      null,
     );
 
     // used by testing to confirm the bar is set with the correct config
@@ -125,18 +136,18 @@ class Feature {
     feature.telemetry({
       event: "introduction-shown",
     });
-
   }
+
   /* good practice to have the literal 'sending' be wrapped up */
   telemetry(stringStringMap) {
     this.studyUtils.telemetry(stringStringMap);
   }
 
-  /* no-op shutdown */
+  /**
+   * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
+   */
   shutdown() {}
 }
-
-
 
 // webpack:`libraryTarget: 'this'`
 this.EXPORTED_SYMBOLS = EXPORTED_SYMBOLS;

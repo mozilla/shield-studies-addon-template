@@ -1,7 +1,12 @@
-addon/StudyUtils.jsm
-# for circleCI; don't eslint code in the Firefox directory
-firefox
+# do not lint/format generated artifacts
 dist
-OLD
 package-lock.json
+# makes sure that eslintrc.js gets linted/formatted
 !.eslintrc.js
+# do not lint/format bundled util libraries (PioneerUtils.jsm is included for Pioneer Shield studies only; eventually it will be merged with StudyUtils.jsm)
+addon/StudyUtils.jsm
+addon/PioneerUtils.jsm
+# for circleCI; don't lint/format code in the Firefox directory
+firefox
+# don't lint/format package.json since npm install formats it differently by default
+package.json

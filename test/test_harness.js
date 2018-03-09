@@ -13,21 +13,21 @@ const { spawn } = require("child_process");
 
 // Promise wrapper around childProcess.spawn()
 function spawnProcess(command, args) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const childProcess = spawn(command, args);
     const stderrArray = [];
     const stdoutArray = [];
 
-    childProcess.stdout.on("data", (data) => {
+    childProcess.stdout.on("data", data => {
       stdoutArray.push(data.toString()); // data is of type Buffer
     });
 
-    childProcess.stderr.on("data", (data) => {
+    childProcess.stderr.on("data", data => {
       // TODO reject upon error?
       stderrArray.push(data.toString()); // data is of type Buffer
     });
 
-    childProcess.on("close", (code) => {
+    childProcess.on("close", code => {
       // TODO reject upon error?
       console.log("Test suite completed.");
       resolve({ code, stdoutArray, stderrArray });
@@ -44,7 +44,9 @@ async function main() {
     console.log(`Currently running test suite #${i}.`);
     const childProcesses = [];
     // NOTE Parallel tests seem to introduce more errors.
-    childProcesses.push(spawnProcess("npm", ["run", "--silent", "harness_test"]));
+    childProcesses.push(
+      spawnProcess("npm", ["run", "--silent", "harness_test"]),
+    );
 
     // TODO Promise.all() will reject upon a single error, is this an issue?
     try {
@@ -57,11 +59,13 @@ async function main() {
           const mochaOutput = JSON.parse(rawOutput.join(""));
           for (const failedTest of mochaOutput.failures) {
             console.log(failedTest.err);
-            if (!(failedTestCounts.has(failedTest.fullTitle))) {
+            if (!failedTestCounts.has(failedTest.fullTitle)) {
               failedTestCounts.set(failedTest.fullTitle, 0);
             }
-            failedTestCounts.set(failedTest.fullTitle,
-              failedTestCounts.get(failedTest.fullTitle) + 1);
+            failedTestCounts.set(
+              failedTest.fullTitle,
+              failedTestCounts.get(failedTest.fullTitle) + 1,
+            );
           }
         } catch (e) {
           console.log(`JSON parsing error: ${e}`);
@@ -74,12 +78,15 @@ async function main() {
   }
   console.log(failedTestCounts);
   for (const pair of failedTestCounts) {
-    fs.appendFile(`test_harness_output_${new Date().toISOString()}.txt`, `${pair[0]}: ${pair[1]}\n`,
-      (err) => {
+    fs.appendFile(
+      `test_harness_output_${new Date().toISOString()}.txt`,
+      `${pair[0]}: ${pair[1]}\n`,
+      err => {
         if (err) {
           console.log(`fs.writeFile errror: ${err}`);
         }
-      });
+      },
+    );
   }
 }
 

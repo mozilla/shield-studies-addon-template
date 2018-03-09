@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-WORKDIR /share-button-study
+WORKDIR /shield-study
 
 RUN apt-get update -y && \
     apt-get install -y curl && \
@@ -11,4 +11,4 @@ RUN apt-get update -y && \
     npm install -g get-firefox && \
     get-firefox -b beta -t /firefox.tar.bz2 && tar -xvjf /firefox.tar.bz2 -C /
 
-ENV PATH="/share-button-study/node_modules/.bin:$PATH"
+ENV PATH="/shield-study/node_modules/.bin:$PATH"

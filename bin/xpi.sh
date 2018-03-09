@@ -47,6 +47,7 @@ popd > /dev/null
 echo
 echo "SUCCESS: xpi at ${BASE_DIR}/dist/${XPI_NAME}"
 echo "SUCCESS: symlinked xpi at ${BASE_DIR}/dist/linked-addon.xpi"
+echo
 
 ls -alF "${BASE_DIR}"/dist
 
