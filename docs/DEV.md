@@ -127,9 +127,6 @@ The functional testing set-up is a minimal set of tests imported from <https://g
 │   ├── background.js     # Background scripts, independent of web pages or browser windows
 │   ├── icon.png
 │   ├── icons             # Icons used in the example study (remove in your add-on)
-│   │   ├── Anonymous-Lizard.svg
-│   │   ├── DogHazard1.svg
-│   │   ├── Grooming-Cat-Line-Art.svg
 │   │   ├── LICENSE
 │   │   ├── isolatedcorndog.svg
 │   │   ├── kittens.svg
