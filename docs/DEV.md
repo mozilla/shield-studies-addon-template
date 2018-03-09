@@ -111,9 +111,6 @@ Note: This is currently only useful if you load the extension manually - it has 
 │       ├── .eslintrc.json
 │       ├── background.js
 │       ├── icons
-│       │   ├── Anonymous-Lizard.svg
-│       │   ├── DogHazard1.svg
-│       │   ├── Grooming-Cat-Line-Art.svg
 │       │   ├── LICENSE
 │       │   ├── isolatedcorndog.svg
 │       │   ├── kittens.svg
