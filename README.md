@@ -91,7 +91,7 @@ see [TELEMETRY.md](./TELEMETRY.md)
 see [TESTPLAN](./TESTPLAN.md)
 
 
-# Directory Structure and Files
+## Directory Structure and Files
 
 
 ```
@@ -158,23 +158,6 @@ see [TESTPLAN](./TESTPLAN.md)
 >> tree -a -I node_modules
 
 ```
-
-## General Shield Study Engineering
-
-Shield study add-ons are legacy (`addon/bootstrap.js`) add-ons with an optional embedded web extension (`addon/webextension/background.js`).
-
-The web extension needs to be packaged together with a legacy add-on in order to be able to access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
-
-It is recommended to build necessary logic and user interface using in the context of the webextension and communicate with the legacy add-on code through messaging whenever privileged access is required.
-
-For more information, see [./about.md]
-
-
-### Similar repositories
-
-[https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example]() - A repository that was created this week specifically to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
-[https://github.com/gregglind/template-shield-study]() - The incubation repo for the updated structure and contents of this repo. Use this repo instead.
-
 
 ### Loading the Web Extension in Firefox
 
@@ -260,3 +243,24 @@ Run the following to run the example set of functional tests:
 Note: The functional tests are using async/await, so make sure you are running Node 7.6+
 
 The functional testing set-up is imported from [https://github.com/mozilla/share-button-study]() which contains plenty of examples of functional tests relevant to Shield study addons.
+
+## General information about Shield study development
+
+### Design
+
+Any UI in a Shield study should be consistent with standard Firefox design specifications. These standards can be found at [design.firefox.com](https://design.firefox.com/photon/welcome.html). Firefox logo specifications can be found [here](https://design.firefox.com/photon/visuals/product-identity-assets.html).
+
+### Engineering
+
+Shield study add-ons are legacy (`addon/bootstrap.js`) add-ons with an optional embedded web extension (`addon/webextension/background.js`).
+
+The web extension needs to be packaged together with a legacy add-on in order to be able to access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
+
+It is recommended to build necessary logic and user interface using in the context of the webextension and communicate with the legacy add-on code through messaging whenever privileged access is required.
+
+For more information, see [./about.md]
+
+### Similar repositories
+
+[https://github.com/benmiroglio/shield-study-embedded-webextension-hello-world-example]() - A repository that was created this week specifically to help new Shield/Pioneer engineers to quickly get up and running with a Shield add-on. It was however built upon an older and much more verbose addon template, which makes it's file structure hard to follow.
+[https://github.com/gregglind/template-shield-study]() - The incubation repo for the updated structure and contents of this repo. Use this repo instead.
