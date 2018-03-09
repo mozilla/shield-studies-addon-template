@@ -92,6 +92,10 @@ If the user clicks on the badge more than 3 times, it ends the study.
    * Verify that sent Telemetry is correct
    * Verify that the user is sent to the URL specified in `addon/Config.jsm` under `endings -> too-popular`.
 
+### Design
+
+Any UI in a Shield study should be consistent with standard Firefox design specifications. These standards can be found at [design.firefox.com](https://design.firefox.com/photon/welcome.html). Firefox logo specifications can be found [here](https://design.firefox.com/photon/visuals/product-identity-assets.html).
+
 ### Note: checking "sent Telemetry is correct"
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) log output from the add-on.
