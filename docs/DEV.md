@@ -11,7 +11,7 @@
 npm install
 
 ## build
-npm run eslint
+npm run lint
 npm run build
 
 ## build and run
