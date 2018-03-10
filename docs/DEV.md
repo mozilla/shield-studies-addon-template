@@ -76,7 +76,7 @@ Code at [/test/functional_test.js](/test/functional_test.js).
 
 Note: The functional tests are using async/await, so make sure you are running Node 7.6+
 
-The functional testing set-up is imported from [https://github.com/mozilla/share-button-study]() which contains plenty of examples of functional tests relevant to Shield study addons.
+The functional testing set-up is imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study addons.
 
 ## Watch
 
