@@ -17,7 +17,6 @@ module.exports = {
   },
   env: {
     es6: true,
-    // 'browser-window': false
   },
   extends: [
     "eslint:recommended",
