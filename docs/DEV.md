@@ -60,7 +60,7 @@ You can have Firefox automatically launched and the add-on installed by running:
 npm start
 ```
 
-Note: This runs in a recently created profile, where no changes will be saved. For more information, see <https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Getting_started_with_web-ext>
+Note: This runs in a recently created profile, where no changes will be saved. For more information, see <https://developer.mozilla.org/Add-ons/WebExtensions/Getting_started_with_web-ext>
 
 To automatically reload the extension on file changes:
 
@@ -94,7 +94,7 @@ Runs tests using the Selenium driver, verifying the telemetry payload at Firefox
 * _clicking on the left-most button presented_.
 * verifying that sent Telemetry is correct.
 
-Code at [/test/functional_test.js](/test/functional_test.js).
+Code at [/test/functional_tests.js](/test/functional_tests.js).
 
 Note: The study variation/branch during tests is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
 
