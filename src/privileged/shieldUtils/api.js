@@ -41,8 +41,8 @@ this.shieldUtils = class extends ExtensionAPI {
         "privileged/shieldUtils/jsm/StudyUtilsBootstrap.jsm",
       ),
     );
-    //const { PioneerUtils } = ChromeUtils.import(context.extension.getURL("privileged/shieldUtils/jsm/PioneerUtils.jsm"));
-    //const { PioneerUtilsBootstrap } = ChromeUtils.import(context.extension.getURL("privileged/shieldUtils/jsm/PioneerUtilsBootstrap.jsm"));
+    // const { PioneerUtils } = ChromeUtils.import(context.extension.getURL("privileged/shieldUtils/jsm/PioneerUtils.jsm"));
+    // const { PioneerUtilsBootstrap } = ChromeUtils.import(context.extension.getURL("privileged/shieldUtils/jsm/PioneerUtilsBootstrap.jsm"));
     const bootstrap = studyUtilsBootstrap.Bootstrap(config, studyUtils);
 
     /*
@@ -55,7 +55,7 @@ this.shieldUtils = class extends ExtensionAPI {
 
     const { extension } = this;
 
-    //console.log("PioneerUtils", PioneerUtils);
+    // console.log("PioneerUtils", PioneerUtils);
 
     return {
       shieldUtils: {

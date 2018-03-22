@@ -1,6 +1,6 @@
 "use strict";
 
-var EXPORTED_SYMBOLS = ["Bootstrap"];
+const EXPORTED_SYMBOLS = ["Bootstrap"];
 
 const { utils: Cu } = Components;
 Cu.import("resource://gre/modules/Services.jsm");
