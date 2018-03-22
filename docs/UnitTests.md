@@ -11,9 +11,9 @@ for code coverage.
 WebExtensions are automatically stubbed by the
 [sinon-chrome](https://github.com/acvetkov/sinon-chrome) package.
 
-Note: Currently the package only stubs chrome.* APIs. There is an
+Note: Currently the package only stubs chrome._ APIs. There is an
 [issue on file](https://github.com/acvetkov/sinon-chrome/issues/40) to consider
-supporting the Firefox ones - browser.*
+supporting the Firefox ones - browser._
 
 # Test Files
 

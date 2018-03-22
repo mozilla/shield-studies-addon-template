@@ -1,6 +1,6 @@
 # Linting
 
-[Linting](http://en.wikipedia.org/wiki/Lint_(software)) is important part of
+[Linting](<http://en.wikipedia.org/wiki/Lint_(software)>) is important part of
 code development that provides static analysis and helps to find bugs in code. It
 also helps to developers to adhere to varios style guidelines during the coding
 stage, rather than only finding out at review time.

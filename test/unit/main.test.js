@@ -1,3 +1,6 @@
+/* eslint-env node, mocha */
+/* global chrome */
+
 "use strict";
 
 describe("main.js", function() {
@@ -12,7 +15,7 @@ describe("main.js", function() {
       sinon.assert.calledOnce(chrome.tabs.create);
       sinon.assert.calledWithExactly(chrome.tabs.create, {
         active: true,
-        url: "https://www.mozilla.org"
+        url: "https://www.mozilla.org",
       });
     });
   });

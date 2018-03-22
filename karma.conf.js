@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 const reporters = ["mocha", "coverage"];
 if (process.env.COVERALLS_REPO_TOKEN) {
   reporters.push("coveralls");
@@ -14,7 +16,7 @@ module.exports = function(config) {
       reporters: [
         {
           type: "lcov",
-          subdir: "lcov"
+          subdir: "lcov",
         },
         {
           type: "html",
@@ -22,23 +24,24 @@ module.exports = function(config) {
             // normalization process to keep a consistent browser name
             // across different OS
             return browser.toLowerCase().split(/[ /-]/)[0];
-          }
-        }, {type: "text-summary"}
-      ]
+          },
+        },
+        { type: "text-summary" },
+      ],
     },
     files: [
       "node_modules/sinon/pkg/sinon.js",
       "node_modules/sinon-chrome/bundle/sinon-chrome.min.js",
       "add-on/webextension/main.js",
-      "test/unit/*.test.js"
+      "test/unit/*.test.js",
     ],
-    preprocessors: {"add-on/*.js": ["coverage"]},
+    preprocessors: { "add-on/*.js": ["coverage"] },
     plugins: [
       "karma-coveralls",
       "karma-coverage",
       "karma-firefox-launcher",
       "karma-mocha",
-      "karma-mocha-reporter"
-    ]
+      "karma-mocha-reporter",
+    ],
   });
 };
