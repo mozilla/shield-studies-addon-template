@@ -1,22 +1,21 @@
+# Test plan for this add-on
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 **Contents**
 
-* [Test plan for this add-on](#test-plan-for-this-add-on)
-  * [Manual / QA TEST Instructions](#manual--qa-test-instructions)
-    * [Preparations](#preparations)
-    * [Install the add-on and enroll in the study](#install-the-add-on-and-enroll-in-the-study)
-  * [Expected User Experience / Functionality](#expected-user-experience--functionality)
-    * [Do these tests](#do-these-tests)
-    * [Design](#design)
-    * [Note: checking "sent Telemetry is correct"](#note-checking-sent-telemetry-is-correct)
-  * [Debug](#debug)
+* [Manual / QA TEST Instructions](#manual--qa-test-instructions)
+  * [Preparations](#preparations)
+  * [Install the add-on and enroll in the study](#install-the-add-on-and-enroll-in-the-study)
+* [Expected User Experience / Functionality](#expected-user-experience--functionality)
+  * [Do these tests](#do-these-tests)
+  * [Design](#design)
+  * [Note: checking "sent Telemetry is correct"](#note-checking-sent-telemetry-is-correct)
+* [Debug](#debug)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-# Test plan for this add-on
 
 ## Manual / QA TEST Instructions
 
