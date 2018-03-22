@@ -11,7 +11,23 @@ This is a work in progress branch for [supporting a pure WebExtension workflow i
 
 ## About This Repository
 
-**Note**: This contains an example [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) Web Extension. Use this as a template for yours.
+This repository is intended as an example repository containing templates and good
+practices for creating a [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) add-on for Firefox.
+
+This repository is based on WebExtensions, which are the way forward for extensions in Firefox.
+
+### Aims
+
+The aim is to bring together tools and services we've used on other Shield Study add-ons
+(e.g. [dataleak-pioneer-shield-study](https://github.com/motin/dataleak-pioneer-shield-study)) into a template/example repository, so that new projects can come
+along and get a infrastructure together quickly, and be up and running with code,
+test suites, coverage etc quickly.
+
+### Documentation
+
+It is intended that all parts of this repository have at least outline
+documentation. If you find any parts that are missing, please file an issue or
+create a PR.
 
 ### Using this template
 
