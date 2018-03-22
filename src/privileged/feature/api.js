@@ -1,7 +1,6 @@
 /* global ExtensionAPI */
 
 this.feature = class extends ExtensionAPI {
-
   /**
    * Extension Shutdown
    * APIs that allocate any resources (e.g., adding elements to the browser’s user interface,
