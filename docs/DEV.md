@@ -98,8 +98,6 @@ Code at [/test/functional_tests.js](/test/functional_tests.js).
 
 Note: The study variation/branch during tests is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
 
-(The functional tests are using async/await, so make sure you are running Node 7.6+)
-
 The functional testing set-up is a minimal set of tests imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study addons.
 
 ## Directory Structure and Files

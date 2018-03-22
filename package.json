@@ -60,6 +60,7 @@
     "lint:web-ext-lint": "WEB_EXT_VERBOSE=false web-ext lint",
     "postformat": "npm run eslint-fix",
     "prebuild": "npm run bundle-utils",
+    "pretest": "node test/ensure_minimum_node_version.js",
     "prewatch": "npm run bundle-utils",
     "sign": "echo 'TBD, see: https://bugzilla.mozilla.org/show_bug.cgi?id=1407757'",
     "start": "web-ext run --no-reload",
