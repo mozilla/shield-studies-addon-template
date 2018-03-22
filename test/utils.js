@@ -6,14 +6,13 @@
 require("geckodriver");
 const cmd = require("selenium-webdriver/lib/command");
 const firefox = require("selenium-webdriver/firefox");
-const Fs = require("fs-extra");
-const FxRunnerUtils = require("fx-runner/lib/utils");
-const path = require("path");
 const webdriver = require("selenium-webdriver");
-
+const FxRunnerUtils = require("fx-runner/lib/utils");
+const Fs = require("fs-extra");
 const By = webdriver.By;
 const Context = firefox.Context;
 const until = webdriver.until;
+const path = require("path");
 
 // Note: Geckodriver already has quite a good set of default preferences
 // for disabling various items.
@@ -61,7 +60,6 @@ async function promiseActualBinary(binary) {
 
 /**
  * Uses process.env.FIREFOX_BINARY
- *
  */
 module.exports.promiseSetupDriver = async() => {
   const profile = new firefox.Profile();
@@ -133,6 +131,14 @@ module.exports.removeButtonFromNavbar = async(driver, buttonId) => {
     }
     throw e;
   }
+};
+
+module.exports.promiseAddonButton = driver => {
+  driver.setContext(Context.CHROME);
+  return driver.wait(
+    until.elementLocated(By.id("exampleaddonrepo_mozilla_org-browser-action")),
+    1000,
+  );
 };
 
 module.exports.installAddon = async(driver, fileLocation) => {
