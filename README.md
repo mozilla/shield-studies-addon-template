@@ -1,12 +1,12 @@
-# Shield Study Web Extension Template
+# Shield Studies Add-On Template
 
 ![CircleCI badge](https://img.shields.io/circleci/project/github/mozilla/shield-studies-addon-template/master.svg?label=CircleCI)
 
 ## Important notice
 
-### We are moving to Web Extensions
+### We are moving to WebExtensions
 
-This is a work in progress branch for [supporting a pure Web Extension workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53).
+This is a work in progress branch for [supporting a pure WebExtension workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53).
 
 ## About This Repository
 
