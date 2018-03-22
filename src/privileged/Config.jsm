@@ -8,9 +8,9 @@
 */
 
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(config|EXPORTED_SYMBOLS)" }]*/
-var EXPORTED_SYMBOLS = ["config"];
+const EXPORTED_SYMBOLS = ["config"];
 
-var config = {
+const config = {
   // required STUDY key
   study: {
     /** Required for studyUtils.setup():

@@ -37,7 +37,7 @@ class BrowserActionButtonChoiceFeature {
     });
 
     // telemetry: FIRST CLICK
-    if (this.timesClickedInSession == 1) {
+    if (this.timesClickedInSession === 1) {
       browser.shieldUtils.telemetry({ event: "button-first-click-in-session" });
     }
 
