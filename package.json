@@ -41,7 +41,7 @@
     "shield-study",
     "template"
   ],
-  "license": "MPL-2",
+  "license": "MPL-2.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/mozilla/shield-studies-addon-template.git"
