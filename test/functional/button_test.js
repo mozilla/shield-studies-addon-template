@@ -1,9 +1,11 @@
+/* eslint-env node, mocha */
+
 "use strict";
 
-let assert = require("assert");
-let utils = require("./utils");
-let firefox = require("selenium-webdriver/firefox");
-let Context = firefox.Context;
+const assert = require("assert");
+const utils = require("./utils");
+const firefox = require("selenium-webdriver/firefox");
+const Context = firefox.Context;
 
 // Mocha can't use arrow functions as sometimes we need to call `this` and
 // using an arrow function alters the binding of `this`.
@@ -17,7 +19,7 @@ describe("Example Add-on Functional Tests", function() {
   let driver;
 
   before(function() {
-    let promise = utils.promiseSetupDriver();
+    const promise = utils.promiseSetupDriver();
 
     return promise.then(newDriver => {
       driver = newDriver;
@@ -30,7 +32,8 @@ describe("Example Add-on Functional Tests", function() {
   });
 
   it("should have a toolbar button", function() {
-    return utils.promiseAddonButton(driver)
+    return utils
+      .promiseAddonButton(driver)
       .then(button => button.getAttribute("tooltiptext"))
       .then(text => assert.equal(text, "Visit Mozilla"));
   });
@@ -38,43 +41,56 @@ describe("Example Add-on Functional Tests", function() {
   // XXX Currently failing, see
   // https://github.com/mozilla/example-addon-repo/issues/1
   it("should open a webpage when the button is clicked", function() {
-    return driver.getAllWindowHandles()
-      .then(handles => assert.equal(1, 1))
-      // Find the button, click it and check it opens a new tab.
-      .then(function*() {
-        let button = yield utils.promiseAddonButton(driver);
+    return (
+      driver
+        .getAllWindowHandles()
+        .then(handles => assert.equal(1, 1))
+        // Find the button, click it and check it opens a new tab.
+        .then(function* () {
+          const button = yield utils.promiseAddonButton(driver);
 
-        button.click();
+          button.click();
 
-        return driver.wait(function*() {
-          let handles = yield driver.getAllWindowHandles();
-          return handles.length === 2;
-        }, 9000, "Should have opened a new tab.");
-      })
-      // Switch selenium to the new tab.
-      .then(function*() {
-        let handles = yield driver.getAllWindowHandles();
+          return driver.wait(
+            function* () {
+              const handles = yield driver.getAllWindowHandles();
+              return handles.length === 2;
+            },
+            9000,
+            "Should have opened a new tab.",
+          );
+        })
+        // Switch selenium to the new tab.
+        .then(function* () {
+          const handles = yield driver.getAllWindowHandles();
 
-        let currentHandle = yield driver.getWindowHandle();
+          const currentHandle = yield driver.getWindowHandle();
 
-        driver.setContext(Context.CONTENT);
-        // Find the new window handle.
-        let newWindowHandle = null;
-        for (const handle of handles) {
-          if (handle !== currentHandle) {
-            newWindowHandle = handle;
+          driver.setContext(Context.CONTENT);
+          // Find the new window handle.
+          let newWindowHandle = null;
+          for (const handle of handles) {
+            if (handle !== currentHandle) {
+              newWindowHandle = handle;
+            }
           }
-        }
 
-        return driver.switchTo().window(newWindowHandle);
-      })
-      // Check the tab has loaded the right page.
-      // We use driver.wait to wait for the page to be loaded, as due to the click()
-      // we're not able to easily use the load listeners built into selenium.
-      .then(() => driver.wait(function*() {
-        let currentUrl = yield driver.getCurrentUrl();
+          return driver.switchTo().window(newWindowHandle);
+        })
+        // Check the tab has loaded the right page.
+        // We use driver.wait to wait for the page to be loaded, as due to the click()
+        // we're not able to easily use the load listeners built into selenium.
+        .then(() =>
+          driver.wait(
+            function* () {
+              const currentUrl = yield driver.getCurrentUrl();
 
-        return currentUrl === "https://www.mozilla.org/en-US/";
-      }, 5000, "Should have loaded mozilla.org"));
+              return currentUrl === "https://www.mozilla.org/en-US/";
+            },
+            5000,
+            "Should have loaded mozilla.org",
+          ),
+        )
+    );
   });
 });
