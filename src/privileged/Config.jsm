@@ -10,7 +10,8 @@
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(config|EXPORTED_SYMBOLS)" }]*/
 const EXPORTED_SYMBOLS = ["config"];
 
-const config = {
+// Anything else than "var" here will result in config being undefined when included in other js modules
+var config = { // eslint-disable-line no-var
   // required STUDY key
   study: {
     /** Required for studyUtils.setup():
