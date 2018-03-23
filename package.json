@@ -74,7 +74,7 @@
     "sign": "echo 'TBD, see: https://bugzilla.mozilla.org/show_bug.cgi?id=1407757'",
     "start": "web-ext run --no-reload --verbose",
     "test": "npm-run-all test:*",
-    "test:func": "export ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip && export FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} && mocha test/functional/",
+    "test:func": "export ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip && export FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} && mocha test/functional/ --bail",
     "test:karma": "NODE_ENV=test karma start",
     "uninstall": "node scripts/uninstall_ff.js",
     "watch": "web-ext run"
