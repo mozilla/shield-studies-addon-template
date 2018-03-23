@@ -6,6 +6,17 @@ const assert = require("assert");
 const utils = require("./utils");
 const firefox = require("selenium-webdriver/firefox");
 const Context = firefox.Context;
+const webdriver = require("selenium-webdriver");
+const By = webdriver.By;
+const until = webdriver.until;
+
+const promiseAddonButton = async driver => {
+  driver.setContext(Context.CHROME);
+  return driver.wait(
+    until.elementLocated(By.id("exampleaddonrepo_mozilla_org-browser-action")),
+    1000,
+  );
+};
 
 // Mocha can't use arrow functions as sometimes we need to call `this` and
 // using an arrow function alters the binding of `this`.
@@ -31,11 +42,10 @@ describe("Example Add-on Functional Tests", function() {
     return driver.quit();
   });
 
-  it("should have a toolbar button", function() {
-    return utils
-      .promiseAddonButton(driver)
-      .then(button => button.getAttribute("tooltiptext"))
-      .then(text => assert.equal(text, "Visit Mozilla"));
+  it("should have a toolbar button", async function() {
+    const button = await promiseAddonButton(driver);
+    const text = await button.getAttribute("tooltiptext");
+    return assert.equal(text, "Visit Mozilla");
   });
 
   // XXX Currently failing, see
@@ -46,14 +56,14 @@ describe("Example Add-on Functional Tests", function() {
         .getAllWindowHandles()
         .then(handles => assert.equal(1, 1))
         // Find the button, click it and check it opens a new tab.
-        .then(function* () {
-          const button = yield utils.promiseAddonButton(driver);
+        .then(async function() {
+          const button = await promiseAddonButton(driver);
 
           button.click();
 
           return driver.wait(
-            function* () {
-              const handles = yield driver.getAllWindowHandles();
+            async function() {
+              const handles = await driver.getAllWindowHandles();
               return handles.length === 2;
             },
             9000,
@@ -61,10 +71,10 @@ describe("Example Add-on Functional Tests", function() {
           );
         })
         // Switch selenium to the new tab.
-        .then(function* () {
-          const handles = yield driver.getAllWindowHandles();
+        .then(async function() {
+          const handles = await driver.getAllWindowHandles();
 
-          const currentHandle = yield driver.getWindowHandle();
+          const currentHandle = await driver.getWindowHandle();
 
           driver.setContext(Context.CONTENT);
           // Find the new window handle.
@@ -82,8 +92,8 @@ describe("Example Add-on Functional Tests", function() {
         // we're not able to easily use the load listeners built into selenium.
         .then(() =>
           driver.wait(
-            function* () {
-              const currentUrl = yield driver.getCurrentUrl();
+            async function() {
+              const currentUrl = await driver.getCurrentUrl();
 
               return currentUrl === "https://www.mozilla.org/en-US/";
             },
