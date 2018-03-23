@@ -7,7 +7,7 @@
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "dependencies": {
-    "shield-studies-addon-utils": "^4.1.0"
+    "shield-studies-addon-utils": "^5.0.0-alpha1"
   },
   "devDependencies": {
     "doctoc": "^1.3.0",
