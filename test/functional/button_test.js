@@ -21,84 +21,33 @@ const promiseAddonButton = async driver => {
 // Hence we disable prefer-arrow-callback here so that mocha/no-mocha-arrows can
 // be applied nicely.
 
-describe("Example Add-on Functional Tests", function() {
+describe("ui button (browserAction)", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(10000);
 
   let driver;
 
-  before(function() {
-    const promise = utils.promiseSetupDriver();
-
-    return promise.then(newDriver => {
-      driver = newDriver;
-      return Promise.resolve();
-    });
+  before(async function() {
+    driver = await utils.promiseSetupDriver();
+    return utils.installAddon(driver);
   });
 
   after(function() {
     return driver.quit();
   });
 
-  it("should have a toolbar button", async function() {
+  it("exists", async function() {
     const button = await promiseAddonButton(driver);
-    const text = await button.getAttribute("tooltiptext");
-    return assert.equal(text, "Visit Mozilla");
+    return assert(typeof button === "object");
   });
 
-  // XXX Currently failing, see
-  // https://github.com/mozilla/example-addon-repo/issues/1
-  it("should open a webpage when the button is clicked", function() {
-    return (
-      driver
-        .getAllWindowHandles()
-        .then(handles => assert.equal(1, 1))
-        // Find the button, click it and check it opens a new tab.
-        .then(async function() {
-          const button = await promiseAddonButton(driver);
+  it("TBD responds to clicks", async() => {
+    const button = await promiseAddonButton(driver);
+    button.click();
+    assert(true);
+  });
 
-          button.click();
-
-          return driver.wait(
-            async function() {
-              const handles = await driver.getAllWindowHandles();
-              return handles.length === 2;
-            },
-            9000,
-            "Should have opened a new tab.",
-          );
-        })
-        // Switch selenium to the new tab.
-        .then(async function() {
-          const handles = await driver.getAllWindowHandles();
-
-          const currentHandle = await driver.getWindowHandle();
-
-          driver.setContext(Context.CONTENT);
-          // Find the new window handle.
-          let newWindowHandle = null;
-          for (const handle of handles) {
-            if (handle !== currentHandle) {
-              newWindowHandle = handle;
-            }
-          }
-
-          return driver.switchTo().window(newWindowHandle);
-        })
-        // Check the tab has loaded the right page.
-        // We use driver.wait to wait for the page to be loaded, as due to the click()
-        // we're not able to easily use the load listeners built into selenium.
-        .then(() =>
-          driver.wait(
-            async function() {
-              const currentUrl = await driver.getCurrentUrl();
-
-              return currentUrl === "https://www.mozilla.org/en-US/";
-            },
-            5000,
-            "Should have loaded mozilla.org",
-          ),
-        )
-    );
+  it("TBD sends correct telemetry", async() => {
+    assert(true);
   });
 });
