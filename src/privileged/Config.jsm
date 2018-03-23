@@ -11,6 +11,7 @@
 const EXPORTED_SYMBOLS = ["config"];
 
 // Anything else than "var" here will result in config being undefined when included in other js modules
+// prettier-ignore
 var config = { // eslint-disable-line no-var
   // required STUDY key
   study: {
