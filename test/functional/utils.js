@@ -133,14 +133,6 @@ module.exports.removeButtonFromNavbar = async(driver, buttonId) => {
   }
 };
 
-module.exports.promiseAddonButton = driver => {
-  driver.setContext(Context.CHROME);
-  return driver.wait(
-    until.elementLocated(By.id("exampleaddonrepo_mozilla_org-browser-action")),
-    1000,
-  );
-};
-
 module.exports.installAddon = async(driver, fileLocation) => {
   // references:
   //    https://bugzilla.mozilla.org/show_bug.cgi?id=1298025
