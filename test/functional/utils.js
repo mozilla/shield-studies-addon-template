@@ -225,7 +225,7 @@ module.exports.allAddons = async(driver) => {
  * - timestamp:  only pings after this timestamp.
  * - headersOnly: boolean, just the 'headers' for the pings, not the full bodies.
  */
-module.exports.getTelemetryPings = async(driver, passedOptions) => {
+const getTelemetryPings = async(driver, passedOptions) => {
   // callback is how you get the return back from the script
   return driver.executeAsyncScript(async(options, callback) => {
     let { type } = options;
@@ -251,6 +251,20 @@ module.exports.getTelemetryPings = async(driver, passedOptions) => {
     callback(await Promise.all(pingData));
   }, passedOptions);
 };
+module.exports.getTelemetryPings = getTelemetryPings;
+
+const getShieldPingsAfterTimestamp = async(driver, ts) => {
+  return getTelemetryPings(driver, {
+    type: ["shield-study", "shield-study-addon"],
+    timestamp: ts,
+  });
+};
+module.exports.getShieldPingsAfterTimestamp = getShieldPingsAfterTimestamp;
+
+module.exports.summarizePings = pings => {
+  return pings.map(p => [p.payload.type, p.payload.data]);
+};
+
 
 // TODO glind, this interface feels janky
 // this feels like it wants to be $ like.
