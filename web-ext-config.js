@@ -2,7 +2,6 @@
 
 const defaultConfig = {
   // Global options:
-  verbose: process.env.WEB_EXT_VERBOSE !== "false", // default to verbose mode unless the env var is set to negate this
   sourceDir: "./src/",
   artifactsDir: "./dist/",
   ignoreFiles: [".DS_Store"],
