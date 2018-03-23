@@ -1,10 +1,5 @@
 /* eslint-env node, mocha */
 
-/* Purpose:
- *
- * Tests that are SPECIFIC TO THIS ADDON's FUNCTIONALITY
- */
-
 // for unhandled promise rejection debugging
 process.on("unhandledRejection", r => console.log(r)); // eslint-disable-line no-console
 
@@ -14,7 +9,7 @@ const utils = require("./utils");
 // TODO create new profile per test?
 // then we can test with a clean profile every time
 
-describe("basic functional tests", function() {
+describe("basic telemetry", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(15000);
 
@@ -26,11 +21,7 @@ describe("basic functional tests", function() {
     const beginTime = Date.now();
     driver = await utils.promiseSetupDriver();
     // await setTreatment(driver, "doorHangerAddToToolbar");
-
-    // install the addon
     await utils.installAddon(driver);
-    // add the share-button to the toolbar
-    // await utils.addShareButton(driver);
     // allow our shield study addon some time to send initial pings
     await driver.sleep(1000);
     // collect sent pings
