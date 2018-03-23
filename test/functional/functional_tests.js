@@ -183,16 +183,4 @@ describe("basic functional tests", function() {
       assert(true);
     });
   });
-
-  describe("ui button (browserAction)", function() {
-    it("TBD exists", async() => {
-      assert(true);
-    });
-    it("TBD responds to clicks", async() => {
-      assert(true);
-    });
-    it("TBD sends correct telemetry", async() => {
-      assert(true);
-    });
-  });
 });
