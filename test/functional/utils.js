@@ -133,6 +133,37 @@ module.exports.removeButtonFromNavbar = async(driver, buttonId) => {
   }
 };
 
+const promiseManifest = async() => {
+  const manifestJson = await Fs.readFile(
+    path.resolve("src/manifest.json"),
+    "utf8",
+  );
+  return JSON.parse(manifestJson);
+};
+module.exports.promiseManifest = promiseManifest;
+
+/**
+ * The widget id is used to identify add-on specific chrome elements. Examples:
+ *  - Browser action - {addonWidgetId}-browser-action
+ *  - Page action - {addonWidgetId}-page-action
+ * Search for makeWidgetId(extension.id) in the Firefox source code for more examples.
+ * @returns {Promise<*>}
+ */
+const addonWidgetId = async() => {
+  /**
+   * From firefox/browser/components/extensions/ExtensionPopups.jsm
+   */
+  function makeWidgetId(id) {
+    id = id.toLowerCase();
+    // FIXME: This allows for collisions.
+    return id.replace(/[^a-z0-9_-]/g, "_");
+  }
+
+  const manifest = await promiseManifest();
+  return makeWidgetId(manifest.applications.gecko.id);
+};
+module.exports.addonWidgetId = addonWidgetId;
+
 module.exports.installAddon = async(driver, fileLocation) => {
   // references:
   //    https://bugzilla.mozilla.org/show_bug.cgi?id=1298025

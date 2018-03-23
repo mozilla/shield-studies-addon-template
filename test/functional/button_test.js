@@ -11,11 +11,9 @@ const By = webdriver.By;
 const until = webdriver.until;
 
 const promiseAddonButton = async driver => {
+  const browserActionId = (await utils.addonWidgetId()) + "-browser-action";
   driver.setContext(Context.CHROME);
-  return driver.wait(
-    until.elementLocated(By.id("exampleaddonrepo_mozilla_org-browser-action")),
-    1000,
-  );
+  return driver.wait(until.elementLocated(By.id(browserActionId)), 1000);
 };
 
 // Mocha can't use arrow functions as sometimes we need to call `this` and
