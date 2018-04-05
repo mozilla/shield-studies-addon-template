@@ -19,17 +19,25 @@
         "paths": [["feature"]]
       }
     },
-    "shieldUtils": {
-      "schema": "./privileged/shieldUtils/schema.json",
+    "prefs": {
+      "schema": "./privileged/prefs/schema.json",
       "parent": {
         "scopes": ["addon_parent"],
-        "script": "./privileged/shieldUtils/api.js",
-        "paths": [["shieldUtils"]]
+        "script": "./privileged/prefs/api.js",
+        "paths": [["prefs"]]
+      }
+    },
+    "study": {
+      "schema": "./privileged/study/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/study/api.js",
+        "paths": [["study"]]
       }
     }
   },
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["studySetup.js", "background.js"]
   },
   "icons": {
     "48": "icon.png"

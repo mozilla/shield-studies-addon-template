@@ -56,7 +56,7 @@
   },
   "scripts": {
     "build": "web-ext build",
-    "bundle-utils": "cp node_modules/shield-studies-addon-utils/dist/StudyUtils.jsm src/privileged/shieldUtils/jsm/StudyUtils.jsm",
+    "bundle-utils": "bin/bundle-shield-studies-addon-utils.sh",
     "docformat": "doctoc --title '**Contents**' docs/*.md && prettier '**/*.md' --write",
     "eslint": "eslint . --ext jsm --ext js --ext json",
     "eslint-fix": "npm run eslint -- --fix",
