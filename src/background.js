@@ -1,4 +1,5 @@
 /* eslint no-console:off */
+/* global studySetup */
 
 "use strict";
 
@@ -38,11 +39,11 @@ class BrowserActionButtonChoiceFeature {
 
     // telemetry: FIRST CLICK
     if (this.timesClickedInSession === 1) {
-      browser.shieldUtils.telemetry({ event: "button-first-click-in-session" });
+      browser.study.telemetry({ event: "button-first-click-in-session" });
     }
 
     // telemetry EVERY CLICK
-    browser.shieldUtils.telemetry({
+    browser.study.telemetry({
       event: "button-click",
       timesClickedInSession: "" + this.timesClickedInSession,
     });
@@ -52,41 +53,40 @@ class BrowserActionButtonChoiceFeature {
     // - 3 timesClickedInSession in a session ends the study.
     // - see `../Config.jsm` for what happens during this ending.
     if (this.timesClickedInSession >= 3) {
-      browser.shieldUtils.endStudy({ reason: "used-often" });
+      browser.study.endStudy({ reason: "used-often" });
     }
   }
 }
 
-/**
- * CONFIGURE and INSTRUMENT the BrowserAction button for a specific variation
- *
- *  1. Request 'info' from the shieldUtils
- *  2. We only care about the `variation` key.
- *  3. initialize the feature, using our specific variation
- */
-async function runOnce() {
-  // ensure we have configured shieldUtils and are supposed to run our feature
-  await browser.shieldUtils.bootstrapStudy();
+class Study {
+  // Should run only upon install event
+  // Use web extension experiments to get whatever prefs, add-ons,
+  // telemetry, anything necessary for the check
+  static async isEligible() {
+    // browser.prefs.get('my.favorite.pref');
+    return true;
+  }
 
-  // get study variation
-  const { variation } = await browser.shieldUtils.info();
+  // Expiration checks should be implemented in a very reliable way by
+  // the add-on since Normandy does not handle study expiration in a reliable manner
+  static async hasExpired() {
+    return false;
+  }
+}
 
-  // initiate the chrome-privileged part of the study add-on
-  await browser.feature.start(variation);
-
-  // initiate the non-privileged part of the study add-on
+async function initiateStudy() {
+  // Set dynamic study configuration flags
+  studySetup.eligible = await Study.isEligible();
+  studySetup.expired = await Study.hasExpired();
+  // Ensure we have configured study and are supposed to run our feature
+  await browser.study.configure(studySetup);
+  // Run the startup study checks
+  await browser.study.startup();
+  // Read the active study variation
+  const { variation } = await browser.study.info();
+  // Initiate our study-specific feature
   new BrowserActionButtonChoiceFeature(variation);
 }
-
-/**
- * Fired when a profile that has this extension installed first starts up.
- * This event is not fired when a private browsing/incognito profile is started.
- */
-function handleStartup() {
-  console.log("handleStartup", arguments);
-}
-
-browser.runtime.onStartup.addListener(handleStartup);
 
 /**
  * Fired when the extension is first installed, when the extension is updated
@@ -94,13 +94,24 @@ browser.runtime.onStartup.addListener(handleStartup);
  * @param details
  */
 function handleInstalled(details) {
-  console.log("handleInstalled", details.reason, details);
+  console.log(
+    "The 'handleInstalled' event was fired.",
+    details.reason,
+    details,
+  );
+  initiateStudy();
 }
 
-browser.runtime.onInstalled.addListener(handleInstalled);
+/**
+ * Fired when a profile that has this extension installed first starts up.
+ * This event is not fired when a private browsing/incognito profile is started.
+ */
+async function handleStartup() {
+  console.log("The 'handleStartup' event was fired.", arguments);
+}
 
 // todo: on shutdown
-// Run shutdown-related non-priviliged code
+// Run shutdown-related non-privileged code
 
-// actually start
-runOnce();
+browser.runtime.onStartup.addListener(handleStartup);
+browser.runtime.onInstalled.addListener(handleInstalled);

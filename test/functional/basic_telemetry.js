@@ -19,7 +19,7 @@ describe("basic telemetry", function() {
   // runs ONCE
   before(async() => {
     const beginTime = Date.now();
-    driver = await utils.promiseSetupDriver();
+    driver = await utils.setup.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
     // await setTreatment(driver, "doorHangerAddToToolbar");
     await utils.installAddon(driver);
     // allow our shield study addon some time to send initial pings
