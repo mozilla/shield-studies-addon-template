@@ -1,5 +1,6 @@
 {
   "name": "Button Icon Preference - Shield Study Example",
+  "description": "__MSG_extensionDescription__",
   "version": "2.0.0",
   "manifest_version": 2,
   "applications": {
@@ -8,6 +9,7 @@
       "strict_min_version": "59.0"
     }
   },
+  "default_locale": "en-US",
   "experiment_apis": {
     "feature": {
       "schema": "./privileged/feature/schema.json",
@@ -35,6 +37,6 @@
   "browser_action": {
     "browser_style": true,
     "default_icon": "icons/isolatedcorndog.svg",
-    "default_title": "button label"
+    "default_title": "__MSG_buttonTitle__"
   }
 }

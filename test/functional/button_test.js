@@ -41,6 +41,12 @@ describe("ui button (browserAction)", function() {
     return assert(typeof button === "object");
   });
 
+  it("the toolbar button label should be localized", async function() {
+    const button = await promiseAddonButton(driver);
+    const text = await button.getAttribute("tooltiptext");
+    return assert.equal(text, "Visit Mozilla");
+  });
+
   it("TBD responds to clicks", async() => {
     const button = await promiseAddonButton(driver);
     button.click();
