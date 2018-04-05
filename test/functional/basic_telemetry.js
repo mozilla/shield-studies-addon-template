@@ -21,11 +21,11 @@ describe("basic telemetry", function() {
     const beginTime = Date.now();
     driver = await utils.setup.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
     // await setTreatment(driver, "doorHangerAddToToolbar");
-    await utils.installAddon(driver);
+    await utils.setup.installAddon(driver);
     // allow our shield study addon some time to send initial pings
     await driver.sleep(1000);
     // collect sent pings
-    pings = await utils.getShieldPingsAfterTimestamp(driver, beginTime);
+    pings = await utils.pings.getShieldPingsAfterTimestamp(driver, beginTime);
     // console.log(pingsReport(pings).report);
   });
 
@@ -51,7 +51,7 @@ describe("basic telemetry", function() {
   });
 
   it("at least one shield-study telemetry ping with study_state=installed", async() => {
-    const foundPings = utils.searchTelemetry(
+    const foundPings = utils.pings.searchTelemetry(
       [
         ping =>
           ping.type === "shield-study" &&
@@ -66,7 +66,7 @@ describe("basic telemetry", function() {
   });
 
   it("at least one shield-study telemetry ping with study_state=enter", async() => {
-    const foundPings = utils.searchTelemetry(
+    const foundPings = utils.pings.searchTelemetry(
       [
         ping =>
           ping.type === "shield-study" &&
