@@ -26,8 +26,8 @@ describe("basic functional tests", function() {
 
   // runs ONCE
   before(async() => {
-    driver = await utils.promiseSetupDriver();
-    await utils.installAddon(driver);
+    driver = await utils.setup.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
+    await utils.setup.installAddon(driver);
   });
 
   after(async() => {
@@ -67,7 +67,7 @@ describe("basic functional tests", function() {
       await firstButton.click();
       await driver.sleep(100);
 
-      const newPings = await utils.getShieldPingsAfterTimestamp(
+      const newPings = await utils.pings.getShieldPingsAfterTimestamp(
         driver,
         startTime,
       );
