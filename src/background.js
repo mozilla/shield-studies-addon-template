@@ -1,62 +1,7 @@
 /* eslint no-console:off */
-/* global studySetup */
+/* global studySetup, Feature */
 
 "use strict";
-
-class BrowserActionButtonChoiceFeature {
-  /**
-   * - set image, text, click handler (telemetry)
-   */
-  constructor(variation) {
-    console.log(
-      "Initializing BrowserActionButtonChoiceFeature:",
-      variation.name,
-    );
-    this.timesClickedInSession = 0;
-
-    // modify BrowserAction (button) ui for this particular {variation}
-    console.log("path:", `icons/${variation.name}.svg`);
-    // TODO: Running into an error "values is undefined" here
-    browser.browserAction.setIcon({ path: `icons/${variation.name}.svg` });
-    browser.browserAction.setTitle({ title: variation.name });
-    browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
-    console.log("initialized");
-  }
-
-  /** handleButtonClick
-   *
-   * - instrument browserAction button clicks
-   * - change label
-   */
-  handleButtonClick() {
-    console.log("handleButtonClick");
-    // note: doesn't persist across a session, unless you use localStorage or similar.
-    this.timesClickedInSession += 1;
-    console.log("got a click", this.timesClickedInSession);
-    browser.browserAction.setBadgeText({
-      text: this.timesClickedInSession.toString(),
-    });
-
-    // telemetry: FIRST CLICK
-    if (this.timesClickedInSession === 1) {
-      browser.study.telemetry({ event: "button-first-click-in-session" });
-    }
-
-    // telemetry EVERY CLICK
-    browser.study.telemetry({
-      event: "button-click",
-      timesClickedInSession: "" + this.timesClickedInSession,
-    });
-
-    // webExtension-initiated ending for "used-often"
-    //
-    // - 3 timesClickedInSession in a session ends the study.
-    // - see `../Config.jsm` for what happens during this ending.
-    if (this.timesClickedInSession >= 3) {
-      browser.study.endStudy({ reason: "used-often" });
-    }
-  }
-}
 
 class Study {
   // Should run only upon install event
@@ -74,7 +19,7 @@ class Study {
   }
 }
 
-async function initiateStudy() {
+async function initiateStudy(reason) {
   // Set dynamic study configuration flags
   studySetup.eligible = await Study.isEligible();
   studySetup.expired = await Study.hasExpired();
@@ -85,7 +30,7 @@ async function initiateStudy() {
   // Read the active study variation
   const { variation } = await browser.study.info();
   // Initiate our study-specific feature
-  new BrowserActionButtonChoiceFeature(variation);
+  new Feature(variation, reason);
 }
 
 /**
@@ -94,20 +39,17 @@ async function initiateStudy() {
  * @param details
  */
 function handleInstalled(details) {
-  console.log(
-    "The 'handleInstalled' event was fired.",
-    details.reason,
-    details,
-  );
-  initiateStudy();
+  console.log("The 'handleInstalled' event was fired.", details);
+  initiateStudy(details.reason);
 }
 
 /**
  * Fired when a profile that has this extension installed first starts up.
  * This event is not fired when a private browsing/incognito profile is started.
  */
-async function handleStartup() {
-  console.log("The 'handleStartup' event was fired.", arguments);
+async function handleStartup(details) {
+  console.log("The 'handleStartup' event was fired.", details);
+  initiateStudy(details.reason);
 }
 
 // todo: on shutdown

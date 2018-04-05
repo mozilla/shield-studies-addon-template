@@ -11,12 +11,12 @@
   },
   "default_locale": "en-US",
   "experiment_apis": {
-    "feature": {
-      "schema": "./privileged/feature/schema.json",
+    "introductionNotificationBar": {
+      "schema": "./privileged/introductionNotificationBar/schema.json",
       "parent": {
         "scopes": ["addon_parent"],
-        "script": "./privileged/feature/api.js",
-        "paths": [["feature"]]
+        "script": "./privileged/introductionNotificationBar/api.js",
+        "paths": [["introductionNotificationBar"]]
       }
     },
     "prefs": {
@@ -37,7 +37,7 @@
     }
   },
   "background": {
-    "scripts": ["studySetup.js", "background.js"]
+    "scripts": ["studySetup.js", "Feature.js", "background.js"]
   },
   "icons": {
     "48": "icon.png"
