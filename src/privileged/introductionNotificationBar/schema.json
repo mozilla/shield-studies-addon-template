@@ -1,0 +1,33 @@
+[
+  {
+    "namespace": "introductionNotificationBar",
+    "description":
+      "A part of the study add-on that needs to be chrome-privileged",
+    "functions": [
+      {
+        "name": "show",
+        "type": "function",
+        "description": "TODO",
+        "async": true,
+        "parameters": []
+      }
+    ],
+    "events": [
+      {
+        "name": "onIntroductionShown",
+        "description": "Description of the event",
+        "parameters": []
+      },
+      {
+        "name": "onIntroductionAccept",
+        "description": "Description of the event",
+        "parameters": []
+      },
+      {
+        "name": "onIntroductionLeaveStudy",
+        "description": "Description of the event",
+        "parameters": []
+      }
+    ]
+  }
+]

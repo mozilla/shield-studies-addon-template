@@ -1,0 +1,162 @@
+"use strict";
+
+/* global ExtensionAPI */
+
+ChromeUtils.import("resource://gre/modules/Console.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
+ChromeUtils.import("resource://gre/modules/ExtensionUtils.jsm");
+
+// eslint-disable-next-line no-undef
+const { EventManager } = ExtensionCommon;
+// eslint-disable-next-line no-undef
+const { EventEmitter } = ExtensionUtils;
+
+// eslint-disable-next-line no-undef
+XPCOMUtils.defineLazyModuleGetter(
+  this,
+  "RecentWindow",
+  "resource:///modules/RecentWindow.jsm",
+);
+
+/** Return most recent NON-PRIVATE browser window, so that we can
+ * manipulate chrome elements on it.
+ */
+function getMostRecentBrowserWindow() {
+  return RecentWindow.getMostRecentBrowserWindow({
+    private: false,
+    allowPopups: false,
+  });
+}
+
+/** Display instrumented 'notification bar' explaining the feature to the user
+ *
+ *   Telemetry Probes:
+ *
+ *   - {event: introduction-shown}
+ *
+ *   - {event: introduction-accept}
+ *
+ *   - {event: introduction-leave-study}
+ *
+ *    Note:  Bar WILL NOT SHOW if the only window open is a private window.
+ *
+ *    Note:  Handling of 'x' is not implemented.  For more complete implementation:
+ *
+ *      https://github.com/gregglind/57-perception-shield-study/blob/680124a/addon/lib/Feature.jsm#L148-L152
+ *
+ */
+class IntroductionNotificationBar extends EventEmitter {
+  show() {
+    const self = this;
+    const recentWindow = getMostRecentBrowserWindow();
+    const doc = recentWindow.document;
+    const notificationBox = doc.querySelector(
+      "#high-priority-global-notificationbox",
+    );
+
+    if (!notificationBox) return;
+
+    // api: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/appendNotification
+    notificationBox.appendNotification(
+      "Welcome to the new feature! Look for changes!",
+      "feature orienation",
+      null, // icon
+      notificationBox.PRIORITY_INFO_HIGH, // priority
+      // buttons
+      [
+        {
+          label: "Thanks!",
+          isDefault: true,
+          callback: function acceptButton() {
+            // eslint-disable-next-line no-console
+            console.log("clicked THANKS!");
+            self.emit("introduction-accept");
+          },
+        },
+        {
+          label: "I do not want this.",
+          callback: function leaveStudyButton() {
+            // eslint-disable-next-line no-console
+            console.log("clicked NO!");
+            self.emit("introduction-leave-study");
+          },
+        },
+      ],
+      // callback for nb events
+      null,
+    );
+
+    self.emit("introduction-shown");
+  }
+}
+
+this.introductionNotificationBar = class extends ExtensionAPI {
+  /**
+   * Extension Shutdown
+   * APIs that allocate any resources (e.g., adding elements to the browser’s user interface,
+   * setting up internal event listeners, etc.) must free these resources when the extension
+   * for which they are allocated is shut down.
+   */
+  onShutdown(shutdownReason) {
+    console.log("onShutdown", shutdownReason);
+    // TODO: remove any active ui
+  }
+
+  getAPI(context) {
+    const introductionNotificationBar = new IntroductionNotificationBar();
+    return {
+      introductionNotificationBar: {
+        show() {
+          introductionNotificationBar.show();
+        },
+        onIntroductionShown: new EventManager(
+          context,
+          "introductionNotificationBar.onIntroductionShown",
+          fire => {
+            const listener = value => {
+              fire.async(value);
+            };
+            introductionNotificationBar.on("introduction-shown", listener);
+            return () => {
+              introductionNotificationBar.off("introduction-shown", listener);
+            };
+          },
+        ).api(),
+        onIntroductionAccept: new EventManager(
+          context,
+          "introductionNotificationBar.onIntroductionAccept",
+          fire => {
+            const listener = value => {
+              fire.async(value);
+            };
+            introductionNotificationBar.on("introduction-accept", listener);
+            return () => {
+              introductionNotificationBar.off("introduction-accept", listener);
+            };
+          },
+        ).api(),
+        onIntroductionLeaveStudy: new EventManager(
+          context,
+          "introductionNotificationBar.onIntroductionLeaveStudy",
+          fire => {
+            const listener = value => {
+              fire.async(value);
+            };
+            introductionNotificationBar.on(
+              "introduction-leave-study",
+              listener,
+            );
+            return () => {
+              introductionNotificationBar.off(
+                "introduction-leave-study",
+                listener,
+              );
+            };
+          },
+        ).api(),
+      },
+    };
+  }
+};
