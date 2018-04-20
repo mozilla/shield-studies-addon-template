@@ -38,15 +38,22 @@ jobs:
 
       - run:
           name: Lint
-          command: npm run eslint
+          command: npm run lint
 
       - run:
           name: Build .XPI
           command: npm run build
 
       - run:
+          name: Unit tests
+          command: npm run test:karma
+
+      - run:
           name: Functional tests
-          command: npm run test
+          command: npm run test:func
 
       - store_artifacts:
           path: "dist"
+
+      - store_test_results:
+          path: "build/coverage"

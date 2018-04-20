@@ -8,7 +8,7 @@ src/privileged/prefs/api.js
 src/privileged/prefs/schema.json
 src/privileged/study/api.js
 src/privileged/study/schema.json
-# for circleCI; don't lint/format code in the Firefox directory
-firefox
+# for circleCI; don't lint/format code the directory where get-firefox downloads the Firefox binaries
+/firefox
 # don't lint/format package.json since npm install formats it differently by default
 package.json
