@@ -40,7 +40,6 @@ async function initiateStudy(reason) {
  */
 function handleInstalled(details) {
   console.log("The 'handleInstalled' event was fired.", details);
-  initiateStudy(details.reason);
 }
 
 /**
@@ -49,7 +48,6 @@ function handleInstalled(details) {
  */
 async function handleStartup(details) {
   console.log("The 'handleStartup' event was fired.", details);
-  initiateStudy(details.reason);
 }
 
 // todo: on shutdown
