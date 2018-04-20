@@ -23,7 +23,7 @@
 
 ## Getting started
 
-```
+```shell
 # install dependencies
 npm install
 
@@ -50,19 +50,19 @@ npm run build
 
 First, make sure you are on NPM 5+ installed so that the proper dependencies are installed using the package-lock.json file.
 
-```
+```shell
 npm install -g npm
 ```
 
 Clone the repo:
 
-```
+```shell
 git clone https://github.com/mozilla/shield-studies-addon-template.git
 ```
 
 After cloning the repo, you can run the following commands from the top level directory, one after another:
 
-```
+```shell
 npm install
 npm run build
 ```
@@ -73,7 +73,7 @@ This packages the add-on into an zip file which is stored in `dist/`. This file 
 
 You can have Firefox automatically launched and the add-on installed by running:
 
-```
+```shell
 npm start
 ```
 
@@ -81,7 +81,7 @@ Note: This runs in a recently created profile, where no changes will be saved. F
 
 To automatically reload the extension on file changes:
 
-```
+```shell
 npm run watch
 ```
 
@@ -101,7 +101,7 @@ See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in a
 
 ## Automated testing
 
-```
+```shell
 npm run test
 ```
 

@@ -10,13 +10,10 @@ for the command line.
 Assuming you have the basic utilities, then you also need:
 
 * [node.js](https://nodejs.org/) with npm.
-  * Version 4.x of node is currently the minium required.
+  * Version 4.x of node is currently the minimum required.
 * Firefox Nightly installed on your system.
   * This is the default for the repository,
     [but can be changed](#Changing-the-Firefox-binary-location)
-
-Note: The split of different Firefox versions will be fixed by
-https://github.com/mozilla/example-addon-repo/issues/5.
 
 To install all the support packages for the repository run:
 

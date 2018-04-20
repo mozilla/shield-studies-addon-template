@@ -2,14 +2,14 @@
 
 [Linting](<http://en.wikipedia.org/wiki/Lint_(software)>) is important part of
 code development that provides static analysis and helps to find bugs in code. It
-also helps to developers to adhere to varios style guidelines during the coding
+also helps to developers to adhere to various style guidelines during the coding
 stage, rather than only finding out at review time.
 
 It is recommended for any new project to have linting set up from the start.
 
 # ESLint - Javascript Linting
 
-This respository is has [ESLint](http://eslint.org) for providing javascript
+This respository uses [ESLint](http://eslint.org) for providing javascript
 analysis. It is a highly flexible tool especially as it is pluggable, so more
 rules can be added easily.
 
