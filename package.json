@@ -6,7 +6,9 @@
   "bugs": {
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "shield-studies-addon-utils": "github:mozilla/shield-studies-addon-utils#121-finalize-schema"
+  },
   "devDependencies": {
     "doctoc": "^1.3.0",
     "eslint": "^4.7.2",
