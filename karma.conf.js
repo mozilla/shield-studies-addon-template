@@ -32,10 +32,10 @@ module.exports = function(config) {
     files: [
       "node_modules/sinon/pkg/sinon.js",
       "node_modules/sinon-chrome/bundle/sinon-chrome.min.js",
-      "add-on/webextension/main.js",
+      "src/background.js",
       "test/unit/*.test.js",
     ],
-    preprocessors: { "add-on/*.js": ["coverage"] },
+    preprocessors: { "src/*.js": ["coverage"] },
     plugins: [
       "karma-coveralls",
       "karma-coverage",
