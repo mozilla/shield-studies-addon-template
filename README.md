@@ -7,19 +7,7 @@
 
 ### We are moving to WebExtensions
 
-This is a work in progress branch for [supporting a pure WebExtension workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53).
-
-The latest template depends on version 5 of [shield-studies-addon-utils](https://github.com/mozilla/shield-studies-addon-utils/) (also work in progress), so until it has been published via npm, you will need to check it out manually and use npm link:
-
-```
-git clone https://github.com/mozilla/shield-studies-addon-utils -b develop
-cd shield-studies-addon-utils
-npm link
-cd ../shield-studies-addon-template # or wherever you have checked out this template repository
-npm link shield-studies-addon-utils
-```
-
-Note: After the above, the template's modules/shield-studies-addon-utils folder will be a symlink to your locally checked out shield-studies-addon-utils repository.
+This is a work in progress branch for [supporting a pure WebExtension workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53) and it depends on version 5 of [shield-studies-addon-utils](https://github.com/mozilla/shield-studies-addon-utils/) (also work in progress).
 
 ## About This Repository
 
