@@ -11,15 +11,15 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
+      # Download and cache dependencies (update the cache keys to force a newer version of nightly)
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}-nightly
+          - v1-dependencies-{{ checksum "package.json" }}-nightly-2018-04-25
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
       - run:
-          name: cleanly install dependencies
+          name: Cleanly install dependencies
           command: if [ -d node_modules ]; then rm -rf node_modules; fi; npm install
 
       - run:
@@ -36,7 +36,7 @@ jobs:
           paths:
             - node_modules
             - firefox
-          key: v1-dependencies-{{ checksum "package.json" }}-nightly
+          key: v1-dependencies-{{ checksum "package.json" }}-nightly-2018-04-25
 
       - run:
           name: Lint
