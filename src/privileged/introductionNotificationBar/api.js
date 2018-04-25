@@ -47,8 +47,8 @@ function getMostRecentBrowserWindow() {
  *      https://github.com/gregglind/57-perception-shield-study/blob/680124a/addon/lib/Feature.jsm#L148-L152
  *
  */
-class IntroductionNotificationBar extends EventEmitter {
-  show() {
+class IntroductionNotificationBarEventEmitter extends EventEmitter {
+  emitShow() {
     const self = this;
     const recentWindow = getMostRecentBrowserWindow();
     const doc = recentWindow.document;
@@ -105,11 +105,11 @@ this.introductionNotificationBar = class extends ExtensionAPI {
   }
 
   getAPI(context) {
-    const introductionNotificationBar = new IntroductionNotificationBar();
+    const introductionNotificationBarEventEmitter = new IntroductionNotificationBarEventEmitter();
     return {
       introductionNotificationBar: {
         show() {
-          introductionNotificationBar.show();
+          introductionNotificationBarEventEmitter.emitShow();
         },
         onIntroductionShown: new EventManager(
           context,
@@ -118,9 +118,9 @@ this.introductionNotificationBar = class extends ExtensionAPI {
             const listener = value => {
               fire.async(value);
             };
-            introductionNotificationBar.on("introduction-shown", listener);
+            introductionNotificationBarEventEmitter.on("introduction-shown", listener);
             return () => {
-              introductionNotificationBar.off("introduction-shown", listener);
+              introductionNotificationBarEventEmitter.off("introduction-shown", listener);
             };
           },
         ).api(),
@@ -131,9 +131,9 @@ this.introductionNotificationBar = class extends ExtensionAPI {
             const listener = value => {
               fire.async(value);
             };
-            introductionNotificationBar.on("introduction-accept", listener);
+            introductionNotificationBarEventEmitter.on("introduction-accept", listener);
             return () => {
-              introductionNotificationBar.off("introduction-accept", listener);
+              introductionNotificationBarEventEmitter.off("introduction-accept", listener);
             };
           },
         ).api(),
@@ -144,12 +144,12 @@ this.introductionNotificationBar = class extends ExtensionAPI {
             const listener = value => {
               fire.async(value);
             };
-            introductionNotificationBar.on(
+            introductionNotificationBarEventEmitter.on(
               "introduction-leave-study",
               listener,
             );
             return () => {
-              introductionNotificationBar.off(
+              introductionNotificationBarEventEmitter.off(
                 "introduction-leave-study",
                 listener,
               );
