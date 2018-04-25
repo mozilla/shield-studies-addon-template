@@ -1,57 +1,95 @@
-/* eslint no-console:off */
-/* global studySetup, Feature */
+/* global getStudySetup */
 
-"use strict";
+/**
+ *  Goal:  Implement an instrumented feature using
+ *  `browser.study` API
+ *
+ *  Every runtime:
+ *  - instantiate the feature
+ *
+ *    - listen for `onEndStudy` (study endings)
+ *    - listen for `study.onReady`
+ *    - attempt to `browser.study.setup` the study using our studySetup
+ *
+ *      - will fire EITHER endStudy (expired, ineligible)
+ *      - onReady
+ *      - (see docs for `browser.study.setup`)
+ *
+ *    - onReady: configure the feature to match the `variation` study selected
+ *    - or, if we got an `onEndStudy` cleanup and uninstall.
+ *
+ *    During the feature:
+ *    - `sendTelemetry` to send pings
+ *    - `endStudy` to force an ending (for positive or negative reasons!)
+ *
+ *  Interesting things to try next:
+ *  - `browser.study.validateJSON` your pings before sending
+ *  - `endStudy` different endings in response to user action
+ *  - force an override of timestamp to see an `expired`
+ *  - unset the shield or telemetry prefs during runtime to trigger an ending.
+ *
+ */
 
-class Study {
-  // Should run only upon install event
-  // Use web extension experiments to get whatever prefs, add-ons,
-  // telemetry, anything necessary for the check
-  static async isEligible() {
-    // browser.prefs.get('my.favorite.pref');
-    return true;
+class StudyLifeCycleHandler {
+  /**
+   * Listen to onEndStudy, onReady
+   * `browser.study.setup` fires onReady OR onEndStudy
+   *
+   * call `this.enableFeature` to actually do the feature/experience/ui.
+   */
+  constructor() {
+    browser.study.onEndStudy.addListener(this.handleStudyEnding);
+    browser.study.onReady.addListener(this.enableFeature);
   }
 
-  // Expiration checks should be implemented in a very reliable way by
-  // the add-on since Normandy does not handle study expiration in a reliable manner
-  static async hasExpired() {
-    return false;
+  /**
+   * do some cleanup / 'feature reset'
+   *
+   * (If you have privileged code, you might need to clean
+   *  that up as well.
+   * See:  https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/lifecycle.html
+   */
+  async cleanup() {
+    await browser.storage.local.clear();
   }
-}
 
-async function initiateStudy(reason) {
-  // Set dynamic study configuration flags
-  studySetup.eligible = await Study.isEligible();
-  studySetup.expired = await Study.hasExpired();
-  // Ensure we have configured study and are supposed to run our feature
-  await browser.study.configure(studySetup);
-  // Run the startup study checks
-  await browser.study.startup();
-  // Read the active study variation
-  const { variation } = await browser.study.info();
-  // Initiate our study-specific feature
-  new Feature(variation, reason);
+  /**
+   * - set up expiration alarms
+   * - make feature/experience/ui with the particular variation for this user.
+   */
+  async enableFeature(studyInfo) {
+    if (studyInfo.timeUntilExpire) {
+      browser.alarm.create(studyInfo.timeUntilExpire, () =>
+        browser.study.endStudy("expired"),
+      );
+    }
+    // Initiate our study-specific feature
+    new Feature(studyInfo.variation);
+  }
+
+  /** handles `study:end` signals
+   *
+   * - opens 'ending' urls (surveys, for example)
+   * - calls cleanup
+   */
+  async handleStudyEnding(ending) {
+    console.log(`study wants to end:`, ending);
+    ending.urls.forEach(async url => await browser.tabs.create({ url }));
+    switch (ending.reason) {
+      default:
+        this.cleanup();
+        // uninstall the addon?
+        break;
+    }
+  }
 }
 
 /**
- * Fired when the extension is first installed, when the extension is updated
- * to a new version, and when the browser is updated to a new version.
- * @param details
+ * Run every startup to get config and instantiate the feature
  */
-function handleInstalled(details) {
-  console.log("The 'handleInstalled' event was fired.", details);
+async function onEveryExtensionLoad() {
+  new StudyLifeCycleHandler();
+  const studySetup = await getStudySetup();
+  await browser.study.setup(studySetup);
 }
-
-/**
- * Fired when a profile that has this extension installed first starts up.
- * This event is not fired when a private browsing/incognito profile is started.
- */
-async function handleStartup(details) {
-  console.log("The 'handleStartup' event was fired.", details);
-}
-
-// todo: on shutdown
-// Run shutdown-related non-privileged code
-
-browser.runtime.onStartup.addListener(handleStartup);
-browser.runtime.onInstalled.addListener(handleInstalled);
+onEveryExtensionLoad();
