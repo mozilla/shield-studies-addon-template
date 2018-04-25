@@ -1,6 +1,6 @@
 # Shield Studies Add-On Template
 
-![CircleCI badge](https://img.shields.io/circleci/project/github/mozilla/shield-studies-addon-template/master.svg?label=CircleCI)
+[![CircleCI badge](https://img.shields.io/circleci/project/github/mozilla/shield-studies-addon-template/master.svg?label=CircleCI)](https://circleci.com/gh/mozilla/shield-studies-addon-template/)
 [![Coverage Status](https://coveralls.io/repos/github/mozilla/shield-studies-addon-template/badge.svg)](https://coveralls.io/github/mozilla/shield-studies-addon-template)
 
 ## Important notice
