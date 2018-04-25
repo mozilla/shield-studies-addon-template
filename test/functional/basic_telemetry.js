@@ -1,13 +1,10 @@
 /* eslint-env node, mocha */
 
 // for unhandled promise rejection debugging
-process.on("unhandledRejection", r => console.log(r)); // eslint-disable-line no-console
+process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line no-console
 
 const assert = require("assert");
 const utils = require("./utils");
-
-// TODO create new profile per test?
-// then we can test with a clean profile every time
 
 describe("basic telemetry", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
@@ -24,7 +21,7 @@ describe("basic telemetry", function() {
   });
 
   after(async() => {
-    // driver.quit();
+    driver.quit();
   });
 
   beforeEach(async() => {});

@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 
 // for unhandled promise rejection debugging
-process.on("unhandledRejection", r => console.log(r)); // eslint-disable-line no-console
+process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line no-console
 
 const assert = require("assert");
 const utils = require("./utils");

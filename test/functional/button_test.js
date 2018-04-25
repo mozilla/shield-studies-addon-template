@@ -1,6 +1,7 @@
 /* eslint-env node, mocha */
 
-"use strict";
+// for unhandled promise rejection debugging
+process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line no-console
 
 const assert = require("assert");
 const utils = require("./utils");
@@ -23,7 +24,7 @@ const promiseAddonButton = async driver => {
 
 describe("ui button (browserAction)", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
-  this.timeout(10000);
+  this.timeout(15000);
 
   let driver;
 
