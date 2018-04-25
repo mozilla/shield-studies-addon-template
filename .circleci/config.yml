@@ -18,7 +18,9 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
+      - run:
+          name: cleanly install dependencies
+          command: if [ -d node_modules ]; then rm -rf node_modules; fi; npm install
 
       - run:
           name:  Get nightly
@@ -44,9 +46,9 @@ jobs:
           name: Build .XPI
           command: npm run build
 
-      - run:
-          name: Unit tests
-          command: npm run test:karma
+      #- run:
+      #    name: Unit tests
+      #    command: npm run test:karma
 
       - run:
           name: Functional tests
@@ -55,5 +57,5 @@ jobs:
       - store_artifacts:
           path: "dist"
 
-      - store_test_results:
-          path: "build/coverage"
+      #- store_test_results:
+      #    path: "build/coverage"
