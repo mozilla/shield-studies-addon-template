@@ -20,8 +20,7 @@ This repository is based on WebExtensions, which are the way forward for extensi
 
 The aim is to bring together tools and services we've used on other Shield Study add-ons
 (e.g. [dataleak-pioneer-shield-study](https://github.com/motin/dataleak-pioneer-shield-study)) into a template/example repository, so that new projects can come
-along and get a infrastructure together quickly, and be up and running with code,
-test suites, coverage etc quickly.
+along and get infrastructure together, and be up and running with code, test suites, coverage etc quickly.
 
 ### Documentation
 
