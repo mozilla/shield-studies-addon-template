@@ -118,9 +118,15 @@ this.introductionNotificationBar = class extends ExtensionAPI {
             const listener = value => {
               fire.async(value);
             };
-            introductionNotificationBarEventEmitter.on("introduction-shown", listener);
+            introductionNotificationBarEventEmitter.on(
+              "introduction-shown",
+              listener,
+            );
             return () => {
-              introductionNotificationBarEventEmitter.off("introduction-shown", listener);
+              introductionNotificationBarEventEmitter.off(
+                "introduction-shown",
+                listener,
+              );
             };
           },
         ).api(),
@@ -131,9 +137,15 @@ this.introductionNotificationBar = class extends ExtensionAPI {
             const listener = value => {
               fire.async(value);
             };
-            introductionNotificationBarEventEmitter.on("introduction-accept", listener);
+            introductionNotificationBarEventEmitter.on(
+              "introduction-accept",
+              listener,
+            );
             return () => {
-              introductionNotificationBarEventEmitter.off("introduction-accept", listener);
+              introductionNotificationBarEventEmitter.off(
+                "introduction-accept",
+                listener,
+              );
             };
           },
         ).api(),
