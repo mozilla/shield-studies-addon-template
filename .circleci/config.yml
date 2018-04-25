@@ -15,22 +15,21 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}-nightly-2018-04-25
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
 
       - run:
-          name: Cleanly install dependencies
-          command: if [ -d node_modules ]; then rm -rf node_modules; fi; npm install
+          name: Install dependencies
+          command: npm install
 
       - run:
           name:  Get nightly
           command: |
             if [ -d ./firefox ]; then
               echo "firefox dir exists, must be from cache"
+              ./firefox/firefox-bin -v
             else
               ./node_modules/.bin/get-firefox -b nightly -p linux -e
-              ls ./firefox/firefox-bin
             fi
+            ls -l ./firefox/firefox-bin
 
       - save_cache:
           paths:
