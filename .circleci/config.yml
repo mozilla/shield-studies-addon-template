@@ -14,7 +14,7 @@ jobs:
       # Download and cache dependencies (update the cache keys to force a newer version of nightly)
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}-nightly-2018-04-25
+          - v1-dependencies-{{ checksum "package.json" }}-nightly-20180425
 
       - run:
           name: Install dependencies
@@ -25,17 +25,17 @@ jobs:
           command: |
             if [ -d ./firefox ]; then
               echo "firefox dir exists, must be from cache"
-              ./firefox/firefox-bin -v
             else
               ./node_modules/.bin/get-firefox -b nightly -p linux -e
             fi
-            ls -l ./firefox/firefox-bin
+            ls -l $FIREFOX_BINARY
+            $FIREFOX_BINARY -v
 
       - save_cache:
           paths:
             - node_modules
             - firefox
-          key: v1-dependencies-{{ checksum "package.json" }}-nightly-2018-04-25
+          key: v1-dependencies-{{ checksum "package.json" }}-nightly-20180425
 
       - run:
           name: Lint
