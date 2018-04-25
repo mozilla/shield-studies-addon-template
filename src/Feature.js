@@ -117,11 +117,11 @@ class BrowserActionButtonChoiceFeature {
 
     // telemetry: FIRST CLICK
     if (this.timesClickedInSession === 1) {
-      browser.study.telemetry({ event: "button-first-click-in-session" });
+      browser.study.sendTelemetry({ event: "button-first-click-in-session" });
     }
 
     // telemetry EVERY CLICK
-    browser.study.telemetry({
+    browser.study.sendTelemetry({
       event: "button-click",
       timesClickedInSession: "" + this.timesClickedInSession,
     });
@@ -131,7 +131,7 @@ class BrowserActionButtonChoiceFeature {
     // - 3 timesClickedInSession in a session ends the study.
     // - see `../Config.jsm` for what happens during this ending.
     if (this.timesClickedInSession >= 3) {
-      browser.study.endStudy({ reason: "used-often" });
+      browser.study.endStudy("used-often");
     }
   }
 }
