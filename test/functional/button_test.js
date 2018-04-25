@@ -11,7 +11,7 @@ const By = webdriver.By;
 const until = webdriver.until;
 
 const promiseAddonButton = async driver => {
-  const browserActionId = (await utils.addonWidgetId()) + "-browser-action";
+  const browserActionId = (await utils.ui.addonWidgetId()) + "-browser-action";
   driver.setContext(Context.CHROME);
   return driver.wait(until.elementLocated(By.id(browserActionId)), 1000);
 };

@@ -36,10 +36,6 @@ class Feature {
         () => {
           console.log("onIntroductionShown");
 
-          // used by testing to confirm the bar is set with the correct config
-          // TODO: restore if necessary to restore the tests
-          // notice.setAttribute("data-study-config", JSON.stringify(this.variation));
-
           feature.sendTelemetry({
             event: "onIntroductionShown",
           });
@@ -65,7 +61,7 @@ class Feature {
         },
       );
 
-      browser.introductionNotificationBar.show();
+      browser.introductionNotificationBar.show(variation.name);
     }
   }
 

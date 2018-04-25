@@ -55,6 +55,7 @@
     "url": "git://github.com/mozilla/shield-studies-addon-template.git"
   },
   "scripts": {
+    "_test:karma": "NODE_ENV=test karma start",
     "build": "web-ext build",
     "bundle-utils": "bin/bundle-shield-studies-addon-utils.sh",
     "docformat": "doctoc --title '**Contents**' docs/*.md && prettier '**/*.md' --write",
@@ -67,7 +68,7 @@
     "lint:fixpack": "fixpack",
     "lint:nsp": "nsp check",
     "lint:web-ext-lint": "web-ext lint",
-    "postformat": "npm run eslint-fix",
+    "postformat": "npm run eslint-fix && fixpack",
     "prebuild": "npm run bundle-utils",
     "prestart": "npm run bundle-utils",
     "pretest": "node test/ensure_minimum_node_version.js && npm run build",
@@ -76,7 +77,6 @@
     "start": "web-ext run --no-reload",
     "test": "npm-run-all test:*",
     "test:func": "FIREFOX_BINARY=${FIREFOX_BINARY:-firefox} ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip mocha test/functional/ --bail",
-    "test:karma": "NODE_ENV=test karma start",
     "watch": "web-ext run"
   }
 }
