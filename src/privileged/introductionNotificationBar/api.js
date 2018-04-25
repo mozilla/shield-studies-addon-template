@@ -16,15 +16,15 @@ const { EventEmitter } = ExtensionUtils;
 // eslint-disable-next-line no-undef
 XPCOMUtils.defineLazyModuleGetter(
   this,
-  "RecentWindow",
-  "resource:///modules/RecentWindow.jsm",
+  "BrowserWindowTracker",
+  "resource:///modules/BrowserWindowTracker.jsm",
 );
 
 /** Return most recent NON-PRIVATE browser window, so that we can
  * manipulate chrome elements on it.
  */
 function getMostRecentBrowserWindow() {
-  return RecentWindow.getMostRecentBrowserWindow({
+  return BrowserWindowTracker.getTopWindow({
     private: false,
     allowPopups: false,
   });
