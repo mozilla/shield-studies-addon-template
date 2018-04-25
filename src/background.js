@@ -1,4 +1,4 @@
-/* global getStudySetup */
+/* global getStudySetup, Feature */
 
 /**
  *  Goal:  Implement an instrumented feature using
@@ -74,7 +74,7 @@ class StudyLifeCycleHandler {
    */
   async handleStudyEnding(ending) {
     console.log(`study wants to end:`, ending);
-    ending.urls.forEach(async url => await browser.tabs.create({ url }));
+    ending.urls.forEach(async url => browser.tabs.create({ url }));
     switch (ending.reason) {
       default:
         this.cleanup();
