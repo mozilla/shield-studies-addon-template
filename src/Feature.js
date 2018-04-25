@@ -23,16 +23,15 @@ class Feature {
    *  - reason: string of background.js install/startup/shutdown reason
    *
    */
-  constructor(variation, reason) {
+  constructor(variation, isFirstRun) {
     const feature = this;
     this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
-    this.reason = reason;
 
     // Initiate our browser action
     new BrowserActionButtonChoiceFeature(variation);
 
-    // perform something only during INSTALL = a new study period begins
-    if (this.reason === "install") {
+    // perform something only during first run
+    if (isFirstRun) {
       browser.introductionNotificationBar.onIntroductionShown.addListener(
         () => {
           console.log("onIntroductionShown");
@@ -41,7 +40,7 @@ class Feature {
           // TODO: restore if necessary to restore the tests
           // notice.setAttribute("data-study-config", JSON.stringify(this.variation));
 
-          feature.telemetry({
+          feature.sendTelemetry({
             event: "onIntroductionShown",
           });
         },
@@ -50,7 +49,7 @@ class Feature {
       browser.introductionNotificationBar.onIntroductionAccept.addListener(
         () => {
           console.log("onIntroductionAccept");
-          feature.telemetry({
+          feature.sendTelemetry({
             event: "onIntroductionAccept",
           });
         },
@@ -59,7 +58,7 @@ class Feature {
       browser.introductionNotificationBar.onIntroductionLeaveStudy.addListener(
         () => {
           console.log("onIntroductionLeaveStudy");
-          feature.telemetry({
+          feature.sendTelemetry({
             event: "onIntroductionLeaveStudy",
           });
           browser.study.endStudy("introduction-leave-study");
@@ -71,8 +70,8 @@ class Feature {
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
-  telemetry(stringStringMap) {
-    browser.study.telemetry(stringStringMap);
+  sendTelemetry(stringStringMap) {
+    browser.study.sendTelemetry(stringStringMap);
   }
 
   /**
