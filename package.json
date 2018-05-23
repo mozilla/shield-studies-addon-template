@@ -7,7 +7,7 @@
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "dependencies": {
-    "shield-studies-addon-utils": "github:motin/shield-studies-addon-utils#160-wip-implement-finalized-v5-api"
+    "shield-studies-addon-utils": "github:mozilla/shield-studies-addon-utils#develop"
   },
   "devDependencies": {
     "doctoc": "^1.3.0",
