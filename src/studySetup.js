@@ -35,36 +35,33 @@ const studySetup = {
   endings: {
     /** standard endings */
     "user-disable": {
-      baseUrl: "http://www.example.com/?reason=user-disable",
+      baseUrls: ["http://www.example.com/?reason=user-disable"],
     },
     ineligible: {
-      baseUrl: "http://www.example.com/?reason=ineligible",
+      baseUrls: ["http://www.example.com/?reason=ineligible"],
     },
     expired: {
-      baseUrl: "http://www.example.com/?reason=expired",
+      baseUrls: ["http://www.example.com/?reason=expired"],
     },
     dataPermissionsRevoked: {
-      baseUrl: null,
-      study_state: "ended-neutral",
+      baseUrls: [],
+      category: "ended-neutral",
     },
 
     /** User defined endings */
     "used-often": {
-      baseUrl: "http://www.example.com/?reason=used-often",
+      baseUrls: ["http://www.example.com/?reason=used-often"],
       study_state: "ended-positive", // neutral is default
     },
     "a-non-url-opening-ending": {
-      baseUrl: null,
+      baseUrls: [],
       study_state: "ended-neutral",
     },
     "introduction-leave-study": {
-      baseUrl: "http://www.example.com/?reason=introduction-leave-study",
+      baseUrls: ["http://www.example.com/?reason=introduction-leave-study"],
       study_state: "ended-negative",
     },
   },
-
-  // logging
-  logLevel: 10,
 
   /* Button study branches and sample weights
      - test kittens vs. puppers if we can only have one.
@@ -110,6 +107,9 @@ const studySetup = {
  * (Guards against Normandy or other deployment mistakes or inadequacies)
  *
  * This implementation caches in local storage to speed up second run.
+ *
+ * @returns {Promise<boolean>} answer An boolean answer about whether the user should be
+ *       allowed to enroll in the study
  */
 async function shouldAllowEnroll() {
   // Cached answer.  Used on 2nd run
@@ -132,7 +132,9 @@ async function shouldAllowEnroll() {
 }
 
 /**
- * Augment studySetup with a few async values
+ * Augment declarative studySetup with any necessary async values
+ *
+ * @return {object} studySetup A complete study setup object
  */
 async function getStudySetup() {
   const id = browser.runtime.id;
@@ -140,11 +142,10 @@ async function getStudySetup() {
     variation: `shield.${id}.variation`,
     firstRunTimestamp: `shield.${id}.firstRunTimestamp`,
   };
-  prefs;
   studySetup.allowEnroll = await shouldAllowEnroll();
   studySetup.testing = {
-    // variation: await browser.prefs.getStringPref(prefs.variation);
-    // firstRunTimestamp: await browser.prefs.getStringPref(prefs.firstRunTimestamp);
+    variation: await browser.prefs.getStringPref(prefs.variation),
+    firstRunTimestamp: await browser.prefs.getStringPref(prefs.firstRunTimestamp),
   };
   return studySetup;
 }

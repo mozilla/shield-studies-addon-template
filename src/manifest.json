@@ -38,10 +38,10 @@
   },
   "permissions": ["storage"],
   "background": {
-    "scripts": ["study.js", "Feature.js", "background.js"]
+    "scripts": ["studySetup.js", "Feature.js", "background.js"]
   },
   "icons": {
-    "48": "icon.png"
+    "48": "icons/shield-icon.svg"
   },
   "browser_action": {
     "browser_style": true,
