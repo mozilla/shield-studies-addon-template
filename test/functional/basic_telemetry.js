@@ -32,7 +32,7 @@ describe("basic telemetry", function() {
 
     before(async() => {
       // allow our shield study add-on some time to send initial pings
-      await driver.sleep(3000);
+      await driver.sleep(6000);
       // collect sent pings
       studyPings = await utils.telemetry.getShieldPingsAfterTimestamp(
         driver,
