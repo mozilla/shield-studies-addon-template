@@ -22,6 +22,9 @@ const FIREFOX_PREFERENCES = {
   // Force variation for testing
   "extensions.button_icon_preference.variation": "kittens",
 
+  // Enable verbose shield study utils logging
+  "shieldStudy.logLevel": "All",
+
   /** WARNING: Geckodriver sets many additional prefs at:
    * https://dxr.mozilla.org/mozilla-central/source/testing/geckodriver/src/prefs.rs
    *
