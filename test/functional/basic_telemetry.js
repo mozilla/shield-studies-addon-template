@@ -16,8 +16,8 @@ describe("basic telemetry", function() {
   // runs ONCE
   before(async() => {
     beginTime = Date.now();
-    driver = await utils.setup.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
-    await utils.setup.installAddon(driver);
+    driver = await utils.setupWebdriver.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
+    await utils.setupWebdriver.installAddon(driver);
   });
 
   after(async() => {

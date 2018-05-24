@@ -29,8 +29,8 @@ describe("ui button (browserAction)", function() {
   let driver;
 
   before(async function() {
-    driver = await utils.setup.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
-    return utils.setup.installAddon(driver);
+    driver = await utils.setupWebdriver.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
+    return utils.setupWebdriver.installAddon(driver);
   });
 
   after(function() {
