@@ -27,11 +27,11 @@ describe("basic telemetry", function() {
   beforeEach(async() => {});
   afterEach(async() => {});
 
-  describe("should have sent the expected exit telemetry", function() {
+  describe("should have sent the expected telemetry", function() {
     let studyPings;
 
     before(async() => {
-      // allow our shield study addon some time to send initial pings
+      // allow our shield study add-on some time to send initial pings
       await driver.sleep(3000);
       // collect sent pings
       studyPings = await utils.telemetry.getShieldPingsAfterTimestamp(
@@ -61,7 +61,6 @@ describe("basic telemetry", function() {
       );
     });
 
-    /*
     it("should have sent one shield-study telemetry ping with study_state=installed", async() => {
       const filteredPings = utils.telemetry.filterPings(
         [
@@ -76,7 +75,6 @@ describe("basic telemetry", function() {
         "at least one shield-study telemetry ping with study_state=installed",
       );
     });
-    */
 
     it("should have sent one shield-study-addon telemetry ping with payload.data.attributes.event=onIntroductionShown", async() => {
       const filteredPings = utils.telemetry.filterPings(
@@ -105,14 +103,12 @@ describe("basic telemetry", function() {
             },
           },
         ],
-        /*
         [
           "shield-study",
           {
             study_state: "installed",
           },
         ],
-        */
         [
           "shield-study",
           {
