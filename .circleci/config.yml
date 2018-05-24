@@ -14,7 +14,7 @@ jobs:
       # Download and cache dependencies (update the cache keys to force a newer version of nightly)
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}-nightly-20180524
+          - v1-dependencies-{{ checksum "package-lock.json" }}-nightly-20180524
 
       - run:
           name: Install dependencies
@@ -35,7 +35,7 @@ jobs:
           paths:
             - node_modules
             - firefox
-          key: v1-dependencies-{{ checksum "package.json" }}-nightly-20180524
+          key: v1-dependencies-{{ checksum "package-lock.json" }}-nightly-20180524
 
       - run:
           name: Lint
