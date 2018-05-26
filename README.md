@@ -12,7 +12,7 @@ Instead, we recommend that you:
 * build your study as a WEE ([Web Extension Experiment](https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/index.html))
 * help us test the requisite [experimental Shield API(s)](https://github.com/mozilla/shield-studies-addon-utils/)
 
-Example WEEs using the experimental Shield API(s):
+Example Shield add-ons (implemented as WEEs) using the experimental Shield API(s):
 * https://github.com/mozilla/shield-studies-addon-utils/blob/develop/examples/small-study
 * https://github.com/mozilla/shield-cloudstorage
 
