@@ -4,11 +4,19 @@
 
 ## Important notice
 
-### We are moving to Web Extensions
+### We are moving to Web Extension Experiments
 
-In an effort to remove the necessity of creating legacy add-ons for Shield studies, we are working on [supporting a pure Web Extension workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53).
-Until support for those workflows become stable, it is still recommended to use this template as it is and create legacy add-ons for your study.
-Chat with us: #shield on Slack about the latest progress and how to help us progress faster away from legacy add-ons.
+In an effort to remove the necessity of creating legacy add-ons for Shield studies, we are working on [supporting a pure Web Extension Experiment workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53) with a new version, v5, of the [Shield utilities](https://github.com/mozilla/shield-studies-addon-utils/). Support for these workflows is not yet stable. In the meantime, **we do not recommend using this v4 template**.
+
+Instead, we recommend that you:
+* build your study as a WEE ([Web Extension Experiment](https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/index.html))
+* help us test the requisite [experimental Shield API(s)](https://github.com/mozilla/shield-studies-addon-utils/)
+
+Example Shield add-ons (implemented as WEEs) using the experimental Shield API(s):
+* https://github.com/mozilla/shield-studies-addon-utils/blob/develop/examples/small-study
+* https://github.com/mozilla/shield-cloudstorage
+
+Chat with us: #shield on Slack about the latest progress and how to help us move faster away from legacy add-ons.
 
 ## About This Repository
 
