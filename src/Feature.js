@@ -17,15 +17,16 @@
  *
  **/
 class Feature {
+  constructor() {}
   /** A Demonstration feature.
    *
    *  - variation: study info about particular client study variation
    *  - reason: string of background.js install/startup/shutdown reason
    *
    */
-  constructor(variation, isFirstRun) {
+  configure(studyInfo) {
     const feature = this;
-    this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
+    const { variation, isFirstRun } = studyInfo;
 
     // Initiate our browser action
     new BrowserActionButtonChoiceFeature(variation);

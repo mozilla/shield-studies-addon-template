@@ -36,7 +36,7 @@
       }
     }
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
   "background": {
     "scripts": ["studySetup.js", "Feature.js", "background.js"]
   },
