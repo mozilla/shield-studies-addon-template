@@ -1,32 +1,34 @@
 /* global getStudySetup, Feature */
 
 /**
- *  Goal:  Implement an instrumented feature using
- *  `browser.study` API
+ *  Goal:  Implement an instrumented feature using `browser.study` API
  *
  *  Every runtime:
- *  - instantiate the feature
+ *  - Prepare
  *
  *    - listen for `onEndStudy` (study endings)
  *    - listen for `study.onReady`
+ *
+ *  - Startup the feature
+ *
  *    - attempt to `browser.study.setup` the study using our studySetup
  *
- *      - will fire EITHER endStudy (expired, ineligible)
- *      - onReady
+ *      - will fire EITHER
+ *        -  `endStudy` (`expired`, `ineligible`)
+ *        - onReady
  *      - (see docs for `browser.study.setup`)
  *
  *    - onReady: configure the feature to match the `variation` study selected
  *    - or, if we got an `onEndStudy` cleanup and uninstall.
  *
- *    During the feature:
+ *  During the feature:
  *    - `sendTelemetry` to send pings
  *    - `endStudy` to force an ending (for positive or negative reasons!)
  *
  *  Interesting things to try next:
  *  - `browser.study.validateJSON` your pings before sending
  *  - `endStudy` different endings in response to user action
- *  - force an override of timestamp to see an `expired`
- *  - unset the shield or telemetry prefs during runtime to trigger an ending.
+ *  - force an override of setup.testing to choose branches.
  *
  */
 
@@ -38,58 +40,99 @@ class StudyLifeCycleHandler {
    * call `this.enableFeature` to actually do the feature/experience/ui.
    */
   constructor() {
-    browser.study.onEndStudy.addListener(this.handleStudyEnding);
-    browser.study.onReady.addListener(this.enableFeature);
+    /*
+     * IMPORTANT:  Listen for `onEndStudy` before calling `browser.study.setup`
+     * because:
+     * - `setup` can end with 'ineligible' due to 'allowEnroll' key in first session.
+     *
+     */
+    browser.study.onEndStudy.addListener(this.handleStudyEnding.bind(this));
+    browser.study.onReady.addListener(this.enableFeature.bind(this));
   }
 
   /**
-   * do some cleanup / 'feature reset'
+   * Cleanup
    *
    * (If you have privileged code, you might need to clean
    *  that up as well.
    * See:  https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/lifecycle.html
+   *
+   * @returns {undefined}
    */
   async cleanup() {
     await browser.storage.local.clear();
+    await feature.cleanup();
   }
 
   /**
+   *
+   * side effects
    * - set up expiration alarms
    * - make feature/experience/ui with the particular variation for this user.
+   *
+   * @param {object} studyInfo browser.study.studyInfo object
+   *
+   * @returns {undefined}
    */
   async enableFeature(studyInfo) {
+    console.log("enabling feature", studyInfo);
     if (studyInfo.timeUntilExpire) {
-      browser.alarm.create(studyInfo.timeUntilExpire, () =>
-        browser.study.endStudy("expired"),
-      );
+      const alarmName = `${browser.runtime.id}:studyExpiration`;
+      const alarmListener = async alarm => {
+        if (alarm.name === alarmName) {
+          console.log("study will expire now!");
+          browser.alarms.onAlarm.removeListener(alarmListener);
+          await browser.study.endStudy("expired");
+        }
+      };
+      browser.alarms.onAlarm.addListener(alarmListener);
+      browser.alarms.create(alarmName, {
+        delayInMinutes: studyInfo.timeUntilExpire / (1000 * 60),
+      });
     }
-    // Initiate our study-specific feature
-    new Feature(studyInfo.variation);
+    feature.configure(studyInfo);
   }
 
   /** handles `study:end` signals
    *
    * - opens 'ending' urls (surveys, for example)
    * - calls cleanup
+   *
+   * @param {object} ending An ending result
+   *
+   * @returns {undefined}
    */
   async handleStudyEnding(ending) {
     console.log(`study wants to end:`, ending);
-    ending.urls.forEach(async url => browser.tabs.create({ url }));
-    switch (ending.reason) {
+    for (const url of ending.urls) {
+      await browser.tabs.create({ url });
+    }
+    switch (ending.endingName) {
+      // could have different actions depending on positive / ending names
       default:
-        this.cleanup();
-        // uninstall the addon?
+        console.log(`the ending: ${ending.endingName}`);
+        await this.cleanup();
         break;
     }
+    // actually remove the addon.
+    console.log("about to actually uninstall");
+    return browser.management.uninstallSelf();
   }
 }
 
+// construct. will be configured after setup.
+const feature = new Feature();
+
 /**
  * Run every startup to get config and instantiate the feature
+ *
+ * @returns {undefined}
  */
 async function onEveryExtensionLoad() {
   new StudyLifeCycleHandler();
+
   const studySetup = await getStudySetup();
+  console.log(`studySetup: ${JSON.stringify(studySetup)}`);
   await browser.study.setup(studySetup);
 }
 onEveryExtensionLoad();

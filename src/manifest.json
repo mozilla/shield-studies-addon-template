@@ -6,7 +6,7 @@
   "applications": {
     "gecko": {
       "id": "button-icon-preference@shield.mozilla.org",
-      "strict_min_version": "59.0"
+      "strict_min_version": "61.0a1"
     }
   },
   "default_locale": "en-US",
@@ -36,12 +36,12 @@
       }
     }
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
   "background": {
-    "scripts": ["study.js", "Feature.js", "background.js"]
+    "scripts": ["studySetup.js", "Feature.js", "background.js"]
   },
   "icons": {
-    "48": "icon.png"
+    "48": "icons/shield-icon.svg"
   },
   "browser_action": {
     "browser_style": true,

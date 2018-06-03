@@ -9,7 +9,12 @@
         "type": "function",
         "description": "TODO",
         "async": true,
-        "parameters": []
+        "parameters": [
+          {
+            "name": "variationName",
+            "type": "string"
+          }
+        ]
       }
     ],
     "events": [

@@ -17,31 +17,27 @@
  *
  **/
 class Feature {
+  constructor() {}
   /** A Demonstration feature.
    *
    *  - variation: study info about particular client study variation
    *  - reason: string of background.js install/startup/shutdown reason
    *
    */
-  constructor(variation, reason) {
+  configure(studyInfo) {
     const feature = this;
-    this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
-    this.reason = reason;
+    const { variation, isFirstRun } = studyInfo;
 
     // Initiate our browser action
     new BrowserActionButtonChoiceFeature(variation);
 
-    // perform something only during INSTALL = a new study period begins
-    if (this.reason === "install") {
+    // perform something only during first run
+    if (isFirstRun) {
       browser.introductionNotificationBar.onIntroductionShown.addListener(
         () => {
           console.log("onIntroductionShown");
 
-          // used by testing to confirm the bar is set with the correct config
-          // TODO: restore if necessary to restore the tests
-          // notice.setAttribute("data-study-config", JSON.stringify(this.variation));
-
-          feature.telemetry({
+          feature.sendTelemetry({
             event: "onIntroductionShown",
           });
         },
@@ -50,7 +46,7 @@ class Feature {
       browser.introductionNotificationBar.onIntroductionAccept.addListener(
         () => {
           console.log("onIntroductionAccept");
-          feature.telemetry({
+          feature.sendTelemetry({
             event: "onIntroductionAccept",
           });
         },
@@ -59,26 +55,26 @@ class Feature {
       browser.introductionNotificationBar.onIntroductionLeaveStudy.addListener(
         () => {
           console.log("onIntroductionLeaveStudy");
-          feature.telemetry({
+          feature.sendTelemetry({
             event: "onIntroductionLeaveStudy",
           });
           browser.study.endStudy("introduction-leave-study");
         },
       );
 
-      browser.introductionNotificationBar.show();
+      browser.introductionNotificationBar.show(variation.name);
     }
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
-  telemetry(stringStringMap) {
-    browser.study.telemetry(stringStringMap);
+  sendTelemetry(stringStringMap) {
+    browser.study.sendTelemetry(stringStringMap);
   }
 
   /**
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
    */
-  shutdown() {}
+  async cleanup() {}
 }
 
 class BrowserActionButtonChoiceFeature {

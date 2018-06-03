@@ -22,6 +22,9 @@ const FIREFOX_PREFERENCES = {
   // Force variation for testing
   "extensions.button_icon_preference.variation": "kittens",
 
+  // Enable verbose shield study utils logging
+  "shieldStudy.logLevel": "All",
+
   /** WARNING: Geckodriver sets many additional prefs at:
    * https://dxr.mozilla.org/mozilla-central/source/testing/geckodriver/src/prefs.rs
    *
@@ -34,8 +37,10 @@ const FIREFOX_PREFERENCES = {
 // Re-usable test methods from shield-studies-addon-utils
 const { executeJs } = require("shield-studies-addon-utils/testUtils/executeJs");
 const { nav } = require("shield-studies-addon-utils/testUtils/nav");
-const { pings } = require("shield-studies-addon-utils/testUtils/pings");
-const { setup } = require("shield-studies-addon-utils/testUtils/setup");
+const {
+  setupWebdriver,
+} = require("shield-studies-addon-utils/testUtils/setupWebdriver");
+const { telemetry } = require("shield-studies-addon-utils/testUtils/telemetry");
 const { ui } = require("shield-studies-addon-utils/testUtils/ui");
 
 // What we expose to our add-on-specific tests
@@ -43,7 +48,7 @@ module.exports = {
   FIREFOX_PREFERENCES,
   executeJs,
   nav,
-  pings,
-  setup,
+  setupWebdriver,
+  telemetry,
   ui,
 };

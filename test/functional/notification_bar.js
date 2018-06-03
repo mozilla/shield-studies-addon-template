@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 
 // for unhandled promise rejection debugging
-process.on("unhandledRejection", r => console.log(r)); // eslint-disable-line no-console
+process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line no-console
 
 const assert = require("assert");
 const utils = require("./utils");
@@ -9,14 +9,16 @@ const utils = require("./utils");
 /* Part 1:  Utilities */
 
 async function getNotification(driver) {
-  return utils.getChromeElementBy.tagName(driver, "notification");
+  return utils.ui.getChromeElementBy.tagName(driver, "notification");
 }
 
 async function getFirstButton(driver) {
-  return utils.getChromeElementBy.className(driver, "notification-button");
+  return utils.ui.getChromeElementBy.className(driver, "notification-button");
 }
 
 /* Part 2:  The Tests */
+
+// TODO glind, this is an incomplete set of tests
 
 describe("basic functional tests", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
@@ -26,8 +28,10 @@ describe("basic functional tests", function() {
 
   // runs ONCE
   before(async() => {
-    driver = await utils.setup.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
-    await utils.setup.installAddon(driver);
+    driver = await utils.setupWebdriver.promiseSetupDriver(
+      utils.FIREFOX_PREFERENCES,
+    );
+    await utils.setupWebdriver.installAddon(driver);
   });
 
   after(async() => {
@@ -48,11 +52,9 @@ describe("basic functional tests", function() {
   describe("introduction / orientation bar", function() {
     it("exists, carries study config", async() => {
       const notice = await getNotification(driver);
-      const noticeConfig = JSON.parse(
-        await notice.getAttribute("data-study-config"),
-      );
-      assert(noticeConfig.name);
-      assert(noticeConfig.weight);
+      const noticeVariationName = await notice.getAttribute("variation-name");
+      console.log("noticeVariationName", noticeVariationName);
+      assert(noticeVariationName);
     });
 
     it("okay button looks fine.", async() => {
@@ -67,18 +69,18 @@ describe("basic functional tests", function() {
       await firstButton.click();
       await driver.sleep(100);
 
-      const newPings = await utils.pings.getShieldPingsAfterTimestamp(
+      const newPings = await utils.telemetry.getShieldPingsAfterTimestamp(
         driver,
         startTime,
       );
-      const observed = utils.summarizePings(newPings);
+      const observed = utils.telemetry.summarizePings(newPings);
 
       const expected = [
         [
           "shield-study-addon",
           {
             attributes: {
-              event: "introduction-accept",
+              event: "onIntroductionAccept",
             },
           },
         ],

@@ -10,7 +10,7 @@ const defaultConfig = {
     overwriteDest: true,
   },
   run: {
-    firefox: "nightly",
+    firefox: "firefoxdeveloperedition",
     browserConsole: true,
     startUrl: ["about:debugging"],
   },

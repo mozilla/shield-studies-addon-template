@@ -1,6 +1,7 @@
 /* eslint-env node, mocha */
 
-"use strict";
+// for unhandled promise rejection debugging
+process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line no-console
 
 const assert = require("assert");
 const utils = require("./utils");
@@ -11,7 +12,7 @@ const By = webdriver.By;
 const until = webdriver.until;
 
 const promiseAddonButton = async driver => {
-  const browserActionId = (await utils.addonWidgetId()) + "-browser-action";
+  const browserActionId = (await utils.ui.addonWidgetId()) + "-browser-action";
   driver.setContext(Context.CHROME);
   return driver.wait(until.elementLocated(By.id(browserActionId)), 1000);
 };
@@ -23,13 +24,15 @@ const promiseAddonButton = async driver => {
 
 describe("ui button (browserAction)", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
-  this.timeout(10000);
+  this.timeout(15000);
 
   let driver;
 
   before(async function() {
-    driver = await utils.setup.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
-    return utils.setup.installAddon(driver);
+    driver = await utils.setupWebdriver.promiseSetupDriver(
+      utils.FIREFOX_PREFERENCES,
+    );
+    return utils.setupWebdriver.installAddon(driver);
   });
 
   after(function() {

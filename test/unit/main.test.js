@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-/* global chrome */
+/* global chrome, sinon */
 
 "use strict";
 

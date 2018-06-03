@@ -16,15 +16,15 @@ const { EventEmitter } = ExtensionUtils;
 // eslint-disable-next-line no-undef
 XPCOMUtils.defineLazyModuleGetter(
   this,
-  "RecentWindow",
-  "resource:///modules/RecentWindow.jsm",
+  "BrowserWindowTracker",
+  "resource:///modules/BrowserWindowTracker.jsm",
 );
 
 /** Return most recent NON-PRIVATE browser window, so that we can
  * manipulate chrome elements on it.
  */
 function getMostRecentBrowserWindow() {
-  return RecentWindow.getMostRecentBrowserWindow({
+  return BrowserWindowTracker.getTopWindow({
     private: false,
     allowPopups: false,
   });
@@ -48,7 +48,7 @@ function getMostRecentBrowserWindow() {
  *
  */
 class IntroductionNotificationBarEventEmitter extends EventEmitter {
-  emitShow() {
+  emitShow(variationName) {
     const self = this;
     const recentWindow = getMostRecentBrowserWindow();
     const doc = recentWindow.document;
@@ -59,7 +59,7 @@ class IntroductionNotificationBarEventEmitter extends EventEmitter {
     if (!notificationBox) return;
 
     // api: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/appendNotification
-    notificationBox.appendNotification(
+    const notice = notificationBox.appendNotification(
       "Welcome to the new feature! Look for changes!",
       "feature orienation",
       null, // icon
@@ -87,6 +87,9 @@ class IntroductionNotificationBarEventEmitter extends EventEmitter {
       // callback for nb events
       null,
     );
+
+    // used by testing to confirm the bar is set with the correct config
+    notice.setAttribute("variation-name", variationName);
 
     self.emit("introduction-shown");
   }
