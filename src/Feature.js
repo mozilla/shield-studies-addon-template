@@ -74,7 +74,7 @@ class Feature {
   /**
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
    */
-  shutdown() {}
+  async cleanup() {}
 }
 
 class BrowserActionButtonChoiceFeature {

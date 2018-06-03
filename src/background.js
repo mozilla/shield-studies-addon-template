@@ -61,6 +61,7 @@ class StudyLifeCycleHandler {
    */
   async cleanup() {
     await browser.storage.local.clear();
+    await feature.cleanup();
   }
 
   /**
