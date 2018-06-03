@@ -28,7 +28,9 @@ describe("basic functional tests", function() {
 
   // runs ONCE
   before(async() => {
-    driver = await utils.setupWebdriver.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
+    driver = await utils.setupWebdriver.promiseSetupDriver(
+      utils.FIREFOX_PREFERENCES,
+    );
     await utils.setupWebdriver.installAddon(driver);
   });
 

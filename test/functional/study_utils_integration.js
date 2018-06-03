@@ -16,7 +16,9 @@ describe("shield utils integration", function() {
   // runs ONCE
   before(async() => {
     beginTime = Date.now();
-    driver = await utils.setupWebdriver.promiseSetupDriver(utils.FIREFOX_PREFERENCES);
+    driver = await utils.setupWebdriver.promiseSetupDriver(
+      utils.FIREFOX_PREFERENCES,
+    );
     await utils.setupWebdriver.installAddon(driver);
   });
 

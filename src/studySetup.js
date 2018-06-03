@@ -159,7 +159,9 @@ async function getStudySetup() {
   studySetup.allowEnroll = await cachingFirstRunShouldAllowEnroll();
   studySetup.testing = {
     variation: await browser.prefs.getStringPref(prefs.variation),
-    firstRunTimestamp: await browser.prefs.getStringPref(prefs.firstRunTimestamp),
+    firstRunTimestamp: await browser.prefs.getStringPref(
+      prefs.firstRunTimestamp,
+    ),
   };
   return studySetup;
 }
