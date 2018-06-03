@@ -11,22 +11,22 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies (update the cache keys to force a newer version of nightly)
+      # Download and cache dependencies (update the cache keys to force a newer version of devedition)
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}-nightly-20180524
+          - v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180524
 
       - run:
           name: Install dependencies
           command: npm install
 
       - run:
-          name:  Get nightly
+          name:  Get devedition
           command: |
             if [ -d ./firefox ]; then
               echo "firefox dir exists, must be from cache"
             else
-              ./node_modules/.bin/get-firefox -b nightly -p linux -e
+              ./node_modules/.bin/get-firefox -b devedition -p linux -e
             fi
             ls -l $FIREFOX_BINARY
             $FIREFOX_BINARY -v
@@ -35,7 +35,7 @@ jobs:
           paths:
             - node_modules
             - firefox
-          key: v1-dependencies-{{ checksum "package-lock.json" }}-nightly-20180524
+          key: v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180524
 
       - run:
           name: Lint

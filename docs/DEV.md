@@ -19,7 +19,7 @@
 
 ### Preparations
 
-* Download Developer and Nightly versions of Firefox (only Developer/Nightly will allow bundled web extension experiments, and Nightly is the default target for the automated tests)
+* Download Developer and Nightly versions of Firefox (only Developer/Nightly will allow bundled web extension experiments, and Developer is the default target for the automated tests)
 
 ## Getting started
 
