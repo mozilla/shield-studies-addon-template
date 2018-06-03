@@ -6,7 +6,7 @@ process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line 
 const assert = require("assert");
 const utils = require("./utils");
 
-describe("basic telemetry", function() {
+describe("shield utils integration", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(15000);
 
