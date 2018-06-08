@@ -57,7 +57,9 @@
   "scripts": {
     "_test:karma": "NODE_ENV=test karma start",
     "build": "web-ext build",
-    "bundle-utils": "bin/bundle-shield-studies-addon-utils.sh",
+    "bundle-utils": "./bin/copyStudyUtils.js src/privileged",
+    "postbundle-utils": "npm run bundle-utils:prefs",
+    "bundle-utils:prefs": "bin/bundle-shield-studies-addon-utils.sh",
     "docformat": "doctoc --title '**Contents**' docs/*.md && prettier '**/*.md' --write",
     "eslint": "eslint . --ext jsm --ext js --ext json",
     "eslint-fix": "npm run eslint -- --fix",
