@@ -34,14 +34,14 @@ describe("shield utils integration", function() {
 
     before(async() => {
       // allow our shield study add-on some time to send initial pings
-      await driver.sleep(6000);
+      await driver.sleep(2000);
       // collect sent pings
       studyPings = await utils.telemetry.getShieldPingsAfterTimestamp(
         driver,
         beginTime,
       );
       // for debugging tests
-      console.log("Pings report: ", utils.telemetry.pingsReport(studyPings));
+      // console.log("Pings report: ", utils.telemetry.pingsReport(studyPings));
     });
 
     it("should have sent at least one shield telemetry ping", async() => {
@@ -78,33 +78,12 @@ describe("shield utils integration", function() {
       );
     });
 
-    it("should have sent one shield-study-addon telemetry ping with payload.data.attributes.event=onIntroductionShown", async() => {
-      const filteredPings = utils.telemetry.filterPings(
-        [
-          ping =>
-            ping.type === "shield-study-addon" &&
-            ping.payload.data.attributes.event === "onIntroductionShown",
-        ],
-        studyPings,
-      );
-      assert(
-        filteredPings.length > 0,
-        "at least one shield-study-addon telemetry ping with payload.data.attributes.event=onIntroductionShown",
-      );
-    });
-
     it("telemetry order is as expected", function() {
       // Telemetry:  order, and summary of pings is good.
-      const observed = utils.telemetry.summarizePings(studyPings);
+      const filteredPings = studyPings.filter(ping => ping.type === "shield-study");
+
+      const observed = utils.telemetry.summarizePings(filteredPings);
       const expected = [
-        [
-          "shield-study-addon",
-          {
-            attributes: {
-              event: "onIntroductionShown",
-            },
-          },
-        ],
         [
           "shield-study",
           {

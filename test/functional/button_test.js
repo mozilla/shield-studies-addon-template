@@ -11,16 +11,17 @@ const webdriver = require("selenium-webdriver");
 const By = webdriver.By;
 const until = webdriver.until;
 
-const promiseAddonButton = async driver => {
+/* Part 1:  Utilities */
+
+async function promiseAddonButton(driver) {
   const browserActionId = (await utils.ui.addonWidgetId()) + "-browser-action";
   driver.setContext(Context.CHROME);
   return driver.wait(until.elementLocated(By.id(browserActionId)), 1000);
-};
+}
 
-// Mocha can't use arrow functions as sometimes we need to call `this` and
-// using an arrow function alters the binding of `this`.
-// Hence we disable prefer-arrow-callback here so that mocha/no-mocha-arrows can
-// be applied nicely.
+/* Part 2:  The Tests */
+
+// TODO glind, this is an incomplete set of tests
 
 describe("ui button (browserAction)", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
@@ -28,23 +29,23 @@ describe("ui button (browserAction)", function() {
 
   let driver;
 
-  before(async function() {
+  before(async() => {
     driver = await utils.setupWebdriver.promiseSetupDriver(
       utils.FIREFOX_PREFERENCES,
     );
-    return utils.setupWebdriver.installAddon(driver);
+    await utils.setupWebdriver.installAddon(driver);
   });
 
-  after(function() {
-    return driver.quit();
+  after(async() => {
+    driver.quit();
   });
 
-  it("exists", async function() {
+  it("exists", async() => {
     const button = await promiseAddonButton(driver);
     return assert(typeof button === "object");
   });
 
-  it("the toolbar button label should be localized", async function() {
+  it("the toolbar button label should be localized", async() => {
     const button = await promiseAddonButton(driver);
     const text = await button.getAttribute("tooltiptext");
     return assert.equal(text, "Visit Mozilla");
