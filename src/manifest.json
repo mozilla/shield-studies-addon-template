@@ -38,7 +38,7 @@
   },
   "permissions": ["storage", "alarms"],
   "background": {
-    "scripts": ["studySetup.js", "Feature.js", "background.js"]
+    "scripts": ["studySetup.js", "feature.js", "background.js"]
   },
   "icons": {
     "48": "icons/shield-icon.svg"
