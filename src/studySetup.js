@@ -51,10 +51,6 @@ const baseStudySetup = {
         "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=expired",
       ],
     },
-    dataPermissionsRevoked: {
-      baseUrls: [],
-      category: "ended-neutral",
-    },
 
     /** Study specific endings */
     "used-often": {
