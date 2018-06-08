@@ -132,5 +132,6 @@ class BrowserActionButtonChoiceFeature {
   }
 }
 
-// construct. will be configured after setup.
-const feature = new Feature();
+// make an instance of the feature class available to background.js
+// construct only. will be configured after setup
+window.feature = new Feature();
