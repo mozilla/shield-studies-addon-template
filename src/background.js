@@ -1,4 +1,4 @@
-/* global getStudySetup, Feature */
+/* global getStudySetup, feature */
 
 /**
  *  Goal:  Implement an instrumented feature using `browser.study` API
@@ -119,9 +119,6 @@ class StudyLifeCycleHandler {
     return browser.management.uninstallSelf();
   }
 }
-
-// construct. will be configured after setup.
-const feature = new Feature();
 
 /**
  * Run every startup to get config and instantiate the feature

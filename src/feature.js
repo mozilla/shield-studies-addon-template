@@ -1,4 +1,4 @@
-/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(Feature)" }]*/
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(feature)" }]*/
 
 /**  Example Feature module for a Shield Study.
  *
@@ -131,3 +131,6 @@ class BrowserActionButtonChoiceFeature {
     }
   }
 }
+
+// construct. will be configured after setup.
+const feature = new Feature();
