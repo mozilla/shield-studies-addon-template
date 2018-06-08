@@ -49,13 +49,10 @@ describe("shield utils integration", function() {
     });
 
     it("should have sent one shield-study telemetry ping with study_state=enter", async() => {
-      const filteredPings = utils.telemetry.filterPings(
-        [
-          ping =>
-            ping.type === "shield-study" &&
-            ping.payload.data.study_state === "enter",
-        ],
-        studyPings,
+      const filteredPings = studyPings.filter(
+        ping =>
+          ping.type === "shield-study" &&
+          ping.payload.data.study_state === "enter",
       );
       assert(
         filteredPings.length > 0,
@@ -64,13 +61,10 @@ describe("shield utils integration", function() {
     });
 
     it("should have sent one shield-study telemetry ping with study_state=installed", async() => {
-      const filteredPings = utils.telemetry.filterPings(
-        [
-          ping =>
-            ping.type === "shield-study" &&
-            ping.payload.data.study_state === "installed",
-        ],
-        studyPings,
+      const filteredPings = studyPings.filter(
+        ping =>
+          ping.type === "shield-study" &&
+          ping.payload.data.study_state === "installed",
       );
       assert(
         filteredPings.length > 0,
@@ -80,7 +74,9 @@ describe("shield utils integration", function() {
 
     it("telemetry order is as expected", function() {
       // Telemetry:  order, and summary of pings is good.
-      const filteredPings = studyPings.filter(ping => ping.type === "shield-study");
+      const filteredPings = studyPings.filter(
+        ping => ping.type === "shield-study",
+      );
 
       const observed = utils.telemetry.summarizePings(filteredPings);
       const expected = [

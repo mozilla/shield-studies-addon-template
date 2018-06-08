@@ -50,13 +50,10 @@ describe("introduction / orientation bar", function() {
   });
 
   it("should have sent one shield-study-addon telemetry ping with payload.data.attributes.event=onIntroductionShown", async() => {
-    const filteredPings = utils.telemetry.filterPings(
-      [
-        ping =>
-          ping.type === "shield-study-addon" &&
-          ping.payload.data.attributes.event === "onIntroductionShown",
-      ],
-      studyPings,
+    const filteredPings = studyPings.filter(
+      ping =>
+        ping.type === "shield-study-addon" &&
+        ping.payload.data.attributes.event === "onIntroductionShown",
     );
     assert(
       filteredPings.length > 0,
