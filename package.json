@@ -10,6 +10,9 @@
     "shield-studies-addon-utils": "github:mozilla/shield-studies-addon-utils#develop"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-istanbul": "^4.1.6",
+    "babel-preset-env": "^1.7.0",
     "chai": "^4.1.2",
     "doctoc": "^1.3.0",
     "eslint": "^4.7.2",
@@ -26,10 +29,12 @@
     "istanbul": "^1.1.0-alpha.1",
     "jshint": "^2.9.5",
     "karma": "^1.7.1",
+    "karma-babel-preprocessor": "^7.0.0",
     "karma-chai": "^0.1.0",
     "karma-coverage": "^1.1.2",
     "karma-coveralls": "^1.1.2",
     "karma-firefox-launcher": "^1.0.1",
+    "karma-istanbuljs-reporter": "^0.2.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.4",
     "minimist": "^1.2.0",

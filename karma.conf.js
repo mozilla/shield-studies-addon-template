@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-const reporters = ["mocha", "coverage"];
+const reporters = ["mocha", "istanbul"];
 if (process.env.COVERALLS_REPO_TOKEN) {
   reporters.push("coveralls");
 }
@@ -16,7 +16,7 @@ module.exports = function(config) {
     ],
     frameworks: ["mocha", "chai"],
     reporters,
-    coverageReporter: {
+    istanbulReporter: {
       dir: "test/coverage",
       reporters: [
         {
@@ -25,13 +25,10 @@ module.exports = function(config) {
         },
         {
           type: "html",
-          subdir(browser) {
-            // normalization process to keep a consistent browser name
-            // across different OS
-            return browser.toLowerCase().split(/[ /-]/)[0];
-          },
         },
-        { type: "text-summary" },
+        {
+          type: "text-summary",
+        },
       ],
     },
     files: [
@@ -40,11 +37,12 @@ module.exports = function(config) {
       "src/feature.js",
       "test/unit/*.spec.js",
     ],
-    // preprocessors: { "src/feature.js": ["coverage"] },
+    preprocessors: { "src/feature.js": ["babel"] },
     plugins: [
+      "karma-babel-preprocessor",
       "karma-chai",
       "karma-coveralls",
-      "karma-coverage",
+      "karma-istanbuljs-reporter",
       "karma-firefox-launcher",
       "karma-mocha",
       "karma-mocha-reporter",
