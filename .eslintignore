@@ -1,4 +1,5 @@
 # do not lint/format generated artifacts
+test/coverage/
 dist/
 package-lock.json
 # makes sure that eslintrc.js gets linted/formatted

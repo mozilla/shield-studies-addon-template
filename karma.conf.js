@@ -8,11 +8,16 @@ if (process.env.COVERALLS_REPO_TOKEN) {
 module.exports = function(config) {
   config.set({
     singleRun: true,
-    browsers: ["Firefox"],
-    frameworks: ["mocha"],
+    browsers: [
+      // "Firefox",
+      "FirefoxDeveloper",
+      // "FirefoxAurora",
+      // "FirefoxNightly",
+    ],
+    frameworks: ["mocha", "chai"],
     reporters,
     coverageReporter: {
-      dir: "build/coverage",
+      dir: "test/coverage",
       reporters: [
         {
           type: "lcov",
@@ -32,11 +37,12 @@ module.exports = function(config) {
     files: [
       "node_modules/sinon/pkg/sinon.js",
       "node_modules/sinon-chrome/bundle/sinon-chrome.min.js",
-      "src/background.js",
+      "src/feature.js",
       "test/unit/*.test.js",
     ],
-    preprocessors: { "src/*.js": ["coverage"] },
+    // preprocessors: { "src/feature.js": ["coverage"] },
     plugins: [
+      "karma-chai",
       "karma-coveralls",
       "karma-coverage",
       "karma-firefox-launcher",
