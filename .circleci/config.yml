@@ -45,16 +45,12 @@ jobs:
           name: Build .XPI
           command: npm run build
 
-      #- run:
-      #    name: Unit tests
-      #    command: npm run test:karma
-
       - run:
-          name: Functional tests
-          command: npm run test:func
+          name: Unit + functional tests
+          command: npm run test
 
       - store_artifacts:
           path: "dist"
 
-      #- store_test_results:
-      #    path: "build/coverage"
+      - store_test_results:
+          path: "test/coverage"
