@@ -14,11 +14,11 @@ jobs:
       # Download and cache dependencies (update the cache keys to force a newer version of devedition)
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180524
+          - v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180608
 
       - run:
           name: Install dependencies
-          command: npm install
+          command: npm ci
 
       - run:
           name:  Get devedition
@@ -35,7 +35,7 @@ jobs:
           paths:
             - node_modules
             - firefox
-          key: v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180524
+          key: v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180608
 
       - run:
           name: Lint
