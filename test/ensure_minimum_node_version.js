@@ -1,5 +1,4 @@
 /* eslint-env node */
-/* eslint no-console:off */
 
 const semver = require("semver");
 const requiredNodeEngineVersion = require("../package.json").engines.node;

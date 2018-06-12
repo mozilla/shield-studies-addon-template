@@ -23,9 +23,9 @@ loading and running of tests.
 # Running the Tests
 
 ```shell
-$ npm run test:karma
+$ npm run test:0-unit
 ```
 
 # Viewing coverage output
 
-You can view the code output in the `build/coverage/` directory.
+You can view the code output in the `test/coverage/` directory.

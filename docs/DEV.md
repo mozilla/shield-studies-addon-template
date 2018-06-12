@@ -48,7 +48,7 @@ npm run build
 
 ## Details
 
-First, make sure you are on NPM 5+ installed so that the proper dependencies are installed using the package-lock.json file.
+First, make sure you are on NPM 6+ installed:
 
 ```shell
 npm install -g npm
