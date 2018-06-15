@@ -19,14 +19,6 @@
         "paths": [["introductionNotificationBar"]]
       }
     },
-    "prefs": {
-      "schema": "./privileged/prefs/schema.json",
-      "parent": {
-        "scopes": ["addon_parent"],
-        "script": "./privileged/prefs/api.js",
-        "paths": [["prefs"]]
-      }
-    },
     "study": {
       "schema": "./privileged/study/schema.json",
       "parent": {

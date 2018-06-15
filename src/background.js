@@ -76,18 +76,18 @@ class StudyLifeCycleHandler {
    */
   async enableFeature(studyInfo) {
     console.log("enabling feature", studyInfo);
-    if (studyInfo.timeUntilExpire) {
+    const { delayInMinutes } = studyInfo;
+    if (delayInMinutes !== undefined) {
       const alarmName = `${browser.runtime.id}:studyExpiration`;
       const alarmListener = async alarm => {
         if (alarm.name === alarmName) {
-          console.log("study will expire now!");
           browser.alarms.onAlarm.removeListener(alarmListener);
           await browser.study.endStudy("expired");
         }
       };
       browser.alarms.onAlarm.addListener(alarmListener);
       browser.alarms.create(alarmName, {
-        delayInMinutes: studyInfo.timeUntilExpire / (1000 * 60),
+        delayInMinutes,
       });
     }
     feature.configure(studyInfo);
