@@ -73,7 +73,7 @@
     "lint": "npm-run-all lint:*",
     "lint:eslint": "npm run eslint",
     "lint:fixpack": "fixpack",
-    "lint:nsp": "nsp check",
+    "lint:nsp": "# nsp check",
     "lint:web-ext-lint": "web-ext lint",
     "postformat": "npm run eslint-fix && fixpack",
     "prebuild": "npm run bundle-utils",
