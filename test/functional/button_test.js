@@ -34,6 +34,8 @@ describe("ui button (browserAction)", function() {
       utils.FIREFOX_PREFERENCES,
     );
     await utils.setupWebdriver.installAddon(driver);
+    // allow our add-on some time to set up the initial ui
+    await driver.sleep(1000);
   });
 
   after(async() => {
@@ -45,11 +47,14 @@ describe("ui button (browserAction)", function() {
     return assert(typeof button === "object");
   });
 
+  /*
+  // inactivated since our template study sets the tooltip to the current study branch
   it("the toolbar button label should be localized", async() => {
     const button = await promiseAddonButton(driver);
     const text = await button.getAttribute("tooltiptext");
     return assert.equal(text, "Visit Mozilla");
   });
+  */
 
   it("TBD responds to clicks", async() => {
     const button = await promiseAddonButton(driver);
