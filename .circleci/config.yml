@@ -3,55 +3,80 @@ jobs:
   build:
     docker:
       - image: circleci/node:latest-browsers
-        environment:
-          FIREFOX_BINARY: /home/circleci/checkout/firefox/firefox-bin
-          FIREFOX_DEVELOPER_BIN: /home/circleci/checkout/firefox/firefox-bin
 
     working_directory: ~/checkout
 
     steps:
       - checkout
 
-      # Download and cache dependencies (update the cache keys to force a newer version of devedition)
+      # Download and cache dependencies (update the cache keys to force a newer version)
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180524
+          - v1-dependencies-{{ checksum "package.json" }}-20180618
 
       - run:
           name: Install dependencies
           command: npm install
 
       - run:
-          name:  Get devedition
+          name:  Install different versions of Firefox
           command: |
-            if [ -d ./firefox ]; then
-              echo "firefox dir exists, must be from cache"
-            else
-              ./node_modules/.bin/get-firefox -b devedition -p linux -e
-            fi
-            ls -l $FIREFOX_BINARY
-            $FIREFOX_BINARY -v
+            ./node_modules/.bin/get-firefox -b release -p linux -e
+            mv ./firefox ./firefox-release
+            ./node_modules/.bin/get-firefox -b beta -p linux -e
+            mv ./firefox ./firefox-beta
+            ./node_modules/.bin/get-firefox -b devedition -p linux -e
+            mv ./firefox ./firefox-devedition
+            ./node_modules/.bin/get-firefox -b nightly -p linux -e
+            mv ./firefox ./firefox-nightly
 
       - save_cache:
           paths:
             - node_modules
-            - firefox
-          key: v1-dependencies-{{ checksum "package-lock.json" }}-devedition-20180524
+            - firefox-nightly
+            - firefox-devedition
+            - firefox-beta
+            - firefox-release
+            - firefox-unbranded-release
+          key: v1-dependencies-{{ checksum "package.json" }}-20180618
+
+      - run:
+          name: Reveal which Firefox versions are installed
+          command: |
+            echo "Versions of Firefox installed:"
+            ./firefox-release/firefox-bin -v
+            ./firefox-beta/firefox-bin -v
+            ./firefox-devedition/firefox-bin -v
+            ./firefox-nightly/firefox-bin -v
 
       - run:
           name: Lint
           command: npm run lint
 
       - run:
-          name: Build .XPI
+          name: Build add-on
           command: npm run build
-
-      - run:
-          name: Unit + functional tests
-          command: npm run test
 
       - store_artifacts:
           path: "dist"
+
+      # Firefox Release not yet at 61.0a1 which is required by the template
+      #- run:
+      #    name: Test with Firefox Release
+      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-release/firefox-bin npm run test
+
+      # Utils v5 does not work with Firefox Beta #200
+      #- run:
+      #    name: Test with Firefox Beta
+      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-beta/firefox-bin npm run test
+
+      - run:
+          name: Test with Firefox Developer Edition
+          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-devedition/firefox-bin FIREFOX_DEVELOPER_BIN=/home/circleci/checkout/firefox-devedition/firefox-bin npm run test
+
+      - run:
+          name: Test with Firefox Nightly
+          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-nightly/firefox-bin npm run test
 
       - store_test_results:
           path: "test/coverage"
