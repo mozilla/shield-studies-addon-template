@@ -117,6 +117,14 @@ Runs unit tests using Karma.
 
 Code at [/test/unit/](/test/unit/).
 
+Note: [The karma firefox launcher](https://github.com/karma-runner/karma-firefox-launcher) expects that the firefox binaries are located in slightly different places than `web-ext`. Example on how to workaround this on OSX:
+
+```shell
+cd /Applications/
+ln -s FirefoxBeta.app FirefoxAurora.app
+ln -s Firefox\ Nightly.app FirefoxNightly.app
+```
+
 ### Functional tests
 
 ```shell
