@@ -102,20 +102,38 @@ See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in a
 ## Automated testing
 
 ```shell
-npm run test
+npm test
 ```
 
-Runs tests using the Selenium driver, verifying the telemetry payload at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user:
+Runs both unit and functional tests.
+
+### Unit tests
+
+```shell
+npm run test:unit
+```
+
+Runs unit tests using Karma.
+
+Code at [/test/unit/](/test/unit/).
+
+### Functional tests
+
+```shell
+npm run test:func
+```
+
+Runs functional tests using the Selenium driver, verifying the telemetry payload at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user:
 
 * prove the notification bar ui opens
 * _clicking on the left-most button presented_.
 * verifying that sent Telemetry is correct.
 
-Code at [/test/functional_tests.js](/test/functional_tests.js).
+Code at [/test/functional/](/test/functional/).
 
 Note: The study variation/branch during tests is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
 
-The functional testing set-up is a minimal set of tests imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study addons.
+The functional testing set-up is a minimal set of tests imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study add-ons.
 
 ## Directory Structure and Files
 
@@ -132,12 +150,12 @@ The functional testing set-up is a minimal set of tests imported from <https://g
 │   └── button_icon_preference_study_shield_study_example_-2.0.0.zip
 ├── docs
 │   ├── DEV.md
-│   ├── TELEMETRY.md      # Telemetry examples for this addon
+│   ├── TELEMETRY.md      # Telemetry examples for this add-on
 │   ├── TESTPLAN.md       # Manual QA test plan
 │   └── WINDOWS_SETUP.md
 ├── package-lock.json
 ├── package.json
-├── src                   # Files that will go into the addon
+├── src                   # Files that will go into the add-on
 │   ├── .eslintrc.json
 │   ├── background.js     # Background scripts, independent of web pages or browser windows
 │   ├── icon.png
@@ -173,13 +191,13 @@ The functional testing set-up is a minimal set of tests imported from <https://g
 >> tree -a -I 'node_modules|.git|.DS_Store'
 ```
 
-This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/background.js`, `src/privileged/feature/` and `src/privileged/Config.jsm`.
+This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/background.js`, `src/privileged/` and `src/studySetup.js`.
 
 ## General Shield Study Engineering
 
-Shield study add-ons are web extensions (`src/`) with background scripting (`src/background.js`) with embedded web extension experiments (`src/privileged/*/api.js`) that allows them to run privileged code.
+Shield study add-ons are web extensions (`src/`) with at least one background script (`src/background.js`) and one or more embedded Web Extension Experiments (`src/privileged/*/api.js`) that allows them to run privileged code.
 
-Privileged code allows access Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
+Privileged code allows access to Telemetry data, user preferences etc that are required for collecting relevant data for [Shield Studies](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies).
 
 It is recommended to build necessary logic and user interface using in the context of the web extension whenever possible and only utilize privileged code when strictly necessary.
 
