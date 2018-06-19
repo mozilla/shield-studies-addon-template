@@ -74,7 +74,7 @@ class StudyLifeCycleHandler {
    *
    * @returns {undefined}
    */
-  async enableFeature(studyInfo) {
+  enableFeature(studyInfo) {
     console.log("enabling feature", studyInfo);
     const { delayInMinutes } = studyInfo;
     if (delayInMinutes !== undefined) {

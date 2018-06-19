@@ -95,12 +95,6 @@ const baseStudySetup = {
   expire: {
     days: 14,
   },
-
-  // Optional: testing overrides.
-  // TODO: Set from prefs in getStudySetup
-  testing: {
-    variation: null,
-  },
 };
 
 /**
@@ -156,6 +150,8 @@ async function getStudySetup() {
   studySetup.testing = {
     /* Example: override testing keys various ways, such as by prefs. (TODO) */
     variationName: null, // await browser.prefs.getStringPref(prefs.variationName);
+    firstRunTimestamp: null,
+    expired: null,
   };
   return studySetup;
 }
