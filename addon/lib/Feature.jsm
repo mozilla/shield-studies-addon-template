@@ -6,7 +6,7 @@
 
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(EXPORTED_SYMBOLS|Feature)" }]*/
 
-const { utils: Cu, interfaces: Ci } = Components;
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "UITour",
@@ -91,11 +91,18 @@ class Feature {
     this.log = log;
     this.libPath = libPath;
     this.frameScript = `${this.libPath}/shield-search-nudges-content.js`;
+    this.shownPanelType = null;
 
     // Example log statement
     this.log.debug("Feature constructor");
   }
 
+  /**
+   * Retrieve the frontmost browser window. It will wait a while if there are none
+   * available yet.
+   *
+   * @return {DOMWindow}
+   */
   async getMessageManager() {
     const window = await getBrowserWindow();
     if (!window) {
@@ -105,6 +112,12 @@ class Feature {
     return window.getGroupMessageManager("browsers");
   }
 
+  /**
+   * Boot the addon, which in our case means:
+   * 1. (re-)setting the prefs if necessary,
+   * 2. loading the frame script and
+   * 3. connect with the Search service.
+   */
   async start() {
     this.log.debug("Feature start");
 
@@ -118,13 +131,21 @@ class Feature {
   }
 
   /**
-   * Resets the pref to their default values. 
-   * @return {[type]} [description]
+   * Resets the pref to their default values.
+   *
+   * @param {Boolean} [permanently] Whether to clear the prefs or set them with
+   *                                an initial value intead.
    */
-  resetPrefs() {
-    Services.prefs.setIntPref(PREF_NUDGES_SHOWN_COUNT, 0);
-    Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, false);
-    Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_WITHOK, false);
+  resetPrefs(permanently = false) {
+    if (permanently) {
+      for (const pref of [PREF_NUDGES_SHOWN_COUNT, PREF_NUDGES_DISMISSED_CLICKAB, PREF_NUDGES_DISMISSED_WITHOK]) {
+        Services.prefs.clearUserPref(pref);
+      }
+    } else {
+      Services.prefs.setIntPref(PREF_NUDGES_SHOWN_COUNT, 0);
+      Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, false);
+      Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_WITHOK, false);
+    }
   }
 
   /**
@@ -140,6 +161,12 @@ class Feature {
     mm.addMessageListener("ShieldSearchNudges:OnHomePage", this);
   }
 
+  /**
+   * Await a possible asynchronous initialization of the Search service and start
+   * listening for changes to engine-current.
+   * When all that is done, notify the content script of the currently selected
+   * search engine.
+   */
   async connectWithSearch() {
     await new Promise(resolve => {
       if (Services.search.isInitialized) {
@@ -167,6 +194,10 @@ class Feature {
    * @param {Boolean} [isUninstall]
    */
   async shutdown(isUninstall = false) {
+    if (isUninstall) {
+      this.resetPrefs(true);
+    }
+
     const window = await getBrowserWindow();
     if (!window) {
       return;
@@ -201,16 +232,47 @@ class Feature {
   }
 
   observe(engine, topic, verb) {
-    if (topic != SEARCH_ENGINE_TOPIC || ver != "engine-current") {
+    if (topic != SEARCH_ENGINE_TOPIC || verb != "engine-current") {
       return;
     }
     this.sendCurrentEngineToContent();
   }
 
   handleEvent(event) {
-    // Button was clicked!!
+    switch (event.type) {
+      case "command": {
+        // 'Okay, got it' button was clicked.
+        Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_WITHOK, true);
+        let panel = event.target.parentNode;
+        while (panel.parentNode && panel.localName != "panel") {
+          panel = panel.parentNode;
+        }
+        // Hide the panel when the button is clicked.
+        if (panel && panel.hidePopup) {
+          panel.hidePopup();
+        }
+        break;
+      }
+      case "popuphidden": {
+        // Check if the panel was hidden by clicking the URLBar.
+        const window = event.target.ownerGlobal;
+        const focusMethod = Services.focus.getLastFocusMethod(window);
+        if (window.gURLBar.focused && focusMethod && !!(focusMethod & Services.focus.FLAG_BYMOUSE)) {
+          Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, true);
+        }
+        this.shownPanelType = null;
+        break;
+      }
+      default:
+        Cu.reportError("ShieldSearchNudges: Unknown event.");
+        break;
+    }
   }
 
+  /**
+   * [sendCurrentEngineToContent description]
+   * @return {[type]} [description]
+   */
   async sendCurrentEngineToContent() {
     const mm = await this.getMessageManager();
     if (!mm) {
@@ -256,7 +318,7 @@ class Feature {
   hasExpired() {
     return Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, false) ||
       Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_WITHOK, false) ||
-      Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) > NUDGES_SHOWN_COUNT_MAX;
+      Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) >= NUDGES_SHOWN_COUNT_MAX;
   }
 
   /**
@@ -270,36 +332,37 @@ class Feature {
 
   async _showTip(window, type) {
     const anchor = window.document.querySelector(TIP_ANCHOR_SELECTOR);
-    dump("SHOW TIP?? " + anchor + "\n");
     if (!anchor) {
       return;
     }
 
     const engine = Services.search.currentEngine;
     const [button, content] = await this._getStrings(window, type, engine);
-dump("2. SHOW TIP?? " + button + ", " + content + "\n");
-    const {panel, panelBody, panelImage, panelDescription, panelButton} = this._ensurePanel(window);
+
+    const {panel, panelImage, panelDescription, panelButton} = this._ensurePanel(window);
+    if (panel.state == "showing" || panel.state == "open") {
+      return;
+    }
+
     panelImage.src = engine.iconURI.spec;
     panelDescription.textContent = content;
     panelButton.setAttribute("label", button);
     panel.hidden = false;
-dump("3. SHOW TIP??\n");
-    panel.openPopup(anchor, "bottomcenter topright", 0, 0);
 
-    // UITour.showInfo(window, anchor, "", content, engine.iconURI.spec, [
-    //   {
-    //     style: "primary",
-    //     label: "Okay, got it",
-    //     callback() {
-    //       Cu.reportError("OHAI!!");
-    //       Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_WITHOK, true);
-    //     }
-    //   }
-    // ]);
+    panel.openPopup(anchor, "bottomcenter topleft", 0, 0);
+    panel.addEventListener("popuphidden", this, {once: true});
+    this.shownPanelType = type;
+
+    // Increment the counter that keeps track of the number of times this popup
+    // was shown.
+    Services.prefs.setIntPref(PREF_NUDGES_SHOWN_COUNT,
+      Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) + 1);
   }
 
   async _getStrings(window, type, engine) {
     if (!this._okayString) {
+      // We have to fetch this thing from Activity Stream, because we forgot to
+      // land the button label in Fx 60.
       const asStrings = await new Promise(async resolve => {
         let data = {};
         try {
@@ -310,10 +373,12 @@ dump("3. SHOW TIP??\n");
           const [json] = text.match(/{[^]*}/);
           data = JSON.parse(json);
         } catch (ex) {
-          Cu.reportError("Failed to load strings for Activity Stream about:preferences");
+          Cu.reportError("ShieldSearchNudges: Failed to load strings from Activity Stream");
         }
         resolve(data);
       });
+      // Yeah, fall back to a hard-coded English label, just in case.
+      // (`asStrings` is guaranteed to be an object.)
       this._okayString = asStrings.section_disclaimer_topstories_buttontext || "Okay, got it";
     }
 
@@ -323,30 +388,9 @@ dump("3. SHOW TIP??\n");
   }
 
   _ensurePanel(window) {
-    // <panel id="UITourTooltip"
-    //    type="arrow"
-    //    hidden="true"
-    //    noautofocus="true"
-    //    align="start"
-    //    orient="vertical"
-    //    role="alert">
-    //   <vbox>
-    //     <hbox id="UITourTooltipBody">
-    //       <image id="UITourTooltipIcon"/>
-    //       <vbox flex="1">
-    //         <description id="UITourTooltipDescription" flex="1"/>
-    //       </vbox>
-    //     </hbox>
-    //     <hbox id="UITourTooltipButtons" flex="1" align="center"/>
-    //   </vbox>
-    // </panel>
-
     const {document} = window;
     let panel = document.getElementById(TIP_PANEL_ID);
     if (panel) {
-      if (panel.state == "showing" || panel.state == "open") {
-        panel.hidePopup();
-      }
       return {
         panel,
         panelBody: panel.querySelector("vbox > hbox"),
@@ -359,8 +403,8 @@ dump("3. SHOW TIP??\n");
     panel = document.createElement("panel");
     const attrs = [["id", TIP_PANEL_ID], ["type", "arrow"], ["hidden", "true"],
       ["noautofocus", "true"], ["align", "start"], ["orient", "vertical"], ["role", "alert"],
-      ["style", "max-width: 30em"]];
-    for (let [name, value] of attrs) {
+      ["style", "max-width: 30em; font: menu;"]];
+    for (const [name, value] of attrs) {
       panel.setAttribute(name, value);
     }
 
@@ -369,10 +413,10 @@ dump("3. SHOW TIP??\n");
     const panelImage = panelBody.appendChild(document.createElement("image"));
     const panelDescription = panelBody.appendChild(document.createElement("vbox"))
       .appendChild(document.createElement("description"));
-    const panelButton = panelBody.parentNode/*.appendChild(document.createElement("hbox"))*/
-      .appendChild(document.createElement("button"));
-    panelButton.setAttribute("style", "-moz-appearance: none; margin: 1em -16px -16px; border: none; border-top-color: currentcolor; border-top-style: none; border-top-width: medium; border-top: 1px solid var(--panel-separator-color); padding: 8px 20px; color: inherit; background-color: transparent;");
-    for (let flexElement of [panelDescription, panelDescription.parentNode, panelButton.parentNode]) {
+    const panelButton = panelBody.parentNode.appendChild(document.createElement("button"));
+    panelButton.setAttribute("style", "margin: 1em -16px -16px; color: inherit");
+    panelButton.className = "subviewbutton panel-subview-footer";
+    for (const flexElement of [panelDescription, panelDescription.parentNode, panelButton.parentNode]) {
       flexElement.setAttribute("flex", "1");
     }
 
@@ -384,7 +428,7 @@ dump("3. SHOW TIP??\n");
 
   _getWindowIfNotExpired() {
     if (this.hasExpired()) {
-      // TODO: end the study?
+      this.studyUtils.endStudy({reason: "expired"});
       return null;
     }
 

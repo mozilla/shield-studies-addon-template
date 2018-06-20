@@ -37,31 +37,7 @@ var config = {
      * - If there is no key for an endStudy reason, no url will open.
      * - usually surveys, orientations, explanations
      */
-    endings: {
-      /** standard endings */
-      "user-disable": {
-        baseUrl: "http://www.example.com/?reason=user-disable",
-      },
-      ineligible: {
-        baseUrl: "http://www.example.com/?reason=ineligible",
-      },
-      expired: {
-        baseUrl: "http://www.example.com/?reason=expired",
-      },
-      /** User defined endings */
-      "used-often": {
-        baseUrl: "http://www.example.com/?reason=used-often",
-        study_state: "ended-positive", // neutral is default
-      },
-      "a-non-url-opening-ending": {
-        study_state: "ended-neutral",
-        baseUrl: null,
-      },
-      "introduction-leave-study": {
-        study_state: "ended-negative",
-        baseUrl: "http://www.example.com/?reason=introduction-leave-study",
-      },
-    },
+    endings: {},
     telemetry: {
       send: true, // assumed false. Actually send pings?
       removeTestingFlag: false, // Marks pings to be discarded, set true for to have the pings processed in the pipeline
