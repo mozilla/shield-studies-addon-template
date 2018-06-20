@@ -12,18 +12,20 @@ The develop-branch of this repository is based on WebExtensions, which are the w
 
 ### Important notice
 
-We are working on [supporting a pure Web Extension Experiment workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53) with a new version, v5, of the [Shield utilities](https://github.com/mozilla/shield-studies-addon-utils/). Even though support for these workflows is not yet stable (and thus only available in the develop-branch), **we do not recommend using the master branch (using Shield Utils v4) of this template**. Creating a legacy add-on with the outdated master branch will likely result in a broken Shield study add-on in recent versions of Firefox.
+We just started [supporting a pure Web Extension Experiment workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53) with a new version, v5, of the [Shield utilities](https://github.com/mozilla/shield-studies-addon-utils/).
+Even though support for these workflows are yet to pass official QA review, **we do not recommend using the old template (for creating legacy boostrapped add-ons using Shield Utils v4) of this template**. Creating a legacy boostrapped add-on with the outdated master branch will likely result in a broken Shield study add-on in recent versions of Firefox.
 
 Instead, we recommend that you:
 
 * build your study as a WEE ([Web Extension Experiment](https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/index.html))
-* help us test the requisite [experimental Shield API(s)](https://github.com/mozilla/shield-studies-addon-utils/)
+* help us test the requisite [new Shield Web Extension API(s)](https://github.com/mozilla/shield-studies-addon-utils/)
 
 Example Shield add-ons (implemented as WEEs) using the experimental Shield API(s):
 
-* The develop-branch of this template
-* https://github.com/mozilla/shield-studies-addon-utils/blob/develop/examples/small-study
-* https://github.com/mozilla/shield-cloudstorage
+* This template
+* <https://github.com/mozilla/shield-studies-addon-utils/blob/develop/examples/small-study>
+* <https://github.com/motin/taar-experiment-v3-shield-study>
+* <https://github.com/mozilla/shield-cloudstorage>
 
 Chat with us: #shield on Slack about the latest progress and how to help us move faster away from legacy add-ons.
 
