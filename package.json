@@ -10,7 +10,7 @@
     "minVersion": "57.0",
     "maxVersion": "*",
     "multiprocessCompatible": true,
-    "hasEmbeddedWebExtension": false,
+    "hasEmbeddedWebExtension": true,
     "chromeResource": "search-nudges",
     "creator": "Mike de Boer <mdeboer@mozilla.com>",
     "description": "Study to measure if showing a doorhanger to introduce search using the urlbar is helpful",

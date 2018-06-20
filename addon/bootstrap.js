@@ -16,18 +16,22 @@ const STUDY = "search-nudges";
 XPCOMUtils.defineLazyModuleGetter(
   this,
   "config",
-  `resource://${STUDY}/Config.jsm`,
+  `chrome://${STUDY}/content/Config.jsm`,
 );
 XPCOMUtils.defineLazyModuleGetter(
   this,
   "studyUtils",
-  `resource://${STUDY}/StudyUtils.jsm`,
+  `chrome://${STUDY}/content/StudyUtils.jsm`,
 );
 XPCOMUtils.defineLazyModuleGetter(
   this,
   "Feature",
-  `resource://${STUDY}/lib/Feature.jsm`,
+  `chrome://${STUDY}/content/lib/Feature.jsm`,
 );
+
+XPCOMUtils.defineLazyServiceGetter(this, "resProto",
+  "@mozilla.org/network/protocol;1?name=resource",
+  "nsISubstitutingProtocolHandler");
 
 this.Bootstrap = {
   /**
@@ -41,6 +45,10 @@ this.Bootstrap = {
    * @returns {Promise<void>}
    */
   async startup(addonData, reason) {
+    // resProto.setSubstitutionWithFlags(STUDY,
+    //   Services.io.newURI("", null, addonData.resourceURI),
+    //   resProto.ALLOW_CONTENT_ACCESS);
+
     this.log.debug("startup", studyUtils.REASONS[reason] || reason);
 
     this.initStudyUtils(addonData.id, addonData.version);
@@ -62,9 +70,9 @@ this.Bootstrap = {
     }
 
     /*
-    * Adds the study to the active list of telemetry experiments,
-    * and sends the "installed" telemetry ping if applicable
-    */
+     * Adds the study to the active list of telemetry experiments,
+     * and sends the "installed" telemetry ping if applicable
+     */
     await studyUtils.startup({ reason });
 
     // log what the study variation and other info is.
@@ -75,6 +83,7 @@ this.Bootstrap = {
       studyUtils,
       studyUtils.REASONS[reason],
       this.log,
+      `chrome://${STUDY}/content/lib`
     );
 
     // Expiration checks should be implemented in a very reliable way by the
@@ -93,6 +102,10 @@ this.Bootstrap = {
     studyUtils.setup({ ...config, addon: { id, version } });
     // TODO bdanforth: patch studyUtils to setLoggingLevel as part of setup method
     studyUtils.setLoggingLevel(config.log.studyUtils.level);
+    studyUtils.setVariation({
+      name: "default",
+      weight: 0
+    });
   },
 
   /**
@@ -102,6 +115,7 @@ this.Bootstrap = {
    * studyUtils._isEnding means this is a '2nd shutdown'.
    */
   async shutdown(addonData, reason) {
+    // resProto.setSubstitution(STUDY, null);
     this.log.debug("shutdown", studyUtils.REASONS[reason] || reason);
 
     const isUninstall =
@@ -124,13 +138,13 @@ this.Bootstrap = {
     // down before it has instantiated the feature. Ex: if the user is ineligible
     // or if the study has expired.
     if (this.feature) {
-      await this.feature.shutdown();
+      await this.feature.shutdown(isUninstall);
     }
 
     // Unload addon-specific modules
-    Cu.unload(`resource://${STUDY}/lib/Feature.jsm`);
-    Cu.unload(`resource://${STUDY}/Config.jsm`);
-    Cu.unload(`resource://${STUDY}/StudyUtils.jsm`);
+    Cu.unload(`chrome://${STUDY}/content/lib/Feature.jsm`);
+    Cu.unload(`chrome://${STUDY}/content/Config.jsm`);
+    Cu.unload(`chrome://${STUDY}/content/StudyUtils.jsm`);
   },
 
   uninstall(addonData, reason) {
