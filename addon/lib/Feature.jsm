@@ -9,8 +9,6 @@
 const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "UITour",
-  "resource:///modules/UITour.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "clearInterval",
   "resource://gre/modules/Timer.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "setInterval",
@@ -81,7 +79,7 @@ class Feature {
   /**
    * The feature this study implements.
    *
-   *  - studyUtils:  the configured studyUtils singleton.
+   *  - studyUtils: the configured studyUtils singleton.
    *  - reasonName: string of bootstrap.js startup/shutdown reason
    *
    */
@@ -211,13 +209,15 @@ class Feature {
       "ShieldSearchNudges = null; Components.utils.forceGC();", true);
     Services.obs.removeObserver(this, SEARCH_ENGINE_TOPIC);
 
-    if (this.panel) {
-      this.panel.removeNode();
+    // If the panel was created in this window before, let's make sure to clean it up.
+    if (window.document && window.document.getElementById(TIP_PANEL_ID)) {
+      const {panel, panelButton} = this._ensurePanel(window);
+      panelButton.removeEventListener("command", this);
+      panel.remove();
     }
   }
 
   receiveMessage(message) {
-    dump("INCOMING!! " + message.name + "\n");
     switch (message.name) {
       case "ShieldSearchNudges:OnEnginePage":
         this.maybeShowRedirectTip();
@@ -270,8 +270,8 @@ class Feature {
   }
 
   /**
-   * [sendCurrentEngineToContent description]
-   * @return {[type]} [description]
+   * Sends the origin part of the current search engine's URL to the frame script,
+   * so it can compare it to loaded pages' URLs.
    */
   async sendCurrentEngineToContent() {
     const mm = await this.getMessageManager();
@@ -285,6 +285,31 @@ class Feature {
       origin = new URL(engine.getSubmission("").uri.spec).origin;
     }
     mm.broadcastAsyncMessage("ShieldSearchNudges:UpdateEngineOrigin", {origin});
+  }
+
+  /**
+   * None of the tips (or nudges) are allowed to be shown when one of these
+   * conditions has been met:
+   *
+   * 1. The AwesomeBar was clicked whilst one of the tips was shown,
+   * 2. One of the tips was dismissed by clicking the 'Okay, got it' button,
+   * 3. The tips were shown more than four times in sum.
+   *
+   * @return {Boolean}
+   */
+  hasExpired() {
+    return Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, false) ||
+      Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_WITHOK, false) ||
+      Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) >= NUDGES_SHOWN_COUNT_MAX;
+  }
+
+  /**
+   * Good practice to have the literal 'sending' be wrapped up
+   *
+   * @param {Object} stringStringMap
+   */
+  telemetry(stringStringMap) {
+    this.studyUtils.telemetry(stringStringMap);
   }
 
   maybeShowGeneralTip() {
@@ -306,30 +331,30 @@ class Feature {
   }
 
   /**
-   * None of the tips (or nudges) are allowed to be shown when one of these
-   * conditions has been met:
+   * Helper method to retrieve the currently focused browser window, but only
+   * when the study hasn't expired yet.
+   * IF it's expired, take care of ending study here during browser runtime.
    *
-   * 1. The AwesomeBar was clicked whilst one of the tips was shown,
-   * 2. One of the tips was dismissed by clicking the 'Okay, got it' button,
-   * 3. The tips were shown more than four times in sum.
-   * 
-   * @return {Boolean}
+   * @return {DOMWindow}
    */
-  hasExpired() {
-    return Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, false) ||
-      Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_WITHOK, false) ||
-      Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) >= NUDGES_SHOWN_COUNT_MAX;
+  _getWindowIfNotExpired() {
+    if (this.hasExpired()) {
+      this.studyUtils.endStudy({reason: "expired"});
+      return null;
+    }
+
+    // `getFocusedBrowserWindow` may return `null` when the focused window is
+    // _not_ a browser window, but that's ok - in that case we don't want to show
+    // a tip (or nudge) anyway.
+    return getFocusedBrowserWindow();
   }
 
   /**
-   * Good practice to have the literal 'sending' be wrapped up
+   * Show the panel with a specific onboarding tip.
    *
-   * @param {Object} stringStringMap
+   * @param {DOMWindow} window The currently focused window
+   * @param {String}    type   The tip to display; may be 'general' or 'redirect'
    */
-  telemetry(stringStringMap) {
-    this.studyUtils.telemetry(stringStringMap);
-  }
-
   async _showTip(window, type) {
     const anchor = window.document.querySelector(TIP_ANCHOR_SELECTOR);
     if (!anchor) {
@@ -359,6 +384,14 @@ class Feature {
       Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) + 1);
   }
 
+  /**
+   * Fetch the strings that are necessary to properly display a specific tip.
+   *
+   * @param  {DOMWindow}       window
+   * @param  {String}          type   The tip to display; may be 'general' or 'redirect'.
+   * @param  {nsISearchEngine} engine Currently selected search engine.
+   * @return {Array}           [buttonLabel, descriptionText]
+   */
   async _getStrings(window, type, engine) {
     if (!this._okayString) {
       // We have to fetch this thing from Activity Stream, because we forgot to
@@ -387,6 +420,18 @@ class Feature {
       STRING_TIP_GENERAL : STRING_TIP_REDIRECT, [engine.name], 1)];
   }
 
+  /**
+   * If the panel node is not present in the window yet, create it - along with
+   * the additional markup and styling.
+   *
+   * @param  {DOMWindow} window
+   * @return {Object}    Dictionary containing the following properties:
+   *                     - {DOMNode} panel            The root panel node.
+   *                     - {DOMNode} panelBody        The root body layout container.
+   *                     - {DOMNode} panelImage       The search engine favicon.
+   *                     - {DOMNode} panelDescription The tip text.
+   *                     - {DOMNode} panelButton      The 'Okay, got it' button.
+   */
   _ensurePanel(window) {
     const {document} = window;
     let panel = document.getElementById(TIP_PANEL_ID);
@@ -424,18 +469,6 @@ class Feature {
     panelButton.addEventListener("command", this);
 
     return {panel, panelBody, panelImage, panelDescription, panelButton};
-  }
-
-  _getWindowIfNotExpired() {
-    if (this.hasExpired()) {
-      this.studyUtils.endStudy({reason: "expired"});
-      return null;
-    }
-
-    // `getFocusedBrowserWindow` may return `null` when the focused window is
-    // _not_ a browser window, but that's ok - in that case we don't want to show
-    // a tip (or nudge) anyway.
-    return getFocusedBrowserWindow();
   }
 }
 

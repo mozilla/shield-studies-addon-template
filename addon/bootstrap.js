@@ -29,10 +29,6 @@ XPCOMUtils.defineLazyModuleGetter(
   `chrome://${STUDY}/content/lib/Feature.jsm`,
 );
 
-XPCOMUtils.defineLazyServiceGetter(this, "resProto",
-  "@mozilla.org/network/protocol;1?name=resource",
-  "nsISubstitutingProtocolHandler");
-
 this.Bootstrap = {
   /**
    * Use console as our logger until there is a log() method in studyUtils that we can rely on
@@ -45,10 +41,6 @@ this.Bootstrap = {
    * @returns {Promise<void>}
    */
   async startup(addonData, reason) {
-    // resProto.setSubstitutionWithFlags(STUDY,
-    //   Services.io.newURI("", null, addonData.resourceURI),
-    //   resProto.ALLOW_CONTENT_ACCESS);
-
     this.log.debug("startup", studyUtils.REASONS[reason] || reason);
 
     this.initStudyUtils(addonData.id, addonData.version);
@@ -115,7 +107,6 @@ this.Bootstrap = {
    * studyUtils._isEnding means this is a '2nd shutdown'.
    */
   async shutdown(addonData, reason) {
-    // resProto.setSubstitution(STUDY, null);
     this.log.debug("shutdown", studyUtils.REASONS[reason] || reason);
 
     const isUninstall =
