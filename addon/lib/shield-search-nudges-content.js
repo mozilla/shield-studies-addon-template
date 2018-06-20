@@ -3,10 +3,7 @@
 const global = this;
 const {utils: Cu} = Components;
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-XPCOMUtils.defineLazyGetter(this, "URL", () => {
-  Cu.importGlobalProperties(["URL"]);
-  return URL;
-});
+Cu.importGlobalProperties(["URL"]);
 
 var ShieldSearchNudges = {
   init() {

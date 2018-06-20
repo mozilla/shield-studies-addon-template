@@ -7,6 +7,8 @@
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(EXPORTED_SYMBOLS|Feature)" }]*/
 
 const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+Cu.importGlobalProperties(["fetch"]);
+
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "clearInterval",
@@ -90,9 +92,6 @@ class Feature {
     this.libPath = libPath;
     this.frameScript = `${this.libPath}/shield-search-nudges-content.js`;
     this.shownPanelType = null;
-
-    // Example log statement
-    this.log.debug("Feature constructor");
   }
 
   /**
@@ -207,7 +206,9 @@ class Feature {
     // Unload the frame script.
     mm.loadFrameScript("data,:!!ShieldSearchNudges && ShieldSearchNudges.deinit();" +
       "ShieldSearchNudges = null; Components.utils.forceGC();", true);
-    Services.obs.removeObserver(this, SEARCH_ENGINE_TOPIC);
+    try {
+      Services.obs.removeObserver(this, SEARCH_ENGINE_TOPIC);
+    } catch (ex) {}
 
     // If the panel was created in this window before, let's make sure to clean it up.
     if (window.document && window.document.getElementById(TIP_PANEL_ID)) {
