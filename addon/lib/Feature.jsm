@@ -1,152 +1,476 @@
 "use strict";
 
-/**  Example Feature module for a Shield Study.
- *
- *  UI:
- *  - during INSTALL only, show a notification bar with 2 buttons:
- *    - "Thanks".  Accepts the study (optional)
- *    - "I don't want this".  Uninstalls the study.
- *
- *  Firefox code:
- *  - Implements the 'introduction' to the 'button choice' study, via notification bar.
- *
- *  Demonstrates `studyUtils` API:
- *
- *  - `telemetry` to instrument "shown", "accept", and "leave-study" events.
- *  - `endStudy` to send a custom study ending.
- *
+/**
+ * Feature module for the Search Nudges Shield Study.
  **/
 
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(EXPORTED_SYMBOLS|Feature)" }]*/
 
-const { utils: Cu } = Components;
-Cu.import("resource://gre/modules/Console.jsm");
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+Cu.importGlobalProperties(["fetch"]);
+
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "clearInterval",
+  "resource://gre/modules/Timer.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "setInterval",
+  "resource://gre/modules/Timer.jsm");
 
 const EXPORTED_SYMBOLS = ["Feature"];
+const NUDGES_SHOWN_COUNT_MAX = 4;
+const PREF_NUDGES_SHOWN_COUNT = "extensions.shield-search-nudges.shown_count";
+const PREF_NUDGES_DISMISSED_CLICKAB = "extensions.shield-search-nudges.clicked-awesomebar";
+const PREF_NUDGES_DISMISSED_WITHOK = "extensions.shield-search-nudges.oked";
+const SEARCH_ENGINE_TOPIC = "browser-search-engine-modified";
+const SEARCH_SERVICE_TOPIC = "browser-search-service";
+const STRING_TIP_GENERAL = "urlbarSearchTip.onboarding";
+const STRING_TIP_REDIRECT = "urlbarSearchTip.engineIsCurrentPage";
+const TIP_PANEL_ID = "shield-search-nudges-panel";
+const TIP_ANCHOR_SELECTOR = "#identity-icon";
 
-XPCOMUtils.defineLazyModuleGetter(
-  this,
-  "RecentWindow",
-  "resource:///modules/RecentWindow.jsm",
-);
-
-/** Return most recent NON-PRIVATE browser window, so that we can
- * manipulate chrome elements on it.
+/**
+ * Return a browser window as soon as possible. If there's no window available
+ * yet, simply wait for the first browser window to open.
  */
-function getMostRecentBrowserWindow() {
-  return RecentWindow.getMostRecentBrowserWindow({
-    private: false,
-    allowPopups: false,
+async function getBrowserWindow() {
+  const window = Services.wm.getMostRecentWindow("navigator:browser");
+  if (window) {
+    return window;
+  }
+
+  return waitForCondition(() => Services.wm.getMostRecentWindow("navigator:browser"));
+}
+
+function waitForCondition(condition, msg, interval = 100, maxTries = 50) {
+  return new Promise((resolve, reject) => {
+    let tries = 0;
+    const intervalID = setInterval(async function() {
+      if (tries >= maxTries) {
+        clearInterval(intervalID);
+        msg += ` - timed out after ${maxTries} tries.`;
+        reject(msg);
+        return;
+      }
+
+      let conditionPassed = false;
+      try {
+        conditionPassed = await condition();
+      } catch (e) {
+        msg += ` - threw exception: ${e}`;
+        clearInterval(intervalID);
+        reject(msg);
+        return;
+      }
+
+      if (conditionPassed) {
+        clearInterval(intervalID);
+        resolve(conditionPassed);
+      }
+      tries++;
+    }, interval);
   });
 }
 
+function getFocusedBrowserWindow() {
+  const window = Services.focus.activeWindow;
+  return window && window.document.documentURI == "chrome://browser/content/browser.xul" ?
+    window : Services.wm.getMostRecentWindow("navigator:browser");
+}
+
 class Feature {
-  /** A Demonstration feature.
+  /**
+   * The feature this study implements.
    *
-   *  - variation: study info about particular client study variation
-   *  - studyUtils:  the configured studyUtils singleton.
+   *  - studyUtils: the configured studyUtils singleton.
    *  - reasonName: string of bootstrap.js startup/shutdown reason
    *
    */
-  constructor(variation, studyUtils, reasonName, log) {
-    this.variation = variation; // unused.  Some other UI might use the specific variation info for things.
+  constructor(studyUtils, reasonName, log, libPath) {
     this.studyUtils = studyUtils;
     this.reasonName = reasonName;
     this.log = log;
-
-    // Example log statement
-    this.log.debug("Feature constructor");
+    this.libPath = libPath;
+    this.frameScript = `${this.libPath}/shield-search-nudges-content.js`;
+    this.shownPanelType = null;
   }
 
-  start() {
+  /**
+   * Retrieve the frontmost browser window. It will wait a while if there are none
+   * available yet.
+   *
+   * @return {DOMWindow}
+   */
+  async getMessageManager() {
+    const window = await getBrowserWindow();
+    if (!window) {
+      return null;
+    }
+
+    return window.getGroupMessageManager("browsers");
+  }
+
+  /**
+   * Boot the addon, which in our case means:
+   * 1. (re-)setting the prefs if necessary,
+   * 2. loading the frame script and
+   * 3. connect with the Search service.
+   */
+  async start() {
     this.log.debug("Feature start");
 
-    // perform something only during INSTALL = a new study period begins
+    // Perform something only during INSTALL = a new study period begins.
     if (this.reasonName === "ADDON_INSTALL") {
-      this.introductionNotificationBar();
+      this.resetPrefs();
+    }
+
+    await this.loadFrameScript();
+    await this.connectWithSearch();
+  }
+
+  /**
+   * Resets the pref to their default values.
+   *
+   * @param {Boolean} [permanently] Whether to clear the prefs or set them with
+   *                                an initial value intead.
+   */
+  resetPrefs(permanently = false) {
+    if (permanently) {
+      for (const pref of [PREF_NUDGES_SHOWN_COUNT, PREF_NUDGES_DISMISSED_CLICKAB, PREF_NUDGES_DISMISSED_WITHOK]) {
+        Services.prefs.clearUserPref(pref);
+      }
+    } else {
+      Services.prefs.setIntPref(PREF_NUDGES_SHOWN_COUNT, 0);
+      Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, false);
+      Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_WITHOK, false);
     }
   }
 
-  /** Display instrumented 'notification bar' explaining the feature to the user
-   *
-   *   Telemetry Probes:
-   *
-   *   - {event: introduction-shown}
-   *
-   *   - {event: introduction-accept}
-   *
-   *   - {event: introduction-leave-study}
-   *
-   *    Note:  Bar WILL NOT SHOW if the only window open is a private window.
-   *
-   *    Note:  Handling of 'x' is not implemented.  For more complete implementation:
-   *
-   *      https://github.com/gregglind/57-perception-shield-study/blob/680124a/addon/lib/Feature.jsm#L148-L152
-   *
+  /**
+   * Load a frame script that will be available to each browser window.
    */
-  introductionNotificationBar() {
-    const feature = this;
-    const recentWindow = getMostRecentBrowserWindow();
-    const doc = recentWindow.document;
-    const notificationBox = doc.querySelector(
-      "#high-priority-global-notificationbox",
-    );
-
-    if (!notificationBox) return;
-
-    // api: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/appendNotification
-    const notice = notificationBox.appendNotification(
-      "Welcome to the new feature! Look for changes!",
-      "feature orienation",
-      null, // icon
-      notificationBox.PRIORITY_INFO_HIGH, // priority
-      // buttons
-      [
-        {
-          label: "Thanks!",
-          isDefault: true,
-          callback: function acceptButton() {
-            // eslint-disable-next-line no-console
-            console.log("clicked THANKS!");
-            feature.telemetry({
-              event: "introduction-accept",
-            });
-          },
-        },
-        {
-          label: "I do not want this.",
-          callback: function leaveStudyButton() {
-            // eslint-disable-next-line no-console
-            console.log("clicked NO!");
-            feature.telemetry({
-              event: "introduction-leave-study",
-            });
-            feature.studyUtils.endStudy("introduction-leave-study");
-          },
-        },
-      ],
-      // callback for nb events
-      null,
-    );
-
-    // used by testing to confirm the bar is set with the correct config
-    notice.setAttribute("data-study-config", JSON.stringify(this.variation));
-    feature.telemetry({
-      event: "introduction-shown",
-    });
+  async loadFrameScript() {
+    const mm = await this.getMessageManager();
+    if (!mm) {
+      return;
+    }
+    mm.loadFrameScript(this.frameScript, true);
+    mm.addMessageListener("ShieldSearchNudges:OnEnginePage", this);
+    mm.addMessageListener("ShieldSearchNudges:OnHomePage", this);
   }
 
-  /* good practice to have the literal 'sending' be wrapped up */
+  /**
+   * Await a possible asynchronous initialization of the Search service and start
+   * listening for changes to engine-current.
+   * When all that is done, notify the content script of the currently selected
+   * search engine.
+   */
+  async connectWithSearch() {
+    await new Promise(resolve => {
+      if (Services.search.isInitialized) {
+        resolve();
+        return;
+      }
+      Services.obs.addObserver(function observer(subject, topic, data) {
+        if (data != "init-complete") {
+          return;
+        }
+        Services.obs.removeObserver(observer, SEARCH_SERVICE_TOPIC);
+        resolve();
+      }, SEARCH_SERVICE_TOPIC);
+    });
+
+    Services.obs.addObserver(this, SEARCH_ENGINE_TOPIC);
+
+    await this.sendCurrentEngineToContent();
+  }
+
+  /**
+   * Called at end of study, and if the user disables the study or it gets
+   * uninstalled by other means.
+   *
+   * @param {Boolean} [isUninstall]
+   */
+  async shutdown(isUninstall = false) {
+    if (isUninstall) {
+      this.resetPrefs(true);
+    }
+
+    const window = await getBrowserWindow();
+    if (!window) {
+      return;
+    }
+
+    const mm = window.getGroupMessageManager("browsers");
+    mm.removeMessageListener("ShieldSearchNudges:OnEnginePage", this);
+    mm.removeMessageListener("ShieldSearchNudges:OnHomePage", this);
+    // Unload the frame script.
+    mm.loadFrameScript("data,:!!ShieldSearchNudges && ShieldSearchNudges.deinit();" +
+      "ShieldSearchNudges = null; Components.utils.forceGC();", true);
+    try {
+      Services.obs.removeObserver(this, SEARCH_ENGINE_TOPIC);
+    } catch (ex) {}
+
+    // If the panel was created in this window before, let's make sure to clean it up.
+    if (window.document && window.document.getElementById(TIP_PANEL_ID)) {
+      const {panel, panelButton} = this._ensurePanel(window);
+      panelButton.removeEventListener("command", this);
+      panel.remove();
+    }
+  }
+
+  receiveMessage(message) {
+    switch (message.name) {
+      case "ShieldSearchNudges:OnEnginePage":
+        this.maybeShowRedirectTip();
+        break;
+      case "ShieldSearchNudges:OnHomePage":
+        this.maybeShowGeneralTip();
+        break;
+      default:
+        Cu.reportError("ShieldSearchNudges: unknown message name.");
+        break;
+    }
+  }
+
+  observe(engine, topic, verb) {
+    if (topic != SEARCH_ENGINE_TOPIC || verb != "engine-current") {
+      return;
+    }
+    this.sendCurrentEngineToContent();
+  }
+
+  handleEvent(event) {
+    switch (event.type) {
+      case "command": {
+        // 'Okay, got it' button was clicked.
+        Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_WITHOK, true);
+        let panel = event.target.parentNode;
+        while (panel.parentNode && panel.localName != "panel") {
+          panel = panel.parentNode;
+        }
+        // Hide the panel when the button is clicked.
+        if (panel && panel.hidePopup) {
+          panel.hidePopup();
+        }
+        break;
+      }
+      case "popuphidden": {
+        // Check if the panel was hidden by clicking the URLBar.
+        const window = event.target.ownerGlobal;
+        const focusMethod = Services.focus.getLastFocusMethod(window);
+        if (window.gURLBar.focused && focusMethod && !!(focusMethod & Services.focus.FLAG_BYMOUSE)) {
+          Services.prefs.setBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, true);
+        }
+        this.shownPanelType = null;
+        break;
+      }
+      default:
+        Cu.reportError("ShieldSearchNudges: Unknown event.");
+        break;
+    }
+  }
+
+  /**
+   * Sends the origin part of the current search engine's URL to the frame script,
+   * so it can compare it to loaded pages' URLs.
+   */
+  async sendCurrentEngineToContent() {
+    const mm = await this.getMessageManager();
+    if (!mm) {
+      return;
+    }
+
+    const engine = Services.search.currentEngine.wrappedJSObject;
+    let origin = "";
+    if (engine._isDefault) {
+      origin = new URL(engine.getSubmission("").uri.spec).origin;
+    }
+    mm.broadcastAsyncMessage("ShieldSearchNudges:UpdateEngineOrigin", {origin});
+  }
+
+  /**
+   * None of the tips (or nudges) are allowed to be shown when one of these
+   * conditions has been met:
+   *
+   * 1. The AwesomeBar was clicked whilst one of the tips was shown,
+   * 2. One of the tips was dismissed by clicking the 'Okay, got it' button,
+   * 3. The tips were shown more than four times in sum.
+   *
+   * @return {Boolean}
+   */
+  hasExpired() {
+    return Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_CLICKAB, false) ||
+      Services.prefs.getBoolPref(PREF_NUDGES_DISMISSED_WITHOK, false) ||
+      Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) >= NUDGES_SHOWN_COUNT_MAX;
+  }
+
+  /**
+   * Good practice to have the literal 'sending' be wrapped up
+   *
+   * @param {Object} stringStringMap
+   */
   telemetry(stringStringMap) {
     this.studyUtils.telemetry(stringStringMap);
   }
 
+  maybeShowGeneralTip() {
+    const window = this._getWindowIfNotExpired();
+    if (!window) {
+      return;
+    }
+
+    this._showTip(window, "general");
+  }
+
+  maybeShowRedirectTip() {
+    const window = this._getWindowIfNotExpired();
+    if (!window) {
+      return;
+    }
+
+    this._showTip(window, "redirect");
+  }
+
   /**
-   * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
+   * Helper method to retrieve the currently focused browser window, but only
+   * when the study hasn't expired yet.
+   * IF it's expired, take care of ending study here during browser runtime.
+   *
+   * @return {DOMWindow}
    */
-  shutdown() {}
+  _getWindowIfNotExpired() {
+    if (this.hasExpired()) {
+      this.studyUtils.endStudy({reason: "expired"});
+      return null;
+    }
+
+    // `getFocusedBrowserWindow` may return `null` when the focused window is
+    // _not_ a browser window, but that's ok - in that case we don't want to show
+    // a tip (or nudge) anyway.
+    return getFocusedBrowserWindow();
+  }
+
+  /**
+   * Show the panel with a specific onboarding tip.
+   *
+   * @param {DOMWindow} window The currently focused window
+   * @param {String}    type   The tip to display; may be 'general' or 'redirect'
+   */
+  async _showTip(window, type) {
+    const anchor = window.document.querySelector(TIP_ANCHOR_SELECTOR);
+    if (!anchor) {
+      return;
+    }
+
+    const engine = Services.search.currentEngine;
+    const [button, content] = await this._getStrings(window, type, engine);
+
+    const {panel, panelImage, panelDescription, panelButton} = this._ensurePanel(window);
+    if (panel.state == "showing" || panel.state == "open") {
+      return;
+    }
+
+    panelImage.src = engine.iconURI.spec;
+    panelDescription.textContent = content;
+    panelButton.setAttribute("label", button);
+    panel.hidden = false;
+
+    panel.openPopup(anchor, "bottomcenter topleft", 0, 0);
+    panel.addEventListener("popuphidden", this, {once: true});
+    this.shownPanelType = type;
+
+    // Increment the counter that keeps track of the number of times this popup
+    // was shown.
+    Services.prefs.setIntPref(PREF_NUDGES_SHOWN_COUNT,
+      Services.prefs.getIntPref(PREF_NUDGES_SHOWN_COUNT, 0) + 1);
+  }
+
+  /**
+   * Fetch the strings that are necessary to properly display a specific tip.
+   *
+   * @param  {DOMWindow}       window
+   * @param  {String}          type   The tip to display; may be 'general' or 'redirect'.
+   * @param  {nsISearchEngine} engine Currently selected search engine.
+   * @return {Array}           [buttonLabel, descriptionText]
+   */
+  async _getStrings(window, type, engine) {
+    if (!this._okayString) {
+      // We have to fetch this thing from Activity Stream, because we forgot to
+      // land the button label in Fx 60.
+      const asStrings = await new Promise(async resolve => {
+        let data = {};
+        try {
+          const locale = Cc["@mozilla.org/browser/aboutnewtab-service;1"]
+            .getService(Ci.nsIAboutNewTabService).activityStreamLocale;
+          const request = await fetch(`resource://activity-stream/prerendered/${locale}/activity-stream-strings.js`);
+          const text = await request.text();
+          const [json] = text.match(/{[^]*}/);
+          data = JSON.parse(json);
+        } catch (ex) {
+          Cu.reportError("ShieldSearchNudges: Failed to load strings from Activity Stream");
+        }
+        resolve(data);
+      });
+      // Yeah, fall back to a hard-coded English label, just in case.
+      // (`asStrings` is guaranteed to be an object.)
+      this._okayString = asStrings.section_disclaimer_topstories_buttontext || "Okay, got it";
+    }
+
+    const bundle = window.gBrowserBundle;
+    return [this._okayString, bundle.formatStringFromName(type == "general" ?
+      STRING_TIP_GENERAL : STRING_TIP_REDIRECT, [engine.name], 1)];
+  }
+
+  /**
+   * If the panel node is not present in the window yet, create it - along with
+   * the additional markup and styling.
+   *
+   * @param  {DOMWindow} window
+   * @return {Object}    Dictionary containing the following properties:
+   *                     - {DOMNode} panel            The root panel node.
+   *                     - {DOMNode} panelBody        The root body layout container.
+   *                     - {DOMNode} panelImage       The search engine favicon.
+   *                     - {DOMNode} panelDescription The tip text.
+   *                     - {DOMNode} panelButton      The 'Okay, got it' button.
+   */
+  _ensurePanel(window) {
+    const {document} = window;
+    let panel = document.getElementById(TIP_PANEL_ID);
+    if (panel) {
+      return {
+        panel,
+        panelBody: panel.querySelector("vbox > hbox"),
+        panelImage: panel.querySelector("vbox > hbox > image"),
+        panelDescription: panel.querySelector("vbox > hbox > vbox > description"),
+        panelButton: panel.querySelector("vbox > button")
+      };
+    }
+
+    panel = document.createElement("panel");
+    const attrs = [["id", TIP_PANEL_ID], ["type", "arrow"], ["hidden", "true"],
+      ["noautofocus", "true"], ["align", "start"], ["orient", "vertical"], ["role", "alert"],
+      ["style", "max-width: 30em; font: menu;"]];
+    for (const [name, value] of attrs) {
+      panel.setAttribute(name, value);
+    }
+
+    const panelBody = panel.appendChild(document.createElement("vbox"))
+      .appendChild(document.createElement("hbox"));
+    const panelImage = panelBody.appendChild(document.createElement("image"));
+    const panelDescription = panelBody.appendChild(document.createElement("vbox"))
+      .appendChild(document.createElement("description"));
+    const panelButton = panelBody.parentNode.appendChild(document.createElement("button"));
+    panelButton.setAttribute("style", "margin: 1em -16px -16px; color: inherit");
+    panelButton.className = "subviewbutton panel-subview-footer";
+    for (const flexElement of [panelDescription, panelDescription.parentNode, panelButton.parentNode]) {
+      flexElement.setAttribute("flex", "1");
+    }
+
+    document.documentElement.appendChild(panel);
+    panelButton.addEventListener("command", this);
+
+    return {panel, panelBody, panelImage, panelDescription, panelButton};
+  }
 }
 
 // webpack:`libraryTarget: 'this'`
