@@ -9,8 +9,8 @@ module.exports = function(config) {
   config.set({
     singleRun: true,
     browsers: [
-      // "Firefox",
-      // "FirefoxAurora", // Firefox Beta
+      "Firefox",
+      "FirefoxAurora", // Firefox Beta
       "FirefoxDeveloper",
       "FirefoxNightly",
     ],
