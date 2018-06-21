@@ -12,6 +12,8 @@
 * [Loading the Web Extension in Firefox](#loading-the-web-extension-in-firefox)
 * [Seeing the add-on in action](#seeing-the-add-on-in-action)
 * [Automated testing](#automated-testing)
+  * [Unit tests](#unit-tests)
+  * [Functional tests](#functional-tests)
 * [Directory Structure and Files](#directory-structure-and-files)
 * [General Shield Study Engineering](#general-shield-study-engineering)
 
@@ -34,10 +36,10 @@ npm start
 npm run watch
 
 # run and reload on filechanges, with a variation/branch set by preference
-npm run watch -- --pref extensions.button_icon_preference.variation='kittens'
+npm run watch -- --pref extensions.button_icon_preference_shield_mozilla_org.test.variationName=kittens
 
-# run and reload on filechanges, with a variation/branch set by preference, with a specific Firefox installation
-npm run watch -- --pref extensions.button_icon_preference.variation='kittens' -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
+# run and reload on filechanges, with a specific Firefox installation
+npm run watch -- -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
 
 ## lint
 npm run lint
@@ -95,7 +97,7 @@ To load the extension manually instead, open (preferably) the [Developer Edition
 
 To debug installation and loading of the add-on, check the Browser Console that is automatically opened on start. (Usually accessible using Firefox's top menu at `Tools > Web Developer > Browser Console`).
 
-This will display Shield (loading/telemetry) and log output from the add-on.
+This will display Shield (loading/telemetry) and log output from the add-on as long as the preference `shieldStudy.logLevel` is set to `All` or similar.
 
 See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in action and hot it is expected to behave.
 
@@ -115,7 +117,9 @@ npm run test:unit
 
 Runs unit tests using Karma.
 
-Code at [/test/unit/](/test/unit/).
+Code at [./test/unit/](./test/unit/). Configuration at [./karma.conf.js](./karma.conf.js).
+
+Code coverage is instrumented by the istanbul babel plugin and is only enabled and reported for those files that use the babel preprocessor in [./karma.conf.js](./karma.conf.js).
 
 Note: [The karma firefox launcher](https://github.com/karma-runner/karma-firefox-launcher) expects that the firefox binaries are located in slightly different places than `web-ext`. Example on how to workaround this on OSX:
 

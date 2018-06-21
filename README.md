@@ -54,10 +54,6 @@ See [TESTPLAN.md](./docs/TESTPLAN.md) for more details on how to get the add-on 
 
 ## Data Collected / Telemetry Pings
 
-Measure:
-
-* Button (BrowserAction) usage.
-
 See [TELEMETRY.md](./docs/TELEMETRY.md) for more details on what pings are sent by this add-on.
 
 ## Analyzing data
