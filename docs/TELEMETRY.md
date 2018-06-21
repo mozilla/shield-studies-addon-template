@@ -15,9 +15,9 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Usual Firefox Telemetry is unaffected.
+## Usual Firefox Telemetry is mostly unaffected
 
-* No change: `main` and other pings are UNAFFECTED by this add-on.
+* No change: `main` and other pings are UNAFFECTED by this add-on, except that [shield-studies-addon-utils](https://github.com/mozilla/shield-studies-addon-utils) adds the add-on id as an active experiment in the telemetry environment.
 * Respects telemetry preferences. If user has disabled telemetry, no telemetry will be sent.
 
 ## Study-specific endings
