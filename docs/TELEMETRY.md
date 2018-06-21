@@ -10,8 +10,7 @@
 * [Study-specific endings](#study-specific-endings)
 * [`shield-study` pings (common to all shield-studies)](#shield-study-pings-common-to-all-shield-studies)
 * [`shield-study-addon` pings, specific to THIS study.](#shield-study-addon-pings-specific-to-this-study)
-  * [Attributes](#attributes)
-* [Example sequence for a 'init => trigger-popup => button-click => disco-pane-loaded => install => uninstall => disco-pane-loaded' interaction](#example-sequence-for-a-init--trigger-popup--button-click--disco-pane-loaded--install--uninstall--disco-pane-loaded-interaction)
+* [Example sequence for a 'voted => not sure' interaction](#example-sequence-for-a-voted--not-sure-interaction)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
