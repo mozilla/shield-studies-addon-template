@@ -23,7 +23,7 @@ describe("shield utils integration", function() {
   });
 
   after(async() => {
-    driver.quit();
+    // driver.quit();
   });
 
   beforeEach(async() => {});
