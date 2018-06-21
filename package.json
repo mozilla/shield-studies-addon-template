@@ -7,7 +7,7 @@
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "dependencies": {
-    "shield-studies-addon-utils": "^5.0.1"
+    "shield-studies-addon-utils": "github:mozilla/shield-studies-addon-utils#release/5.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -45,7 +45,8 @@
     "selenium-webdriver": "^3.5.0",
     "sinon": "4.0.0",
     "sinon-chrome": "2.2.1",
-    "web-ext": "^2.7.0"
+    "web-ext": "^2.7.0",
+    "yamljs": "^0.3.0"
   },
   "engines": {
     "node": ">=8.11.1"
@@ -68,6 +69,10 @@
     "eslint": "eslint . --ext jsm --ext js --ext json",
     "eslint-fix": "npm run eslint -- --fix",
     "format": "prettier '**/*.{css,js,json,jsm,md}' --trailing-comma=all --ignore-path=.eslintignore --write",
+    "generate": "npm-run-all -s -n generate:schema:* generate:docs:* generate:stubApi:* format",
+    "generate:docs:testingOverrides": "node ./node_modules/shield-studies-addon-utils/weeUtils/documentSchema.js ./src/privileged/testingOverrides/schema.json > ./src/privileged/testingOverrides/api.md",
+    "generate:schema:testingOverrides": "cd ./src/privileged/testingOverrides && yaml2json schema.yaml -p > schema.json && node ../../../node_modules/shield-studies-addon-utils/weeUtils/verifyWeeSchema.js schema.json",
+    "generate:stubApi:testingOverrides": "cd ./src/privileged/testingOverrides && node ../../../node_modules/shield-studies-addon-utils/weeUtils/generateStubApi.js ./schema.json > stubApi.js",
     "harness_test": "npm run test:func -- --retry 2 --reporter json",
     "lint": "npm-run-all lint:*",
     "lint:eslint": "npm run eslint",
