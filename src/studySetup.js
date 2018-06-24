@@ -134,13 +134,6 @@ async function cachingFirstRunShouldAllowEnroll() {
  * @return {object} studySetup A complete study setup object
  */
 async function getStudySetup() {
-  /*
-   * const id = browser.runtime.id;
-   * const prefs = {
-   *   variationName: `shield.${id}.variationName`,
-   *   };
-   */
-
   // shallow copy
   const studySetup = Object.assign({}, baseStudySetup);
 
