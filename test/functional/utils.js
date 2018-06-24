@@ -20,7 +20,7 @@ const FIREFOX_PREFERENCES = {
   "general.warnOnAboutConfig": false,
 
   // Force variation for testing
-  "extensions.button_icon_preference_shield_mozilla_org.test.variationName":
+  "extensions.button-icon-preference_shield_mozilla_org.test.variationName":
     "kittens",
 
   // Enable verbose shield study utils logging

@@ -36,7 +36,7 @@ npm start
 npm run watch
 
 # run and reload on filechanges, with a variation/branch set by preference
-npm run watch -- --pref extensions.button_icon_preference_shield_mozilla_org.test.variationName=kittens
+npm run watch -- --pref extensions.button-icon-preference_shield_mozilla_org.test.variationName=kittens
 
 # run and reload on filechanges, with a specific Firefox installation
 npm run watch -- -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
