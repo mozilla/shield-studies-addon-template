@@ -42,9 +42,7 @@ const baseStudySetup = {
       ],
     },
     ineligible: {
-      baseUrls: [
-        "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=ineligible",
-      ],
+      baseUrls: [],
     },
     expired: {
       baseUrls: [
