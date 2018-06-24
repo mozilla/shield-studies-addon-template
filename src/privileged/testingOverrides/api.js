@@ -18,21 +18,22 @@ this.testingOverrides = class extends ExtensionAPI {
 
     const widgetId = makeWidgetId(extension.manifest.applications.gecko.id);
 
+    function convertToNumberIfNotNull(value) {
+      return value !== null
+        ? Number(value)
+        : null;
+    }
+
     return {
       testingOverrides: {
         getVariationNameOverride: async function getVariationNameOverride() {
-          return (
-            Preferences.get(`extensions.${widgetId}.test.variationName`) || null
-          );
+          return Preferences.get(`extensions.${widgetId}.test.variationName`, null);
         },
         getFirstRunTimestampOverride: async function getFirstRunTimestampOverride() {
-          return (
-            Preferences.get(`extensions.${widgetId}.test.firstRunTimestamp`) ||
-            null
-          );
+          return convertToNumberIfNotNull(Preferences.get(`extensions.${widgetId}.test.firstRunTimestamp`, null));
         },
         getExpiredOverride: async function getExpiredOverride() {
-          return Preferences.get(`extensions.${widgetId}.test.expired`) || null;
+          return Preferences.get(`extensions.${widgetId}.test.expired`, null);
         },
         listPreferences: async function listPreferences() {
           return [
