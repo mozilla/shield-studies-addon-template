@@ -101,6 +101,20 @@ This will display Shield (loading/telemetry) and log output from the add-on as l
 
 See [TESTPLAN.md](./TESTPLAN.md) for more details on how to see this add-on in action and hot it is expected to behave.
 
+## Format code using prettier and eslint --fix
+
+```shell
+npm run format
+```
+
+## Generate stub code and API docs
+
+```shell
+npm run generate
+```
+
+Generates stub code and API docs from `src/privileged/*/schema.yaml`. See <https://github.com/motin/webext-experiment-utils> for more information.
+
 ## Automated testing
 
 ```shell
