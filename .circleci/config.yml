@@ -67,12 +67,10 @@ jobs:
           name: Unit tests
           command: npm run test:unit
 
-      # Firefox Release not yet at 61.0a1 which is required by the template
+      # Needs signed add-on to work on branded releases
       #- run:
       #    name: Functional tests with Firefox Release
       #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-release/firefox-bin npm run test:func
-
-      # Utils v5 does not work with Firefox Beta #200
       #- run:
       #    name: Functional tests with Firefox Beta
       #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-beta/firefox-bin npm run test:func
