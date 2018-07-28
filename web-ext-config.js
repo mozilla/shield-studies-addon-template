@@ -10,7 +10,7 @@ const defaultConfig = {
     overwriteDest: true,
   },
   run: {
-    firefox: process.env.FIREFOX_BINARY || "firefoxdeveloperedition",
+    firefox: process.env.FIREFOX_BINARY || "nightly",
     browserConsole: true,
     startUrl: ["about:debugging"],
     pref: ["shieldStudy.logLevel=All"],
