@@ -84,4 +84,4 @@ jobs:
           command: FIREFOX_BINARY=/home/circleci/checkout/firefox-nightly/firefox-bin npm run test:func
 
       - store_test_results:
-          path: "test/coverage"
+          path: "test/results"

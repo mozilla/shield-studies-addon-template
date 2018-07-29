@@ -17,7 +17,7 @@ module.exports = function(config) {
     frameworks: ["mocha", "chai"],
     reporters,
     istanbulReporter: {
-      dir: "test/coverage",
+      dir: "test/results/coverage",
       reporters: [
         {
           type: "lcov",
