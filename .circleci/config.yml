@@ -62,6 +62,7 @@ jobs:
 
       - store_artifacts:
           path: "dist"
+          destination: "dist"
 
       - run:
           name: Unit tests
@@ -70,18 +71,19 @@ jobs:
       # Needs signed add-on to work on branded releases
       #- run:
       #    name: Functional tests with Firefox Release
-      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-release/firefox-bin npm run test:func
+      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-release/firefox-bin npm run test:func && mkdir test/results/logs-release && mv test/results/logs/* test/results/logs-release/
       #- run:
       #    name: Functional tests with Firefox Beta
-      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-beta/firefox-bin npm run test:func
+      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-beta/firefox-bin npm run test:func && mkdir test/results/logs-beta && mv test/results/logs/* test/results/logs-beta/
 
       - run:
           name: Functional tests with Firefox Developer Edition
-          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-devedition/firefox-bin npm run test:func
+          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-devedition/firefox-bin npm run test:func && mkdir test/results/logs-devedition && mv test/results/logs/* test/results/logs-devedition/
 
       - run:
           name: Functional tests with Firefox Nightly
-          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-nightly/firefox-bin npm run test:func
+          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-nightly/firefox-bin npm run test:func && mkdir test/results/logs-nightly && mv test/results/logs/* test/results/logs-nightly/
 
-      - store_test_results:
+      - store_artifacts:
           path: "test/results"
+          destination: "test/results"
