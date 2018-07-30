@@ -70,11 +70,7 @@ describe("basic shield utils integration", function() {
           },
         ],
       ];
-      assert.deepStrictEqual(
-        expected,
-        observed,
-        "telemetry pings match",
-      );
+      assert.deepStrictEqual(expected, observed, "telemetry pings match");
     });
   });
 
@@ -123,11 +119,7 @@ describe("basic shield utils integration", function() {
           },
         ],
       ];
-      assert.deepStrictEqual(
-        expected,
-        observed,
-        "telemetry pings match",
-      );
+      assert.deepStrictEqual(expected, observed, "telemetry pings match");
     });
   });
 });
@@ -146,11 +138,11 @@ describe("setup of an already expired study should result in endStudy('expired')
     // Set preference that simulates that the study has been running for a very long time already (0 = started running 1970-01-01 00:00:00)
     const addonWidgetId = await utils.ui.addonWidgetId();
     const customPreferences = Object.assign({}, utils.FIREFOX_PREFERENCES);
-    customPreferences[`extensions.${addonWidgetId}.test.firstRunTimestamp`] = String(0);
+    customPreferences[
+      `extensions.${addonWidgetId}.test.firstRunTimestamp`
+    ] = String(0);
 
-    driver = await utils.setupWebdriver.promiseSetupDriver(
-      customPreferences,
-    );
+    driver = await utils.setupWebdriver.promiseSetupDriver(customPreferences);
 
     await utils.setupWebdriver.installAddon(driver);
   });
@@ -199,11 +191,7 @@ describe("setup of an already expired study should result in endStudy('expired')
           },
         ],
       ];
-      assert.deepStrictEqual(
-        expected,
-        observed,
-        "telemetry pings match",
-      );
+      assert.deepStrictEqual(expected, observed, "telemetry pings match");
     });
   });
 });
@@ -225,11 +213,11 @@ describe("setup of a study that expires within a few seconds should result in en
     const firstRunTimestamp = beginTime - msInOneDay * expiresInDays + 8000;
     const addonWidgetId = await utils.ui.addonWidgetId();
     const customPreferences = Object.assign({}, utils.FIREFOX_PREFERENCES);
-    customPreferences[`extensions.${addonWidgetId}.test.firstRunTimestamp`] = String(firstRunTimestamp);
+    customPreferences[
+      `extensions.${addonWidgetId}.test.firstRunTimestamp`
+    ] = String(firstRunTimestamp);
 
-    driver = await utils.setupWebdriver.promiseSetupDriver(
-      customPreferences,
-    );
+    driver = await utils.setupWebdriver.promiseSetupDriver(customPreferences);
 
     await utils.setupWebdriver.installAddon(driver);
   });
@@ -264,11 +252,7 @@ describe("setup of a study that expires within a few seconds should result in en
 
       const observed = utils.telemetry.summarizePings(filteredPings);
       const expected = [];
-      assert.deepStrictEqual(
-        expected,
-        observed,
-        "telemetry pings match",
-      );
+      assert.deepStrictEqual(expected, observed, "telemetry pings match");
     });
   });
 
@@ -309,11 +293,7 @@ describe("setup of a study that expires within a few seconds should result in en
           },
         ],
       ];
-      assert.deepStrictEqual(
-        expected,
-        observed,
-        "telemetry pings match",
-      );
+      assert.deepStrictEqual(expected, observed, "telemetry pings match");
     });
   });
 });

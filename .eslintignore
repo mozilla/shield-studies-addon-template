@@ -1,5 +1,5 @@
 # do not lint/format generated artifacts
-test/coverage/
+test/results/
 dist/
 package-lock.json
 # do not lint/format bundled util libraries
