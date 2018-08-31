@@ -17,7 +17,7 @@ jobs:
       # Download and cache dependencies (update the cache keys to force a newer version)
       - restore_cache:
           keys:
-          - dependencies-and-browsers-{{ checksum "package.json" }}-20180730
+          - dependencies-and-browsers-{{ checksum "package.json" }}-20180831
 
       - run:
           name: Install dependencies
@@ -41,7 +41,7 @@ jobs:
             - firefox-beta
             - firefox-release
             - firefox-unbranded-release
-          key: dependencies-and-browsers-{{ checksum "package.json" }}-20180730
+          key: dependencies-and-browsers-{{ checksum "package.json" }}-20180831
 
       - run:
           name: Reveal which Firefox versions are installed
