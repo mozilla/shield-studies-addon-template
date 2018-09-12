@@ -2,6 +2,20 @@
 
 The Shield Studies Add-on Template makes some assumptions about your environment that can be challenging to meet on Windows machines. So far the most promising approach uses the **Windows Subsystem for Linux (WSL)**. WSL is a young project with bugs and unexpected pitfalls; caveat emptor.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Contents**
+
+* [Requirements](#requirements)
+* [Installing WSL](#installing-wsl)
+* [Optional](#optional)
+* [Known Issues](#known-issues)
+* [TODO](#todo)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Requirements
 
 * Windows Version 10.0.14986+ (find your version by typing `ver` at Windows command line)

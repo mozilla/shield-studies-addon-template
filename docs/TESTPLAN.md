@@ -1,5 +1,22 @@
 # Test plan for this add-on
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Contents**
+
+* [Manual / QA TEST Instructions](#manual--qa-test-instructions)
+  * [Preparations](#preparations)
+  * [Install the add-on and enroll in the study](#install-the-add-on-and-enroll-in-the-study)
+* [Expected User Experience / Functionality](#expected-user-experience--functionality)
+  * [Do these tests](#do-these-tests)
+  * [Design](#design)
+  * [Note: checking "sent Telemetry is correct"](#note-checking-sent-telemetry-is-correct)
+* [Debug](#debug)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Manual / QA TEST Instructions
 
 ### Preparations
@@ -9,10 +26,10 @@
 ### Install the add-on and enroll in the study
 
 * (Create profile: <https://developer.mozilla.org/Firefox/Multiple_profiles>, or via some other method)
-* Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String or Integer depending on the type of preference)
-* Set `extensions.legacy.enabled` to `true`. This permits the loading of the embedded Web Extension since new versions of Firefox are becoming restricted to pure Web Extensions only.
-* Set `extensions.button_icon_preference.variation` to `kitten` (or any other study variation/branch to test specifically)
-* Go to [this study's tracking bug](tbd: replace with your study's launch bug link in bugzilla) and install the latest signed XPI
+* Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String)
+* Set `shieldStudy.logLevel` to `All`. This permits shield-add-on log output in browser console.
+* Set `extensions.button-icon-preference_shield_mozilla_org.test.variationName` to `kittens` (or any other study variation/branch to test specifically)
+* Go to [this study's tracking bug](tbd: replace with your study's launch bug link in bugzilla) and install the latest add-on zip file
 
 ## Expected User Experience / Functionality
 
@@ -107,27 +124,3 @@ See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by th
 To debug installation and loading of the add-on:
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
-
-Example log output after installing the add-on:
-
-```
-install 5  bootstrap.js:125
-startup ADDON_INSTALL  bootstrap.js:33
-info {"studyName":"mostImportantExperiment","addon":{"id":"template-shield-study@mozilla.com","version":"1.0.0"},"variation":{"name":"kittens"},"shieldId":"8bb19b5c-99d0-cc48-ba95-c73f662bd9b3"}  bootstrap.js:67
-1508111525396	shield-study-utils	DEBUG	log made: shield-study-utils
-1508111525398	shield-study-utils	DEBUG	setting up!
-1508111525421	shield-study-utils	DEBUG	firstSeen
-1508111525421	shield-study-utils	DEBUG	telemetry in:  shield-study {"study_state":"enter"}
-1508111525421	shield-study-utils	DEBUG	getting info
-1508111525423	shield-study-utils	DEBUG	telemetry: {"version":3,"study_name":"mostImportantExperiment","branch":"kittens","addon_version":"1.0.0","shield_version":"4.1.0","type":"shield-study","data":{"study_state":"enter"},"testing":true}
-1508111525430	shield-study-utils	DEBUG	startup 5
-1508111525431	shield-study-utils	DEBUG	getting info
-1508111525431	shield-study-utils	DEBUG	marking TelemetryEnvironment: mostImportantExperiment
-1508111525476	shield-study-utils	DEBUG	telemetry in:  shield-study {"study_state":"installed"}
-1508111525477	shield-study-utils	DEBUG	getting info
-1508111525477	shield-study-utils	DEBUG	telemetry: {"version":3,"study_name":"mostImportantExperiment","branch":"kittens","addon_version":"1.0.0","shield_version":"4.1.0","type":"shield-study","data":{"study_state":"installed"},"testing":true}
-1508111525479	shield-study-utils	DEBUG	getting info
-1508111525686	shield-study-utils	DEBUG	getting info
-1508111525686	shield-study-utils	DEBUG	respondingTo: info
-init kittens  background.js:29:5
-```

@@ -4,49 +4,86 @@ jobs:
     docker:
       - image: circleci/node:latest-browsers
         environment:
-          FIREFOX_BINARY: /home/circleci/checkout/firefox/firefox-bin
+          FIREFOX_BIN: /home/circleci/checkout/firefox-release/firefox-bin
+          FIREFOX_AURORA_BIN: /home/circleci/checkout/firefox-beta/firefox-bin
+          FIREFOX_DEVELOPER_BIN: /home/circleci/checkout/firefox-devedition/firefox-bin
+          FIREFOX_NIGHTLY_BIN: /home/circleci/checkout/firefox-nightly/firefox-bin
 
     working_directory: ~/checkout
 
     steps:
       - checkout
 
-      # Download and cache dependencies
+      # Download and cache dependencies (update the cache keys to force a newer version)
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: npm install
+          - dependencies-and-browsers-{{ checksum "package.json" }}-20180831
 
       - run:
-          name:  Get nightly
+          name: Install dependencies
+          command: npm install
+
+      - run:
+          name:  Install different versions of Firefox
           command: |
-            if [ -d ./firefox ]; then
-              echo "firefox dir exists, must be from cache"
-            else
-              ./node_modules/.bin/get-firefox -b nightly -p linux -e
-              ls ./firefox/firefox-bin
-            fi
+            [ ! -d "./firefox-release" ] && npx get-firefox -b release -p linux -e && mv ./firefox ./firefox-release || true
+            [ ! -d "./firefox-beta" ] && npx get-firefox -b beta -p linux -e && mv ./firefox ./firefox-beta || true
+            [ ! -d "./firefox-devedition" ] && npx get-firefox -b devedition -p linux -e && mv ./firefox ./firefox-devedition || true
+            [ ! -d "./firefox-nightly" ] && npx get-firefox -b nightly -p linux -e && mv ./firefox ./firefox-nightly || true
+            # Prevent any tests from using the default installed version of Firefox
+            sudo rm /usr/bin/firefox || true
 
       - save_cache:
           paths:
             - node_modules
-            - firefox
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - firefox-nightly
+            - firefox-devedition
+            - firefox-beta
+            - firefox-release
+            - firefox-unbranded-release
+          key: dependencies-and-browsers-{{ checksum "package.json" }}-20180831
+
+      - run:
+          name: Reveal which Firefox versions are installed
+          command: |
+            echo "Versions of Firefox installed:"
+            ./firefox-release/firefox-bin -v
+            ./firefox-beta/firefox-bin -v
+            ./firefox-devedition/firefox-bin -v
+            ./firefox-nightly/firefox-bin -v
 
       - run:
           name: Lint
-          command: npm run eslint
+          command: npm run lint
 
       - run:
-          name: Build .XPI
+          name: Build add-on
           command: npm run build
-
-      - run:
-          name: Functional tests
-          command: npm run test
 
       - store_artifacts:
           path: "dist"
+          destination: "dist"
+
+      - run:
+          name: Unit tests
+          command: npm run test:unit
+
+      # Needs signed add-on to work on branded releases
+      #- run:
+      #    name: Functional tests with Firefox Release
+      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-release/firefox-bin npm run test:func && mkdir test/results/logs-release && mv test/results/logs/* test/results/logs-release/
+      #- run:
+      #    name: Functional tests with Firefox Beta
+      #    command: FIREFOX_BINARY=/home/circleci/checkout/firefox-beta/firefox-bin npm run test:func && mkdir test/results/logs-beta && mv test/results/logs/* test/results/logs-beta/
+
+      - run:
+          name: Functional tests with Firefox Developer Edition
+          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-devedition/firefox-bin npm run test:func && mkdir test/results/logs-devedition && mv test/results/logs/* test/results/logs-devedition/
+
+      - run:
+          name: Functional tests with Firefox Nightly
+          command: FIREFOX_BINARY=/home/circleci/checkout/firefox-nightly/firefox-bin npm run test:func && mkdir test/results/logs-nightly && mv test/results/logs/* test/results/logs-nightly/
+
+      - store_artifacts:
+          path: "test/results"
+          destination: "test/results"

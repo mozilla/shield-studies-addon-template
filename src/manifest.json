@@ -1,0 +1,51 @@
+{
+  "name": "Button Icon Preference - Shield Study Example",
+  "description": "__MSG_extensionDescription__",
+  "version": "2.0.0",
+  "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "button-icon-preference@shield.mozilla.org",
+      "strict_min_version": "61.0a1"
+    }
+  },
+  "default_locale": "en-US",
+  "experiment_apis": {
+    "introductionNotificationBar": {
+      "schema": "./privileged/introductionNotificationBar/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/introductionNotificationBar/api.js",
+        "paths": [["introductionNotificationBar"]]
+      }
+    },
+    "study": {
+      "schema": "./privileged/study/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/study/api.js",
+        "paths": [["study"]]
+      }
+    },
+    "testingOverrides": {
+      "schema": "./privileged/testingOverrides/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/testingOverrides/api.js",
+        "paths": [["testingOverrides"]]
+      }
+    }
+  },
+  "permissions": ["management", "storage", "alarms"],
+  "background": {
+    "scripts": ["studySetup.js", "feature.js", "background.js"]
+  },
+  "icons": {
+    "48": "icons/shield-icon.svg"
+  },
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": "icons/isolatedcorndog.svg",
+    "default_title": "__MSG_buttonTitle__"
+  }
+}
