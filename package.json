@@ -7,7 +7,7 @@
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "dependencies": {
-    "shield-studies-addon-utils": "github:mozilla/shield-studies-addon-utils#release/5.0.4"
+    "shield-studies-addon-utils": "github:mozilla/shield-studies-addon-utils#5.0.4"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -86,7 +86,7 @@
     "pretest": "node test/ensure_minimum_node_version.js && npm run build",
     "prewatch": "npm run bundle-utils",
     "sign": "echo 'TBD, see: https://bugzilla.mozilla.org/show_bug.cgi?id=1407757'",
-    "start": "web-ext run --no-reload",
+    "start": "web-ext run --keep-profile-changes --firefox-profile=ffire07.01.19-5.18.25",
     "test": "npm-run-all -n test:unit test:func",
     "test:func": "npm-run-all -pr test:func:*",
     "test:func:selenium-mocha": "FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip GECKODRIVER_URL=http://127.0.0.1:4444 mocha test/functional/ --bail --full-trace",

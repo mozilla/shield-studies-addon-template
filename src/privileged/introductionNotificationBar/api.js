@@ -7,6 +7,7 @@ ChromeUtils.import("resource://gre/modules/Services.jsm");
 ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 ChromeUtils.import("resource://gre/modules/ExtensionCommon.jsm");
 ChromeUtils.import("resource://gre/modules/ExtensionUtils.jsm");
+ChromeUtils.defineModuleGetter(this, "fxAccounts", "resource://gre/modules/FxAccounts.jsm");
 
 /* eslint-disable no-undef */
 const { EventManager } = ExtensionCommon;
@@ -49,6 +50,10 @@ function getMostRecentBrowserWindow() {
  */
 class IntroductionNotificationBarEventEmitter extends EventEmitter {
   emitShow(variationName) {
+    fxAccounts.getSignedInUser().then(data => {
+      console.log("USER DATA ---- " + JSON.stringify(data));
+    }).catch(Cu.reportError);
+
     const self = this;
     const recentWindow = getMostRecentBrowserWindow();
     const doc = recentWindow.document;
