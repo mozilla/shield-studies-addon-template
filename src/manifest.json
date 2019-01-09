@@ -1,22 +1,22 @@
 {
-  "name": "Button Icon Preference - Shield Study Example",
+  "name": "Firefox Account Browser Icon - Shield Study",
   "description": "__MSG_extensionDescription__",
   "version": "2.0.0",
   "manifest_version": 2,
   "applications": {
     "gecko": {
-      "id": "button-icon-preference@shield.mozilla.org",
+      "id": "fxa-browser-discoverability@shield.mozilla.org",
       "strict_min_version": "61.0a1"
     }
   },
   "default_locale": "en-US",
   "experiment_apis": {
-    "introductionNotificationBar": {
-      "schema": "./privileged/introductionNotificationBar/schema.json",
+    "fxaBrowserIcon": {
+      "schema": "./privileged/fxaBrowserIcon/schema.json",
       "parent": {
         "scopes": ["addon_parent"],
-        "script": "./privileged/introductionNotificationBar/api.js",
-        "paths": [["introductionNotificationBar"]]
+        "script": "./privileged/fxaBrowserIcon/api.js",
+        "paths": [["fxaBrowserIcon"]]
       }
     },
     "study": {
@@ -41,11 +41,11 @@
     "scripts": ["studySetup.js", "feature.js", "background.js"]
   },
   "icons": {
-    "48": "icons/shield-icon.svg"
+    "48": "icons/avatar.png"
   },
   "browser_action": {
     "browser_style": true,
-    "default_icon": "icons/isolatedcorndog.svg",
+    "default_icon": "icons/avatar.png",
     "default_title": "__MSG_buttonTitle__"
   }
 }

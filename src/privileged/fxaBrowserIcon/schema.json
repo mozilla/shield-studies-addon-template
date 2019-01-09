@@ -1,0 +1,16 @@
+[
+  {
+    "namespace": "fxaBrowserIcon",
+    "description":
+      "A part of the study add-on that needs to be chrome-privileged",
+    "functions": [
+      {
+        "name": "getSignedInUser",
+        "type": "function",
+        "description": "TODO",
+        "async": true,
+        "parameters": []
+      }
+    ]
+  }
+]

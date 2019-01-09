@@ -86,7 +86,7 @@
     "pretest": "node test/ensure_minimum_node_version.js && npm run build",
     "prewatch": "npm run bundle-utils",
     "sign": "echo 'TBD, see: https://bugzilla.mozilla.org/show_bug.cgi?id=1407757'",
-    "start": "web-ext run --keep-profile-changes --firefox-profile=ffire07.01.19-5.18.25",
+    "start": "web-ext run --keep-profile-changes --firefox-profile='/Users/vijaybudhram/Library/Application Support/Firefox/Profiles/vg708hf4.ffire12.04.18-3.52.45'",
     "test": "npm-run-all -n test:unit test:func",
     "test:func": "npm-run-all -pr test:func:*",
     "test:func:selenium-mocha": "FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip GECKODRIVER_URL=http://127.0.0.1:4444 mocha test/functional/ --bail --full-trace",

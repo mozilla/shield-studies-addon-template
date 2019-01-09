@@ -29,40 +29,11 @@ class Feature {
     const { variation, isFirstRun } = studyInfo;
 
     // Initiate our browser action
-    new BrowserActionButtonChoiceFeature(variation);
+    new FxABrowserFeature(variation);
 
     // perform something only during first run
     if (isFirstRun) {
-      browser.introductionNotificationBar.onIntroductionShown.addListener(
-        () => {
-          console.log("onIntroductionShown");
-
-          feature.sendTelemetry({
-            event: "onIntroductionShown",
-          });
-        },
-      );
-
-      browser.introductionNotificationBar.onIntroductionAccept.addListener(
-        () => {
-          console.log("onIntroductionAccept");
-          feature.sendTelemetry({
-            event: "onIntroductionAccept",
-          });
-        },
-      );
-
-      browser.introductionNotificationBar.onIntroductionLeaveStudy.addListener(
-        () => {
-          console.log("onIntroductionLeaveStudy");
-          feature.sendTelemetry({
-            event: "onIntroductionLeaveStudy",
-          });
-          browser.study.endStudy("introduction-leave-study");
-        },
-      );
-
-      browser.introductionNotificationBar.show(variation.name);
+      // TODO: What should we do on first run
     }
   }
 
@@ -75,38 +46,25 @@ class Feature {
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
    */
   async cleanup() {}
-
-  /**
-   * Example of a utility function
-   *
-   * @param variation
-   * @returns {string}
-   */
-  static iconPath(variation) {
-    return `icons/${variation.name}.svg`;
-  }
 }
 
-class BrowserActionButtonChoiceFeature {
+class FxABrowserFeature {
   /**
    * - set image, text, click handler (telemetry)
    */
   constructor(variation) {
     console.log(
-      "Initializing BrowserActionButtonChoiceFeature:",
+      "Initializing FxABrowserFeature:",
       variation.name,
     );
-    this.timesClickedInSession = 0;
 
-    // modify BrowserAction (button) ui for this particular {variation}
-    console.log("path:", `icons/${variation.name}.svg`);
     // TODO: Running into an error "values is undefined" here
     browser.browserAction.setIcon({ path: "icons/avatar.png" });
     browser.browserAction.setTitle({ title: variation.name });
     browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
     console.log("initialized");
 
-    browser.introductionNotificationBar.getSignedInUser().then((data) => {
+    browser.fxaBrowserIcon.getSignedInUser().then((data) => {
       console.log("USER DATA --- " + JSON.stringify(data.profileCache));
     });
   }
@@ -137,13 +95,12 @@ class BrowserActionButtonChoiceFeature {
       img.src = url;
     }
 
-    browser.introductionNotificationBar.getSignedInUser().then((data) => {
+    browser.fxaBrowserIcon.getSignedInUser().then((data) => {
       if (data && data.profileCache && data.profileCache.profile.avatar) {
         console.log("avatar: " + data.profileCache.profile.avatar)
         const avatar = data.profileCache.profile.avatar;
         getBase64FromImageUrl(avatar);
       }
-      // console.log("USER DATA --- " + JSON.stringify(data));
     });
   }
 }

@@ -36,7 +36,7 @@ npm start
 npm run watch
 
 # run and reload on filechanges, with a variation/branch set by preference
-npm run watch -- --pref extensions.button-icon-preference_shield_mozilla_org.test.variationName=kittens
+~~npm run watch -- --pref extensions.button-icon-preference_shield_mozilla_org.test.variationName=kittens~~
 
 # run and reload on filechanges, with a specific Firefox installation
 npm run watch -- -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
@@ -166,57 +166,7 @@ The functional testing set-up is a minimal set of tests imported from <https://g
 ## Directory Structure and Files
 
 ```
-├── .circleci             # Setup for .circle ci integration
-│   └── config.yml
-├── .eslintignore
-├── .eslintrc.js          # Linting configuration for mozilla, json etc
-├── .gitignore
-├── LICENSE
-├── README.md
-├── dist                  # Built zips (add-ons)
-│   ├── .gitignore
-│   └── button_icon_preference_study_shield_study_example_-2.0.0.zip
-├── docs
-│   ├── DEV.md
-│   ├── TELEMETRY.md      # Telemetry examples for this add-on
-│   ├── TESTPLAN.md       # Manual QA test plan
-│   └── WINDOWS_SETUP.md
-├── package-lock.json
-├── package.json
-├── src                   # Files that will go into the add-on
-│   ├── .eslintrc.json
-│   ├── background.js     # Background scripts, independent of web pages or browser windows
-│   ├── icon.png
-│   ├── icons             # Icons used in the example study (remove in your add-on)
-│   │   ├── LICENSE
-│   │   ├── isolatedcorndog.svg
-│   │   ├── kittens.svg
-│   │   ├── lizard.svg
-│   │   └── puppers.svg
-│   ├── manifest.json     # The only file that every extension using WebExtension APIs must contain
-│   └── privileged
-│       ├── Config.jsm    # Study-specific configuration regarding branches, eligibility, expiration etc
-│       ├── feature
-│       │   ├── api.js
-│       │   ├── jsm
-│       │   │   └── Feature.jsm   # Contains study-specific privileged code
-│       │   └── schema.json
-│       └── shieldUtils
-│           ├── api.js
-│           ├── jsm
-│           │   ├── StudyUtils.jsm              # (copied in during `prebuild` and `prewatch`)
-│           │   └── StudyUtilsBootstrap.jsm     # Code from legacy bootstrap.js to be assimilated into StudyUtils
-│           └── schema.json
-└── test                  # Automated tests `npm test` and circle
-│   ├── Dockerfile
-│   ├── docker_setup.sh
-│   ├── functional_tests.js
-│   ├── test_harness.js
-│   ├── test_printer.py
-│   └── utils.js
-└── web-ext-config.js     # Configuration options used by the `web-ext` command
 
->> tree -a -I 'node_modules|.git|.DS_Store'
 ```
 
 This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/background.js`, `src/privileged/` and `src/studySetup.js`.

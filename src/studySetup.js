@@ -69,24 +69,16 @@ const baseStudySetup = {
     },
   },
 
-  /* Button study branches and sample weights
-     - test kittens vs. puppers if we can only have one.
-       - downweight lizards.  Lizards is a 'poison' branch, meant to
-         help control for novelty effect
-  */
+  /* Study branches and sample weights */
   weightedVariations: [
     {
-      name: "kittens",
-      weight: 1.5,
-    },
-    {
-      name: "puppers",
-      weight: 1.5,
-    },
-    {
-      name: "lizard",
+      name: "control",
       weight: 1,
-    }, // we want more puppers in our sample
+    },
+    {
+      name: "treatment",
+      weight: 1,
+    }
   ],
 
   // maximum time that the study should run, from the first run
