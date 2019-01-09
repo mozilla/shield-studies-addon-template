@@ -15,6 +15,13 @@
             "type": "string"
           }
         ]
+      },
+      {
+        "name": "getSignedInUser",
+        "type": "function",
+        "description": "TODO",
+        "async": true,
+        "parameters": []
       }
     ],
     "events": [

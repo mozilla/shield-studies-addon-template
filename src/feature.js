@@ -101,10 +101,14 @@ class BrowserActionButtonChoiceFeature {
     // modify BrowserAction (button) ui for this particular {variation}
     console.log("path:", `icons/${variation.name}.svg`);
     // TODO: Running into an error "values is undefined" here
-    browser.browserAction.setIcon({ path: Feature.iconPath(variation) });
+    browser.browserAction.setIcon({ path: "icons/avatar.png" });
     browser.browserAction.setTitle({ title: variation.name });
     browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
     console.log("initialized");
+
+    browser.introductionNotificationBar.getSignedInUser().then((data) => {
+      console.log("USER DATA --- " + JSON.stringify(data.profileCache));
+    });
   }
 
   /** handleButtonClick
@@ -114,31 +118,33 @@ class BrowserActionButtonChoiceFeature {
    */
   handleButtonClick() {
     console.log("handleButtonClick");
-    // note: doesn't persist across a session, unless you use localStorage or similar.
-    this.timesClickedInSession += 1;
-    console.log("got a click", this.timesClickedInSession);
-    browser.browserAction.setBadgeText({
-      text: this.timesClickedInSession.toString(),
-    });
 
-    // telemetry: FIRST CLICK
-    if (this.timesClickedInSession === 1) {
-      browser.study.sendTelemetry({ event: "button-first-click-in-session" });
+    function getBase64FromImageUrl(url) {
+      const img = new Image();
+      img.setAttribute("crossOrigin", "anonymous");
+
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = this.width;
+        canvas.height = this.height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(this, 0, 0);
+
+        browser.browserAction.setIcon({ imageData: ctx.getImageData(0, 0, 200, 200)});
+      };
+
+      img.src = url;
     }
 
-    // telemetry EVERY CLICK
-    browser.study.sendTelemetry({
-      event: "button-click",
-      timesClickedInSession: "" + this.timesClickedInSession,
+    browser.introductionNotificationBar.getSignedInUser().then((data) => {
+      if (data && data.profileCache && data.profileCache.profile.avatar) {
+        console.log("avatar: " + data.profileCache.profile.avatar)
+        const avatar = data.profileCache.profile.avatar;
+        getBase64FromImageUrl(avatar);
+      }
+      // console.log("USER DATA --- " + JSON.stringify(data));
     });
-
-    // webExtension-initiated ending for "used-often"
-    //
-    // - 3 timesClickedInSession in a session ends the study.
-    // - see `../Config.jsm` for what happens during this ending.
-    if (this.timesClickedInSession >= 3) {
-      browser.study.endStudy("used-often");
-    }
   }
 }
 

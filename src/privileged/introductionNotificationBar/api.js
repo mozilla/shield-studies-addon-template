@@ -50,10 +50,6 @@ function getMostRecentBrowserWindow() {
  */
 class IntroductionNotificationBarEventEmitter extends EventEmitter {
   emitShow(variationName) {
-    fxAccounts.getSignedInUser().then(data => {
-      console.log("USER DATA ---- " + JSON.stringify(data));
-    }).catch(Cu.reportError);
-
     const self = this;
     const recentWindow = getMostRecentBrowserWindow();
     const doc = recentWindow.document;
@@ -118,6 +114,9 @@ this.introductionNotificationBar = class extends ExtensionAPI {
       introductionNotificationBar: {
         show() {
           introductionNotificationBarEventEmitter.emitShow();
+        },
+        getSignedInUser() {
+          return fxAccounts.getSignedInUser();
         },
         onIntroductionShown: new EventManager(
           context,
