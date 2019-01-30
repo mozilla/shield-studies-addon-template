@@ -24,7 +24,7 @@ class Feature {
    *  - reason: string of background.js install/startup/shutdown reason
    *
    */
-  configure(studyInfo) {
+  async configure(studyInfo) {
     const feature = this;
     const { variation, isFirstRun } = studyInfo;
 
@@ -33,6 +33,11 @@ class Feature {
 
     // perform something only during first run
     if (isFirstRun) {
+
+      await browser.study.logger.log(
+        "First run. showing introduction notification bar",
+      );
+
       browser.introductionNotificationBar.onIntroductionShown.addListener(
         () => {
           console.log("onIntroductionShown");
