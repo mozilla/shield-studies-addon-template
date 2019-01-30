@@ -7,7 +7,7 @@
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "dependencies": {
-    "shield-studies-addon-utils": "github:mozilla/shield-studies-addon-utils#release/5.0.4"
+    "shield-studies-addon-utils": "5.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -46,6 +46,7 @@
     "sinon": "4.0.0",
     "sinon-chrome": "2.2.1",
     "web-ext": "^2.9.3",
+    "webext-experiment-utils": "github:mozilla/webext-experiment-utils#develop",
     "yamljs": "^0.3.0"
   },
   "engines": {
@@ -65,15 +66,17 @@
   },
   "scripts": {
     "build": "web-ext build",
-    "bundle-utils": "copyStudyUtils src/privileged",
+    "build:use-if-pioneer-study": "web-ext build && importPioneerOptIn",
+    "bundle:studyUtils": "copyStudyUtils src/privileged",
     "docformat": "doctoc --title '**Contents**' docs/*.md && prettier '**/*.md' --write",
     "eslint": "eslint . --ext jsm,js,json",
     "eslint-fix": "npm run eslint -- --fix",
     "format": "prettier '**/*.{css,js,json,jsm,md}' --trailing-comma=all --ignore-path=.eslintignore --write",
-    "generate": "npm-run-all -s -n generate:schema:* generate:docs:* generate:stubApi:* format",
-    "generate:docs:testingOverrides": "node ./node_modules/shield-studies-addon-utils/weeUtils/documentSchema.js ./src/privileged/testingOverrides/schema.json > ./src/privileged/testingOverrides/api.md",
-    "generate:schema:testingOverrides": "cd ./src/privileged/testingOverrides && yaml2json schema.yaml -p > schema.json && node ../../../node_modules/shield-studies-addon-utils/weeUtils/verifyWeeSchema.js schema.json",
-    "generate:stubApi:testingOverrides": "cd ./src/privileged/testingOverrides && node ../../../node_modules/shield-studies-addon-utils/weeUtils/generateStubApi.js ./schema.json > stubApi.js",
+    "generate": "npm-run-all -s -n generate:generateSchema:* generate:verifyWeeSchema:* generate:documentSchema:* generate:generateStubApi:*",
+    "generate:documentSchema:privacyContext": "cd src/privileged/privacyContext && documentSchema schema.json > api.md",
+    "generate:generateSchema:privacyContext": "cd src/privileged/privacyContext && yaml2json schema.yaml -p > schema.json",
+    "generate:generateStubApi:privacyContext": "cd src/privileged/privacyContext && generateStubApi ./schema.json > stubApi.js",
+    "generate:verifyWeeSchema:privacyContext": "cd src/privileged/privacyContext && verifyWeeSchema schema.json",
     "harness_test": "npm run test:func -- --retry 2 --reporter json",
     "lint": "npm-run-all lint:*",
     "lint:eslint": "npm run eslint",
@@ -81,17 +84,21 @@
     "lint:nsp": "nsp check",
     "lint:web-ext-lint": "web-ext lint",
     "postformat": "npm run eslint-fix && fixpack",
-    "prebuild": "npm run bundle-utils",
-    "prestart": "npm run bundle-utils",
+    "prebuild": "npm-run-all bundle:*",
+    "prestart": "npm run pretest",
     "pretest": "node test/ensure_minimum_node_version.js && npm run build",
-    "prewatch": "npm run bundle-utils",
+    "prewatch": "npm-run-all bundle:*",
     "sign": "echo 'TBD, see: https://bugzilla.mozilla.org/show_bug.cgi?id=1407757'",
     "start": "web-ext run --no-reload",
-    "test": "npm-run-all -n test:unit test:func",
+    "start:use-if-pioneer-study": "npm run test:manual",
+    "test": "npm-run-all -n test:unit # test:func",
     "test:func": "npm-run-all -pr test:func:*",
     "test:func:selenium-mocha": "FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip GECKODRIVER_URL=http://127.0.0.1:4444 mocha test/functional/ --bail --full-trace",
     "test:func:start-geckodriver-server": "geckodriver -vv 1> test/results/logs/geckodriver.log 2> test/results/logs/geckodriver.errors.log",
+    "test:manual": "npm-run-all -pr test:func:start-geckodriver-server test:run-firefox",
+    "test:run-firefox": "FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip GECKODRIVER_URL=http://127.0.0.1:4444 node run-firefox.js",
     "test:unit": "NODE_ENV=test karma start",
-    "watch": "web-ext run"
+    "watch": "web-ext run",
+    "watch:use-if-pioneer-study": "echo \"Watch is disabled since Pioneer Opt-in add-on needs to be available in the empty profile and web-ext thus is not an option\""
   }
 }

@@ -77,6 +77,10 @@ Telemetry pings are loaded into S3 and re:dash. Sample query:
 
 * [All pings](https://sql.telemetry.mozilla.org/queries/{#your-id}/source#table)
 
+(OR, if Pioneer, use the below instead)
+
+Telemetry pings are loaded into the encrypted Pioneer pipeline.
+
 ## Improving this add-on
 
 See [DEV.md](./docs/DEV.md) for more details on how to work with this add-on as a developer.

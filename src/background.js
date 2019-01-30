@@ -48,6 +48,7 @@ class StudyLifeCycleHandler {
      */
     browser.study.onEndStudy.addListener(this.handleStudyEnding.bind(this));
     browser.study.onReady.addListener(this.enableFeature.bind(this));
+    this.expirationAlarmName = `${browser.runtime.id}:studyExpiration`;
   }
 
   /**
@@ -61,6 +62,7 @@ class StudyLifeCycleHandler {
    */
   async cleanup() {
     await browser.storage.local.clear();
+    await browser.alarms.clear(this.expirationAlarmName);
     await feature.cleanup();
   }
 
@@ -74,11 +76,11 @@ class StudyLifeCycleHandler {
    *
    * @returns {undefined}
    */
-  enableFeature(studyInfo) {
-    console.log("Enabling experiment", studyInfo);
+  async enableFeature(studyInfo) {
+    await browser.study.logger.log(["Enabling experiment", studyInfo]);
     const { delayInMinutes } = studyInfo;
     if (delayInMinutes !== undefined) {
-      const alarmName = `${browser.runtime.id}:studyExpiration`;
+      const alarmName = this.expirationAlarmName;
       const alarmListener = async alarm => {
         if (alarm.name === alarmName) {
           browser.alarms.onAlarm.removeListener(alarmListener);
@@ -90,7 +92,7 @@ class StudyLifeCycleHandler {
         delayInMinutes,
       });
     }
-    feature.configure(studyInfo);
+    return feature.configure(studyInfo);
   }
 
   /** handles `study:end` signals
@@ -103,19 +105,19 @@ class StudyLifeCycleHandler {
    * @returns {undefined}
    */
   async handleStudyEnding(ending) {
-    console.log(`Study wants to end:`, ending);
+    await browser.study.logger.log([`Study wants to end:`, ending]);
     for (const url of ending.urls) {
       await browser.tabs.create({ url });
     }
     switch (ending.endingName) {
       // could have different actions depending on positive / ending names
       default:
-        console.log(`The ending: ${ending.endingName}`);
+        await browser.study.logger.log(`The ending: ${ending.endingName}`);
         await this.cleanup();
         break;
     }
     // actually remove the addon.
-    console.log("About to actually uninstall");
+    await browser.study.logger.log("About to actually uninstall");
     return browser.management.uninstallSelf();
   }
 }
@@ -129,7 +131,7 @@ async function onEveryExtensionLoad() {
   new StudyLifeCycleHandler();
 
   const studySetup = await getStudySetup();
-  console.log(`Study setup: `, studySetup);
+  await browser.study.logger.log([`Study setup: `, studySetup]);
   await browser.study.setup(studySetup);
 }
 onEveryExtensionLoad();
