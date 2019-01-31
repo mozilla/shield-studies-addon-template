@@ -89,7 +89,7 @@
     "sign": "echo 'TBD, see: https://bugzilla.mozilla.org/show_bug.cgi?id=1407757'",
     "start": "web-ext run --no-reload",
     "start:use-if-pioneer-study": "npm run test:manual",
-    "test": "npm-run-all -n test:unit # test:func",
+    "test": "npm-run-all -n test:unit test:func",
     "test:func": "npm-run-all -pr test:func:*",
     "test:func:selenium-mocha": "FIREFOX_BINARY=${FIREFOX_BINARY:-nightly} ADDON_ZIP=./dist/button_icon_preference_-_shield_study_example-2.0.0.zip GECKODRIVER_URL=http://127.0.0.1:4444 mocha test/functional/ --bail --full-trace",
     "test:func:start-geckodriver-server": "geckodriver -vv 1> test/results/logs/geckodriver.log 2> test/results/logs/geckodriver.errors.log",
