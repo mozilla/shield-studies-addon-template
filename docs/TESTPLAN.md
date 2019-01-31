@@ -27,25 +27,27 @@
 
 * (Create profile: <https://developer.mozilla.org/Firefox/Multiple_profiles>, or via some other method)
 * Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String)
-* Set `shieldStudy.logLevel` to `All`. This permits shield-add-on log output in browser console.
+* Set `shieldStudy.logLevel` to `info`. This permits shield-add-on log output in browser console.
+* (If Pioneer study) Make sure that the [Firefox Pioneer Add-on](https://addons.mozilla.org/en-US/firefox/addon/firefox-pioneer/) is installed
 * Set `extensions.button-icon-preference_shield_mozilla_org.test.variationName` to `kittens` (or any other study variation/branch to test specifically)
 * Go to [this study's tracking bug](tbd: replace with your study's launch bug link in bugzilla) and install the latest add-on zip file
+* (If you are installing an unsigned version of the add-on, you need to set `extensions.legacy.enabled` to `true` before installing the add-on)
 
 ## Expected User Experience / Functionality
 
 Users see:
 
-* an icon in the browser address bar (webExtension BrowserAction) with one of 3 images (Cat, Dog, Lizard)
+* An icon in the browser address bar (webExtension BrowserAction) with one of 3 images (Cat, Dog, Lizard)
 
 Clicking on the button:
 
-* changes the badge
-* sends telemetry
+* Changes the badge
+* Sends telemetry
 
 ONCE ONLY users see:
 
-* a notification bar, introducing the featur
-* allowing them to opt out
+* A notification bar, introducing the feature
+* Allowing them to opt out
 
 Icon will be the same every run.
 
@@ -56,58 +58,35 @@ If the user clicks on the badge more than 3 times, it ends the study.
 1. UI APPEARANCE. OBSERVE a notification bar with these traits:
 
    * Icon is 'heartbeat'
-   * Text is one of 8 selected "questions", such as: "Do you like Firefox?". These are listed in [/addon/Config.jsm](/addon/Config.jsm) as the variable `weightedVariations`.
-   * clickable buttons with labels 'yes | not sure | no' OR 'no | not sure | yes' (50/50 chance of each)
-   * an `x` button at the right that closes the notice.
+   * Text is "Welcome to the new feature! Look for changes!",
+   * Clickable buttons with labels 'Thanks!' AND 'I do not want this.'
+   * An `x` button at the right that closes the notice.
 
    Test fails IF:
 
-   * there is no bar.
-   * elements are not correct or are not displaye
+   * There is no bar.
+   * Elements are not correct or are not displayed
 
-2. UI functionality: VOTE
+2. UI functionality: Thanks!
 
-   Expect: Click on a 'vote' button (any of: `yes | not sure | no`) has all these effects
+   * Click on the 'Thanks!' button
+   * Verify that the notification bar closes
 
-   * notice closes
-   * add-on uninstalls
-   * no additional tabs open
-   * telemetry pings are 'correct' with this SPECIFIC `study_state` as the ending
+3. UI functionality: I do not want this.
 
-     * ending is `voted`
-     * 'vote' is correct.
+   * Click on the 'I do not want this.' button
+   * Verify that the notification bar closes
+   * Verify that the study ends
+   * Verify that sent Telemetry is correct
+   * Verify that the ending is `introduction-leave-study`
 
-3. UI functionality: 'X' button
-
-   Click on the 'x' button.
-
-   * notice closes
-   * add-on uninstalls
-   * no additional tabs open
-   * telemetry pings are 'correct' with this SPECIFIC ending
-
-     * ending is `notification-x`
-
-4. UI functionality 'close window'
-
-   1. Open a 2nd Firefox window.
-   2. Close the initial window.
-
-   Then observe:
-
-   * notice closes
-   * add-on uninstalls
-   * no additional tabs open
-   * telemetry pings are 'correct' with this SPECIFIC ending
-
-     * ending is `window-or-fx-closed`
-
-5. UI functionality 'too-popular'
+4. UI functionality `too-popular`
 
    * Click on the web extension's icon three times
    * Verify that the study ends
    * Verify that sent Telemetry is correct
-   * Verify that the user is sent to the URL specified in `addon/Config.jsm` under `endings -> too-popular`.
+   * Verify that the ending is `too-popular`
+   * Verify that the user is sent to the URL specified in `src/studySetup.js` under `endings -> too-popular`.
 
 ### Design
 
@@ -116,6 +95,8 @@ Any UI in a Shield study should be consistent with standard Firefox design speci
 ### Note: checking "sent Telemetry is correct"
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) log output from the add-on.
+* To inspect the (unencrypted) contents individual telemetry packets, set `shieldStudy.logLevel` to `all`. This permits debug-level shield-add-on log output in the browser console. Note that this will negatively affect the performance of Firefox.
+* To see the actual (encrypted if Pioneer study) payloads, go to `about:telemetry` -> Click `current ping` -> Select `Archived ping data` -> Ping Type `pioneer-study` -> Choose a payload -> Raw Payload
 
 See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by this add-on.
 

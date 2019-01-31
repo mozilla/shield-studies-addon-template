@@ -22,15 +22,17 @@ const baseStudySetup = {
   // used for activeExperiments tagging (telemetryEnvironment.setActiveExperiment)
   activeExperimentName: browser.runtime.id,
 
-  // uses shield sampling and telemetry semantics.  Future: will support "pioneer"
+  // use either "shield" or "pioneer" telemetry semantics and data pipelines
   studyType: "shield",
 
   // telemetry
   telemetry: {
-    // default false. Actually send pings.
+    // Actually submit the pings to Telemetry. [default if omitted: false]
     send: true,
-    // Marks pings with testing=true.  Set flag to `true` before final release
-    removeTestingFlag: false,
+    // Marks pings with testing=true. Set flag to `true` for pings are meant to be seen by analysts [default if omitted: false]
+    removeTestingFlag: true,
+    // Keep an internal telemetry archive. Useful for verifying payloads of Pioneer studies without risking actually sending any unencrypted payloads [default if omitted: false]
+    internalTelemetryArchive: false,
   },
 
   // endings with urls
@@ -95,6 +97,23 @@ const baseStudySetup = {
   },
 };
 
+async function isCurrentlyEligible(studySetup) {
+  let allowed;
+  const dataPermissions = await browser.study.getDataPermissions();
+  if (studySetup.studyType === "shield") {
+    allowed = dataPermissions.shield;
+  }
+  if (studySetup.studyType === "pioneer") {
+    allowed = dataPermissions.pioneer;
+  }
+  // Users with private browsing on autostart are not eligible
+  if (await browser.privacyContext.permanentPrivateBrowsing()) {
+    await browser.study.logger.log("Permanent private browsing, exiting study");
+    allowed = false;
+  }
+  return allowed;
+}
+
 /**
  * Determine, based on common and study-specific criteria, if enroll (first run)
  * should proceed.
@@ -107,24 +126,23 @@ const baseStudySetup = {
  *
  * This implementation caches in local storage to speed up second run.
  *
+ * @param {object} studySetup A complete study setup object
  * @returns {Promise<boolean>} answer An boolean answer about whether the user should be
  *       allowed to enroll in the study
  */
-async function cachingFirstRunShouldAllowEnroll() {
+async function wasEligibleAtFirstRun(studySetup) {
   // Cached answer.  Used on 2nd run
-  let allowed = await browser.storage.local.get("allowEnroll");
-  if (allowed) return true;
+  const localStorageResult = await browser.storage.local.get(
+    "allowedEnrollOnFirstRun",
+  );
+  if (localStorageResult.allowedEnrollOnFirstRun === true) return true;
 
-  /*
-  First run, we must calculate the answer.
-  If false, the study will endStudy with 'ineligible' during `setup`
-  */
-
-  // could have other reasons to be eligible, such add-ons, prefs
-  allowed = true;
+  // First run, we must calculate the answer.
+  // If false, the study will endStudy with 'ineligible' during `setup`
+  const allowed = await isCurrentlyEligible(studySetup);
 
   // cache the answer
-  await browser.storage.local.set({ allowEnroll: allowed });
+  await browser.storage.local.set({ allowedEnrollOnFirstRun: allowed });
   return allowed;
 }
 
@@ -137,17 +155,20 @@ async function getStudySetup() {
   // shallow copy
   const studySetup = Object.assign({}, baseStudySetup);
 
-  studySetup.allowEnroll = await cachingFirstRunShouldAllowEnroll();
+  studySetup.allowEnroll = await wasEligibleAtFirstRun(studySetup);
 
-  const testingPreferences = await browser.testingOverrides.listPreferences();
-  console.log(
-    "The preferences that can be used to override testing flags: ",
-    testingPreferences,
-  );
+  // If the eligibility criterias are not dependent on the state of the first run only
+  // but rather should be checked on every browser launch, skip the use
+  // of wasEligibleAtFirstRun and instead use the below:
+  // studySetup.allowEnroll = await wasEligibleAtFirstRun(studySetup);
+
+  const testingOverrides = await browser.study.getTestingOverrides();
   studySetup.testing = {
-    variationName: await browser.testingOverrides.getVariationNameOverride(),
-    firstRunTimestamp: await browser.testingOverrides.getFirstRunTimestampOverride(),
-    expired: await browser.testingOverrides.getExpiredOverride(),
+    variationName: testingOverrides.variationName,
+    firstRunTimestamp: testingOverrides.firstRunTimestamp,
+    expired: testingOverrides.expired,
   };
+  // TODO: Possible add testing override for studySetup.telemetry.internalTelemetryArchive
+
   return studySetup;
 }

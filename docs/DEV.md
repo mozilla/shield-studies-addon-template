@@ -50,7 +50,7 @@ npm run build
 
 ## Details
 
-First, make sure you are on NPM 6+ installed:
+First, make sure you are on NPM 8+ installed:
 
 ```shell
 npm install -g npm

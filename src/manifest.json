@@ -19,20 +19,20 @@
         "paths": [["introductionNotificationBar"]]
       }
     },
+    "privacyContext": {
+      "schema": "./privileged/privacyContext/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/privacyContext/api.js",
+        "paths": [["privacyContext"]]
+      }
+    },
     "study": {
       "schema": "./privileged/study/schema.json",
       "parent": {
         "scopes": ["addon_parent"],
         "script": "./privileged/study/api.js",
         "paths": [["study"]]
-      }
-    },
-    "testingOverrides": {
-      "schema": "./privileged/testingOverrides/schema.json",
-      "parent": {
-        "scopes": ["addon_parent"],
-        "script": "./privileged/testingOverrides/api.js",
-        "paths": [["testingOverrides"]]
       }
     }
   },
@@ -41,7 +41,8 @@
     "scripts": ["studySetup.js", "feature.js", "background.js"]
   },
   "icons": {
-    "48": "icons/shield-icon.svg"
+    "48": "icons/shield-icon.48.png",
+    "96": "icons/shield-icon.98.png"
   },
   "browser_action": {
     "browser_style": true,

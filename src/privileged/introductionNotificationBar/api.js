@@ -14,6 +14,9 @@ const EventEmitter =
   ExtensionCommon.EventEmitter || ExtensionUtils.EventEmitter;
 
 // eslint-disable-next-line no-undef
+const { ExtensionError } = ExtensionUtils;
+
+// eslint-disable-next-line no-undef
 XPCOMUtils.defineLazyModuleGetter(
   this,
   "BrowserWindowTracker",
@@ -56,12 +59,16 @@ class IntroductionNotificationBarEventEmitter extends EventEmitter {
       "#high-priority-global-notificationbox",
     );
 
-    if (!notificationBox) return;
+    console.log("typeof notificationBox", typeof notificationBox);
+
+    if (!notificationBox) {
+      throw new ExtensionError("The notification box could not be invoked");
+    }
 
     // api: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/appendNotification
     const notice = notificationBox.appendNotification(
       "Welcome to the new feature! Look for changes!",
-      "feature orienation",
+      "feature orientation",
       null, // icon
       notificationBox.PRIORITY_INFO_HIGH, // priority
       // buttons

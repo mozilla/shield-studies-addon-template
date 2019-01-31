@@ -1,0 +1,22 @@
+[
+  {
+    "namespace": "privacyContext",
+    "description": "Accesses privacy-related context / settings which can affect study/experiment behavior",
+    "functions": [
+      {
+        "name": "permanentPrivateBrowsing",
+        "type": "function",
+        "async": true,
+        "description": "",
+        "parameters": []
+      },
+      {
+        "name": "aPrivateBrowserWindowIsOpen",
+        "type": "function",
+        "async": true,
+        "description": "",
+        "parameters": []
+      }
+    ]
+  }
+]
