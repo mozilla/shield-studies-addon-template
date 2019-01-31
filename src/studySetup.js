@@ -98,6 +98,7 @@ const baseStudySetup = {
 };
 
 async function isCurrentlyEligible(studySetup) {
+  let allowed;
   const dataPermissions = await browser.study.getDataPermissions();
   if (studySetup.studyType === "shield") {
     allowed = dataPermissions.shield;
@@ -107,9 +108,7 @@ async function isCurrentlyEligible(studySetup) {
   }
   // Users with private browsing on autostart are not eligible
   if (await browser.privacyContext.permanentPrivateBrowsing()) {
-    await browser.study.logger.log(
-      "Permanent private browsing, exiting study",
-    );
+    await browser.study.logger.log("Permanent private browsing, exiting study");
     allowed = false;
   }
   return allowed;

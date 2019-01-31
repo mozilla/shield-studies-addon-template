@@ -33,7 +33,6 @@ class Feature {
 
     // perform something only during first run
     if (isFirstRun) {
-
       await browser.study.logger.log(
         "First run. showing introduction notification bar",
       );

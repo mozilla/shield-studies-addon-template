@@ -72,7 +72,7 @@ If the user clicks on the badge more than 3 times, it ends the study.
    * Click on the 'Thanks!' button
    * Verify that the notification bar closes
 
-2. UI functionality: I do not want this.
+3. UI functionality: I do not want this.
 
    * Click on the 'I do not want this.' button
    * Verify that the notification bar closes
@@ -80,7 +80,7 @@ If the user clicks on the badge more than 3 times, it ends the study.
    * Verify that sent Telemetry is correct
    * Verify that the ending is `introduction-leave-study`
 
-5. UI functionality `too-popular`
+4. UI functionality `too-popular`
 
    * Click on the web extension's icon three times
    * Verify that the study ends
