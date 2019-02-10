@@ -1,0 +1,18 @@
+# do not lint/format generated artifacts
+test/results/coverage/
+dist/
+package-lock.json
+src/privileged/privacyContext/api.js
+src/privileged/privacyContext/schema.json
+src/privileged/privacyContext/stubApi.js
+# do not lint/format bundled util libraries
+src/privileged/study/api.js
+src/privileged/study/schema.json
+# makes sure that eslintrc.js gets linted/formatted
+!.eslintrc.js
+# don't lint/format code the directory where get-firefox stores the Firefox binaries
+/firefox-*
+# don't lint/format package.json since npm install formats it differently by default
+package.json
+# don't lint node_modules
+node_modules

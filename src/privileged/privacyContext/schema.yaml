@@ -1,0 +1,29 @@
+# Interface schema
+# https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/schema.html
+# possible types are here
+# - https://searchfox.org/mozilla-central/source/toolkit/components/extensions/Schemas.jsm#2418-2426
+#
+# - properties
+# - functions
+# - events
+# - types
+#
+# - type property:
+#   boolean, integer, number, string, array, object, or any.
+#
+
+---
+- namespace: privacyContext
+  description: Accesses privacy-related context / settings which can affect study/experiment behavior
+
+  functions:
+  - name: permanentPrivateBrowsing
+    type: 'function'
+    async: true
+    description: ''
+    parameters: []
+  - name: aPrivateBrowserWindowIsOpen
+    type: 'function'
+    async: true
+    description: ''
+    parameters: []
