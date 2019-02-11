@@ -11,14 +11,6 @@
   },
   "default_locale": "en-US",
   "experiment_apis": {
-    "introductionNotificationBar": {
-      "schema": "./privileged/introductionNotificationBar/schema.json",
-      "parent": {
-        "scopes": ["addon_parent"],
-        "script": "./privileged/introductionNotificationBar/api.js",
-        "paths": [["introductionNotificationBar"]]
-      }
-    },
     "privacyContext": {
       "schema": "./privileged/privacyContext/schema.json",
       "parent": {
@@ -43,10 +35,5 @@
   "icons": {
     "48": "icons/shield-icon.48.png",
     "96": "icons/shield-icon.98.png"
-  },
-  "browser_action": {
-    "browser_style": true,
-    "default_icon": "icons/isolatedcorndog.svg",
-    "default_title": "__MSG_buttonTitle__"
   }
 }

@@ -21,11 +21,7 @@
 
 ## Study-specific endings
 
-The STUDY SPECIFIC ENDINGS this study supports are:
-
-* "voted",
-* "notification-x"
-* "window-or-fx-closed"
+This study has no surveys and as such has NO SPECIFIC ENDINGS.
 
 ## `shield-study` pings (common to all shield-studies)
 

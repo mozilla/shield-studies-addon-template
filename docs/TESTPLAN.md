@@ -35,62 +35,28 @@
 
 ## Expected User Experience / Functionality
 
-Users see:
+No user interface elements are modified in this study.
 
-* An icon in the browser address bar (webExtension BrowserAction) with one of 3 images (Cat, Dog, Lizard)
+### Do these tests (in addition to ordinary regression tests)
 
-Clicking on the button:
+**Enabling of permanent private browsing before study has begun**
 
-* Changes the badge
-* Sends telemetry
+- Enable permanent private browsing
+- Install the add-on as per above
+- Verify that the study does not run
 
-ONCE ONLY users see:
+**Enabling of permanent private browsing after study has begun**
 
-* A notification bar, introducing the feature
-* Allowing them to opt out
+- Install the add-on as per above
+- Verify that the study runs
+- Enable permanent private browsing
+- Verify that the study ends upon the subsequent restart of the browser
 
-Icon will be the same every run.
+**Private browsing mode test 1**
 
-If the user clicks on the badge more than 3 times, it ends the study.
-
-### Do these tests
-
-1. UI APPEARANCE. OBSERVE a notification bar with these traits:
-
-   * Icon is 'heartbeat'
-   * Text is "Welcome to the new feature! Look for changes!",
-   * Clickable buttons with labels 'Thanks!' AND 'I do not want this.'
-   * An `x` button at the right that closes the notice.
-
-   Test fails IF:
-
-   * There is no bar.
-   * Elements are not correct or are not displayed
-
-2. UI functionality: Thanks!
-
-   * Click on the 'Thanks!' button
-   * Verify that the notification bar closes
-
-3. UI functionality: I do not want this.
-
-   * Click on the 'I do not want this.' button
-   * Verify that the notification bar closes
-   * Verify that the study ends
-   * Verify that sent Telemetry is correct
-   * Verify that the ending is `introduction-leave-study`
-
-4. UI functionality `too-popular`
-
-   * Click on the web extension's icon three times
-   * Verify that the study ends
-   * Verify that sent Telemetry is correct
-   * Verify that the ending is `too-popular`
-   * Verify that the user is sent to the URL specified in `src/studySetup.js` under `endings -> too-popular`.
-
-### Design
-
-Any UI in a Shield study should be consistent with standard Firefox design specifications. These standards can be found at [design.firefox.com](https://design.firefox.com/photon/welcome.html). Firefox logo specifications can be found [here](https://design.firefox.com/photon/visuals/product-identity-assets.html).
+- Install the add-on as per above
+- Verify that the study runs
+- Verify that no information is recorded and sent when private browsing mode is active
 
 ### Note: checking "sent Telemetry is correct"
 

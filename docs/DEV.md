@@ -151,17 +151,11 @@ ln -s Firefox\ Nightly.app FirefoxNightly.app
 npm run test:func
 ```
 
-Runs functional tests using the Selenium driver, verifying the telemetry payload at Firefox startup and add-on installation in a clean profile, then does **optimistic testing** of the _commonest path_ though the study for a user:
-
-* prove the notification bar ui opens
-* _clicking on the left-most button presented_.
-* verifying that sent Telemetry is correct.
+Runs functional tests using the Selenium driver, verifying the telemetry payload at Firefox startup and add-on installation in a clean profile.
 
 Code at [/test/functional/](/test/functional/).
 
 Note: The study variation/branch during tests is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
-
-The functional testing set-up is a minimal set of tests imported from <https://github.com/mozilla/share-button-study> which contains plenty of examples of functional tests relevant to Shield study add-ons.
 
 ## Directory Structure and Files
 
