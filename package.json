@@ -1,10 +1,9 @@
 {
-  "name": "shield-studies-addon-template",
-  "description": "Template Shield Study",
-  "version": "2.0.0",
+  "name": "federated-learning-addon",
+  "description": "Federated Learning Add-on",
   "author": "Mozilla",
   "bugs": {
-    "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
+    "url": "https://github.com/florian/federated-learning-addon/issues"
   },
   "dependencies": {
     "shield-studies-addon-utils": "5.2.1"
@@ -51,7 +50,7 @@
   "engines": {
     "node": ">=8.11.1"
   },
-  "homepage": "https://github.com/mozilla/shield-studies-addon-template",
+  "homepage": "https://github.com/florian/federated-learning-addon",
   "keywords": [
     "firefox",
     "mozilla",
@@ -61,7 +60,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/mozilla/shield-studies-addon-template.git"
+    "url": "git://github.com/florian/federated-learning-addon.git"
   },
   "scripts": {
     "build": "web-ext build",

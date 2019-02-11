@@ -39,21 +39,29 @@ const baseStudySetup = {
   endings: {
     /** standard endings */
     "user-disable": {
-      baseUrls: [
-        "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=user-disable",
-      ],
+      baseUrls: [],
     },
     ineligible: {
       baseUrls: [],
     },
     expired: {
-      baseUrls: [
-        "https://qsurvey.mozilla.com/s3/Shield-Study-Example-Survey/?reason=expired",
-      ],
+      baseUrls: [],
     },
   },
 
   weightedVariations: [
+    {
+      name: 'treatment',
+      weight: 0.6
+    },
+    {
+      name: 'control',
+      weight: 0.2
+    },
+    {
+      name: 'control-no-decay',
+      weight: 0.2
+    }
   ],
 
   // maximum time that the study should run, from the first run

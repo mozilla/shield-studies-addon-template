@@ -11,6 +11,10 @@ class Feature {
    */
   async configure(studyInfo) {
 
+    const synchronizer = new ModelSynchronization(studyInfo)
+    const optimizer = new FrecencyOptimizer(synchronizer, svmLoss)
+
+    browser.experiments.awesomeBar.onHistorySearch.addListener(optimizer.step.bind(optimizer))
 
   }
 

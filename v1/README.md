@@ -1,7 +1,5 @@
 # Federated Learning – Firefox addon
 
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
-
 Federated Learning is a new subarea of machine learning where the training process is distributed among many users.
 Instead of sharing their data, users only have to provide weight updates to the server.
 

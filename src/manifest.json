@@ -1,16 +1,41 @@
 {
-  "name": "Button Icon Preference - Shield Study Example",
-  "description": "__MSG_extensionDescription__",
-  "version": "2.0.0",
+  "name": "Federated Learning Awesome Bar",
+  "description": "Improve history and bookmark search",
+  "version": "1.0.2",
   "manifest_version": 2,
+  "hidden": true,
   "applications": {
     "gecko": {
-      "id": "button-icon-preference@shield.mozilla.org",
-      "strict_min_version": "61.0a1"
+      "id": "federated-learning-v2@shield.mozilla.org",
+      "strict_min_version": "65.0a1"
     }
   },
   "default_locale": "en-US",
   "experiment_apis": {
+    "awesomeBar": {
+      "schema": "./privileged/awesomeBar/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/awesomeBar/api.js",
+        "paths": [["experiments", "awesomeBar"]]
+      }
+    },
+    "frecency": {
+      "schema": "./privileged/frecency/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/frecency/api.js",
+        "paths": [["experiments", "frecency"]]
+      }
+    },
+    "prefs": {
+      "schema": "./privileged/prefs/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/prefs/api.js",
+        "paths": [["experiments", "prefs"]]
+      }
+    },
     "privacyContext": {
       "schema": "./privileged/privacyContext/schema.json",
       "parent": {
@@ -26,11 +51,21 @@
         "script": "./privileged/study/api.js",
         "paths": [["study"]]
       }
+    },
+    "telemetry": {
+      "schema": "./privileged/telemetry/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/telemetry/api.js",
+        "paths": [["experiments", "telemetry"]]
+      }
     }
   },
-  "permissions": ["management", "storage", "alarms"],
+  "permissions": [
+    "webRequest", "<all_urls>", "management", "storage", "alarms"
+  ],
   "background": {
-    "scripts": ["studySetup.js", "feature.js", "background.js"]
+    "scripts": ["lib/prefs.js", "lib/synchronization.js", "lib/optimization.js", "studySetup.js", "feature.js", "background.js"]
   },
   "icons": {
     "48": "icons/shield-icon.48.png",
