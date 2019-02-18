@@ -75,7 +75,25 @@ class ModelSynchronization {
     const windowInfo = await browser.windows.getLastFocused()
 
     if (!windowInfo.incognito) {
-      browser.experiments.telemetry.submitPing(payload)
+      await browser.study.logger.debug("Telemetry about to be validated using browser.study.validateJSON");
+      const foo = await browser.study.validateJSON( payload,
+        {
+        	"type": "object",
+        	"properties": {
+        	  "frecency_scores": { "type": "array", "items": { "type": "number" } },
+        	  "model_version": { "type": "number" },
+        	  "loss": { "type": "number" },
+        	  "num_chars_typed": { "type": "number" },
+        	  "num_suggestions_displayed": { "type": "number" },
+        	  "rank_selected": { "type": "number" },
+        	  "study_variation": { "type": "string" },
+        	  "update": { "type": "array", "items": { "type": "number" } }
+          }
+        }
+      );
+      await browser.study.logger.debug(foo);
+      await browser.study.logger.debug("Telemetry about to be submitted using browser.experiments.telemetry");
+      await browser.experiments.telemetry.submitPing(payload)
       await browser.study.logger.debug("Telemetry submitted using browser.experiments.telemetry");
     }
   }
