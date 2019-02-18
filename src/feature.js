@@ -24,6 +24,32 @@ class Feature {
       // drop the ping - do not send any telemetry
       return;
     }
+
+    await browser.study.logger.debug("Telemetry about to be validated using browser.study.validateJSON");
+    const validationResult = await browser.study.validateJSON( payload,
+      {
+        "type": "object",
+        "properties": {
+          "frecency_scores": { "type": "array", "items": { "type": "number" } },
+          "model_version": { "type": "number" },
+          "loss": { "type": "number" },
+          "num_chars_typed": { "type": "number" },
+          "num_suggestions_displayed": { "type": "number" },
+          "rank_selected": { "type": "number" },
+          "study_variation": { "type": "string" },
+          "update": { "type": "array", "items": { "type": "number" } }
+        }
+      }
+    );
+    console.log("validationResult", validationResult);
+
+    const windowInfo = await browser.windows.getLastFocused();
+    if (!windowInfo.incognito) {
+      await browser.study.logger.debug("Telemetry about to be submitted using browser.experiments.telemetry");
+      await browser.experiments.telemetry.submitPing(payload);
+      await browser.study.logger.debug("Telemetry submitted using browser.experiments.telemetry");
+    }
+
     const stringStringMap = {
       model_version: String(payload.model_version),
       frecency_scores: JSON.stringify(payload.frecency_scores),
