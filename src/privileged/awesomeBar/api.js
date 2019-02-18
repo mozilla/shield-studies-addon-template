@@ -32,6 +32,10 @@ var awesomeBar = class extends ExtensionAPI {
 
 function processAwesomeBarSearch (el, callback) {
   let popup = el.popup
+  if (!popup) {
+    console.error("Popup was found undefined - not triggering awesomeBar.onHistorySearch", el, el.popup);
+    return;
+  }
   let controller = popup.view.QueryInterface(Ci.nsIAutoCompleteController)
 
   let selectedIndex = popup.selectedIndex
