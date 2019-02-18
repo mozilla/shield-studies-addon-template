@@ -28,8 +28,7 @@
 * (Create profile: <https://developer.mozilla.org/Firefox/Multiple_profiles>, or via some other method)
 * Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String)
 * Set `shieldStudy.logLevel` to `info`. This permits shield-add-on log output in browser console.
-* (If Pioneer study) Make sure that the [Firefox Pioneer Add-on](https://addons.mozilla.org/en-US/firefox/addon/firefox-pioneer/) is installed
-* Set `extensions.button-icon-preference_shield_mozilla_org.test.variationName` to `kittens` (or any other study variation/branch to test specifically)
+* Set `extensions.federated-learning-v2_shield_mozilla_org.test.variationName` to `treatment` (or any other study variation/branch to test specifically)
 * Go to [this study's tracking bug](tbd: replace with your study's launch bug link in bugzilla) and install the latest add-on zip file
 * (If you are installing an unsigned version of the add-on, you need to set `extensions.legacy.enabled` to `true` before installing the add-on)
 
@@ -38,6 +37,28 @@
 No user interface elements are modified in this study.
 
 ### Do these tests (in addition to ordinary regression tests)
+
+**Fetching of the latest upstream model at study start**
+
+- Install the add-on as per above
+- Verify that the study runs
+- Verify that the study add-on log out includes "Fetching model" and "Applying frecency weights"
+
+**Fetching of the latest upstream model periodically**
+
+- Install the add-on as per above
+- Verify that the study runs
+- Verify that the study add-on log out includes "Fetching model" and "Applying frecency weights" every 5 minutes, starting from a full hour (eg 12:00, 12:05, 12:10 etc)
+
+**Sending of the updated model**
+
+- Install the add-on as per above
+- Verify that the study runs
+- Open up a new tab and write "example.com" + ENTER
+- Close the tab
+- Open up a new tab and start writing "example.com"
+- Instead of pressing ENTER, choose the "example.com" history entry in the suggestions that are shown (history entries have a wireframe globe as an icon)
+- Verify that sent telemetry is correct
 
 **Enabling of permanent private browsing before study has begun**
 
@@ -58,11 +79,11 @@ No user interface elements are modified in this study.
 - Verify that the study runs
 - Verify that no information is recorded and sent when private browsing mode is active
 
-### Note: checking "sent Telemetry is correct"
+### Note: checking "sent telemetry is correct"
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) log output from the add-on.
-* To inspect the (unencrypted) contents individual telemetry packets, set `shieldStudy.logLevel` to `all`. This permits debug-level shield-add-on log output in the browser console. Note that this will negatively affect the performance of Firefox.
-* To see the actual (encrypted if Pioneer study) payloads, go to `about:telemetry` -> Click `current ping` -> Select `Archived ping data` -> Ping Type `pioneer-study` -> Choose a payload -> Raw Payload
+* To inspect the (unencrypted) contents individual telemetry packets, set `shieldStudy.logLevel` to `all`. This permits debug-level shield-add-on log output in the browser console. Note that this may negatively affect the performance of Firefox.
+* To see the actual payloads, go to `about:telemetry` -> Click `current ping` -> Select `Archived ping data` -> Ping Type `pioneer-study` -> Choose a payload -> Raw Payload
 
 See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by this add-on.
 
