@@ -62,7 +62,16 @@ class Feature {
   /**
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
    */
-  async cleanup() {}
+  async cleanup() {
+
+    await browser.study.logger.log("Cleaning up study-specific prefs");
+    const promises = [];
+    for (let i = 0; i < PREFS.length; i++) {
+      promises.push(browser.experiments.prefs.clearUserPref(PREFS[i]))
+    }
+    return Promise.all(promises);
+
+  }
 
 }
 
