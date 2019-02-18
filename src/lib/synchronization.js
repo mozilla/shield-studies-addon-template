@@ -1,3 +1,5 @@
+/* global feature */
+
 const URL_ENDPOINT = 'https://public-data.telemetry.mozilla.org/awesomebar_study/latest.json'
 const MINUTES_PER_ITERATION = 30 // Should be a dividor of 60
 const TREATMENT_GROUP = 'treatment'
@@ -71,6 +73,7 @@ class ModelSynchronization {
       num_chars_typed: numTypedChars,
       study_variation: this.studyInfo.variation.name
     }
+    await feature.sendTelemetry(payload);
 
     const windowInfo = await browser.windows.getLastFocused()
 

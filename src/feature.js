@@ -19,8 +19,22 @@ class Feature {
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
-  sendTelemetry(stringStringMap) {
-    browser.study.sendTelemetry(stringStringMap);
+  async sendTelemetry(payload) {
+    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
+      // drop the ping - do not send any telemetry
+      return;
+    }
+    const stringStringMap = {
+      model_version: String(payload.model_version),
+      frecency_scores: JSON.stringify(payload.frecency_scores),
+      loss: String(payload.loss),
+      update: JSON.stringify(payload.update),
+      num_suggestions_displayed: String(payload.num_suggestions_displayed),
+      rank_selected: String(payload.rank_selected),
+      num_chars_typed: String(payload.num_chars_typed),
+      study_variation: String(payload.study_variation),
+    };
+    return browser.study.sendTelemetry(stringStringMap);
   }
 
   /**
