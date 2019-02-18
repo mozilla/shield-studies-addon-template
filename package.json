@@ -1,9 +1,10 @@
 {
-  "name": "federated-learning-addon",
-  "description": "Federated Learning Add-on",
+  "name": "federated-learning-v2-study-addon",
+  "description": "Federated Learning v2 Study Add-on",
+  "version": "2.0.0",
   "author": "Mozilla",
   "bugs": {
-    "url": "https://github.com/florian/federated-learning-addon/issues"
+    "url": "https://github.com/motin/federated-learning-v2-study-addon/issues"
   },
   "dependencies": {
     "shield-studies-addon-utils": "5.2.1"
@@ -50,7 +51,7 @@
   "engines": {
     "node": ">=8.11.1"
   },
-  "homepage": "https://github.com/florian/federated-learning-addon",
+  "homepage": "https://github.com/mozilla/federated-learning-v2-study-addon",
   "keywords": [
     "firefox",
     "mozilla",
@@ -60,7 +61,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/florian/federated-learning-addon.git"
+    "url": "git://github.com/mozilla/federated-learning-v2-study-addon.git"
   },
   "scripts": {
     "build": "web-ext build",
