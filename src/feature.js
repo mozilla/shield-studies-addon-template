@@ -46,13 +46,6 @@ class Feature {
       throw new Error(validationResult);
     }
 
-    const windowInfo = await browser.windows.getLastFocused();
-    if (!windowInfo.incognito) {
-      await browser.study.logger.debug("Telemetry about to be submitted using browser.experiments.telemetry");
-      await browser.experiments.telemetry.submitPing(payload);
-      await browser.study.logger.debug("Telemetry submitted using browser.experiments.telemetry");
-    }
-
     const stringStringMap = {
       model_version: String(payload.model_version),
       frecency_scores: JSON.stringify(payload.frecency_scores),
