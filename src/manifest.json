@@ -1,7 +1,7 @@
 {
   "name": "Federated Learning Awesome Bar",
   "description": "Improve history and bookmark search",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "manifest_version": 2,
   "hidden": true,
   "applications": {

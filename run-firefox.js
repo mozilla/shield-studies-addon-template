@@ -16,7 +16,7 @@ const run = async studyType => {
     utils.FIREFOX_PREFERENCES,
   );
   const widgetId = utils.ui.makeWidgetId(
-    "jestr-pioneer-shield-study@pioneer.mozilla.org",
+    "federated-learning-v2@shield.mozilla.org",
   );
   /*
   await utils.preferences.set(
