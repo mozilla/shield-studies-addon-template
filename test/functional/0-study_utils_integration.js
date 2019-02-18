@@ -72,7 +72,7 @@ describe("basic shield utils integration", function() {
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 
@@ -121,7 +121,7 @@ describe("basic shield utils integration", function() {
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 });
@@ -193,7 +193,7 @@ describe("setup of an already expired study should result in endStudy('expired')
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 });
@@ -253,7 +253,7 @@ describe("setup of a study that expires within a few seconds should result in en
 
       const observed = utils.telemetry.summarizePings(filteredPings);
       const expected = [];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 
@@ -294,7 +294,7 @@ describe("setup of a study that expires within a few seconds should result in en
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 });
