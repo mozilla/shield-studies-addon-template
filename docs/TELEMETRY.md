@@ -39,7 +39,7 @@ This study has no surveys and as such has NO SPECIFIC ENDINGS.
 
 ## `shield-study-addon` pings, specific to THIS study.
 
-None.
+Every time a `freceny-update` ping is submitted (see below), a corresponding `shield-study-addon` ping is submitted, allowing for automatic querying of study data in re:dash. Note that `shield-study-addon` pings only accepts string attributes, why a stringification of all ping attributes is performed before submitting the `shield-study-addon` ping. This does not affect the `freceny-update` ping. 
 
 ## `frecency-update` ping ([schema](https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/frecency-update))
 
