@@ -85,6 +85,10 @@ No user interface elements are modified in this study.
 - Verify that the study runs
 - Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
 
+**Correct branches and weights**
+
+- Make sure that the branches and weights in the add-on configuration ([./src/studySetup.js](./src/studySetup.js)) corresponds to the branch weights of the Experimenter entry.
+
 ### Note: checking "sent telemetry is correct"
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) log output from the add-on.
