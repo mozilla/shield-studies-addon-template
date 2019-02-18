@@ -29,7 +29,8 @@ class ModelSynchronization {
     return msUntilNextMinute + minutesMissing * 60 * 1000
   }
 
-  fetchModel () {
+  async fetchModel () {
+    await browser.study.logger.log("Fetching model");
     fetch(URL_ENDPOINT)
       .then((response) => response.json())
       .then(this.applyModelUpdate.bind(this))
@@ -41,21 +42,25 @@ class ModelSynchronization {
     setTimeout(this.fetchModel.bind(this), this.msUntilNextIteration())
   }
 
-  applyModelUpdate ({ iteration, model }) {
+  async applyModelUpdate ({ iteration, model }) {
+    await browser.study.logger.log({iteration, model});
     this.iteration = iteration
 
     if (this.studyInfo.variation.name === TREATMENT_GROUP) {
+      await browser.study.logger.log("Applying frecency weights");
       for (let i = 0; i < PREFS.length; i++) {
         browser.experiments.prefs.setIntPref(PREFS[i], model[i])
       }
     }
 
     if (this.studyInfo.variation.name !== CONTROL_GROUP) {
+      await browser.study.logger.log("Updating all frecencies");
       browser.experiments.frecency.updateAllFrecencies()
     }
   }
 
   async pushModelUpdate (weights, loss, numSuggestionsDisplayed, selectedIndex, numTypedChars, frecency_scores) {
+    await browser.study.logger.debug("Pushing model update via telemetry");
     let payload = {
       model_version: this.iteration,
       frecency_scores,
@@ -71,6 +76,7 @@ class ModelSynchronization {
 
     if (!windowInfo.incognito) {
       browser.experiments.telemetry.submitPing(payload)
+      await browser.study.logger.debug("Telemetry submitted using browser.experiments.telemetry");
     }
   }
 }
