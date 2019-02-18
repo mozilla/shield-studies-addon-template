@@ -41,7 +41,10 @@ class Feature {
         }
       }
     );
-    console.log("validationResult", validationResult);
+    if (!validationResult.valid) {
+      await browser.study.logger.error(["Invalid telemetry payload", payload]);
+      throw new Error(validationResult);
+    }
 
     const windowInfo = await browser.windows.getLastFocused();
     if (!windowInfo.incognito) {
