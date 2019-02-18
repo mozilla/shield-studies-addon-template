@@ -1,6 +1,6 @@
 'use strict'
 
-ChromeUtils.import('resource://gre/modules/PlacesUtils.jsm')
+const { PlacesUtils } = ChromeUtils.import('resource://gre/modules/PlacesUtils.jsm')
 
 const CHUNK_SIZE = 1000
 
