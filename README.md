@@ -28,7 +28,7 @@ See [TELEMETRY.md](./docs/TELEMETRY.md) for more details on what pings are sent 
 
 Telemetry pings are loaded into S3 and re:dash. Sample query:
 
-* [All pings](https://sql.telemetry.mozilla.org/queries/{#your-id}/source#table)
+* [All pings](https://sql.telemetry.mozilla.org/queries/61520/source)
 
 ## Improving this add-on
 
