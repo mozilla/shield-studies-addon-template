@@ -6,7 +6,7 @@ process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line 
 const assert = require("assert");
 const utils = require("./utils");
 
-const expiresInDays = 14; // Needs to be the same as in src/studySetup.js
+const expiresInDays = 7 * 4; // 4 weeks // Needs to be the same as in src/studySetup.js
 
 describe("basic shield utils integration", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.

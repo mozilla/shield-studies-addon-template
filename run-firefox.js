@@ -29,7 +29,7 @@ const run = async studyType => {
     // Set preference that simulates that the study will expire after EXPIRE_SECONDS seconds
     const beginTime = Date.now();
     const msInOneDay = 60 * 60 * 24 * 1000;
-    const expiresInDays = 7 * 5; // 5 weeks // Needs to be the same as in src/studySetup.js
+    const expiresInDays = 7 * 4; // 4 weeks // Needs to be the same as in src/studySetup.js
     const firstRunTimestamp =
       beginTime - msInOneDay * expiresInDays + EXPIRE_SECONDS * 1000;
     await utils.preferences.set(
