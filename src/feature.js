@@ -46,7 +46,7 @@ class Feature {
       throw new Error(validationResult);
     }
 
-    // Submit ping using the freceny-update schema/topic - will be picked up by the streaming ETL job
+    // Submit ping using the frecency-update schema/topic - will be picked up by the streaming ETL job
     await browser.telemetry.submitPing("frecency-update", payload, {
       addClientId: true
     });
