@@ -79,6 +79,12 @@ No user interface elements are modified in this study.
 - Verify that the study runs
 - Verify that no information is recorded and sent when private browsing mode is active
 
+**Not showing in `about:addons`**
+
+- Install the add-on as per above
+- Verify that the study runs
+- Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
+
 ### Note: checking "sent telemetry is correct"
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) log output from the add-on.
