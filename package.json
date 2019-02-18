@@ -51,7 +51,7 @@
   "engines": {
     "node": ">=8.11.1"
   },
-  "homepage": "https://github.com/mozilla/federated-learning-v2-study-addon",
+  "homepage": "https://github.com/motin/federated-learning-v2-study-addon",
   "keywords": [
     "firefox",
     "mozilla",
@@ -61,7 +61,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/mozilla/federated-learning-v2-study-addon.git"
+    "url": "git://github.com/motin/federated-learning-v2-study-addon.git"
   },
   "scripts": {
     "build": "web-ext build",

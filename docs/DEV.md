@@ -19,7 +19,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-### Preparations
+## Preparations
 
 * Download Developer and Nightly versions of Firefox (only Developer/Nightly will allow bundled web extension experiments, and Developer is the default target for the automated tests)
 
@@ -115,6 +115,22 @@ npm run generate
 
 Generates stub code and API docs from `src/privileged/*/schema.yaml`. See <https://github.com/motin/webext-experiment-utils> for more information.
 
+## Manual testing
+
+Launch the built add-on as already expired study:
+
+```shell
+EXPIRED=1 npm run test:manual
+```
+
+Launch the built add-on as expiring within a few seconds:
+
+```shell
+EXPIRE_SECONDS=5 npm run test:manual
+```
+
+Code at [./run-firefox.js](./run-firefox.js). 
+
 ## Automated testing
 
 ```shell
@@ -157,63 +173,26 @@ Code at [/test/functional/](/test/functional/).
 
 Note: The study variation/branch during tests is overridden by a preference in the FIREFOX_PREFERENCES section of `test/utils.js`.
 
+## Components
+
+### Experiment APIs
+
+- `frecency`: For interacting with the `moz_places` table and recalculating / changing frecency scores
+- `awesomeBar`: For observing interactions with the awesome bar. The required information for history / bookmark searches is retrieved (number of typed characters, selected suggestion, features of other suggestions)
+- `prefs`: For reading and writing preferences. This is just used to update the weights
+- `privacyContext`: For determining if a private session is active
+- `study` from [`shield-studies-addon-utils`](https://github.com/mozilla/shield-studies-addon-utils) for study related helpers
+
+### Core components
+
+- `synchronization`: Everything related to the federated learning protocol. Currently that means sending weight updates back using Telemetry and reading the current model from S3
+- `optimization`: For computing model updates
+- `studySetup` is adapted from [`shield-studies-addon-utils`](https://github.com/mozilla/shield-studies-addon-utils) and configures the study
+- `main.js` connects everything.
+
 ## Directory Structure and Files
 
-```
-├── .circleci             # Setup for .circle ci integration
-│   └── config.yml
-├── .eslintignore
-├── .eslintrc.js          # Linting configuration for mozilla, json etc
-├── .gitignore
-├── LICENSE
-├── README.md
-├── dist                  # Built zips (add-ons)
-│   ├── .gitignore
-│   └── button_icon_preference_study_shield_study_example_-2.0.0.zip
-├── docs
-│   ├── DEV.md
-│   ├── TELEMETRY.md      # Telemetry examples for this add-on
-│   ├── TESTPLAN.md       # Manual QA test plan
-│   └── WINDOWS_SETUP.md
-├── package-lock.json
-├── package.json
-├── src                   # Files that will go into the add-on
-│   ├── .eslintrc.json
-│   ├── background.js     # Background scripts, independent of web pages or browser windows
-│   ├── icon.png
-│   ├── icons             # Icons used in the example study (remove in your add-on)
-│   │   ├── LICENSE
-│   │   ├── isolatedcorndog.svg
-│   │   ├── kittens.svg
-│   │   ├── lizard.svg
-│   │   └── puppers.svg
-│   ├── manifest.json     # The only file that every extension using WebExtension APIs must contain
-│   └── privileged
-│       ├── Config.jsm    # Study-specific configuration regarding branches, eligibility, expiration etc
-│       ├── feature
-│       │   ├── api.js
-│       │   ├── jsm
-│       │   │   └── Feature.jsm   # Contains study-specific privileged code
-│       │   └── schema.json
-│       └── shieldUtils
-│           ├── api.js
-│           ├── jsm
-│           │   ├── StudyUtils.jsm              # (copied in during `prebuild` and `prewatch`)
-│           │   └── StudyUtilsBootstrap.jsm     # Code from legacy bootstrap.js to be assimilated into StudyUtils
-│           └── schema.json
-└── test                  # Automated tests `npm test` and circle
-│   ├── Dockerfile
-│   ├── docker_setup.sh
-│   ├── functional_tests.js
-│   ├── test_harness.js
-│   ├── test_printer.py
-│   └── utils.js
-└── web-ext-config.js     # Configuration options used by the `web-ext` command
-
->> tree -a -I 'node_modules|.git|.DS_Store'
-```
-
-This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/background.js`, `src/privileged/` and `src/studySetup.js`.
+This add-on uses the structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/lib/`, `src/background.js`, `src/privileged/` and `src/studySetup.js`.
 
 ## General Shield Study Engineering
 
