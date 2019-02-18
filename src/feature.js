@@ -19,8 +19,44 @@ class Feature {
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
-  sendTelemetry(stringStringMap) {
-    browser.study.sendTelemetry(stringStringMap);
+  async sendTelemetry(payload) {
+    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
+      // drop the ping - do not send any telemetry
+      return;
+    }
+
+    await browser.study.logger.debug("Telemetry about to be validated using browser.study.validateJSON");
+    const validationResult = await browser.study.validateJSON( payload,
+      {
+        "type": "object",
+        "properties": {
+          "frecency_scores": { "type": "array", "items": { "type": "number" } },
+          "model_version": { "type": "number" },
+          "loss": { "type": "number" },
+          "num_chars_typed": { "type": "number" },
+          "num_suggestions_displayed": { "type": "number" },
+          "rank_selected": { "type": "number" },
+          "study_variation": { "type": "string" },
+          "update": { "type": "array", "items": { "type": "number" } }
+        }
+      }
+    );
+    if (!validationResult.valid) {
+      await browser.study.logger.error(["Invalid telemetry payload", payload]);
+      throw new Error(validationResult);
+    }
+
+    const stringStringMap = {
+      model_version: String(payload.model_version),
+      frecency_scores: JSON.stringify(payload.frecency_scores),
+      loss: String(payload.loss),
+      update: JSON.stringify(payload.update),
+      num_suggestions_displayed: String(payload.num_suggestions_displayed),
+      rank_selected: String(payload.rank_selected),
+      num_chars_typed: String(payload.num_chars_typed),
+      study_variation: String(payload.study_variation),
+    };
+    return browser.study.sendTelemetry(stringStringMap);
   }
 
   /**

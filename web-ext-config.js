@@ -16,6 +16,7 @@ const defaultConfig = {
     pref: [
       "shieldStudy.logLevel=All",
       "browser.ctrlTab.recentlyUsedOrder=false",
+      "extensions.federated-learning-v2_shield_mozilla_org.test.variationName=treatment",
     ],
   },
 };

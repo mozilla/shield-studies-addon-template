@@ -51,14 +51,6 @@
         "script": "./privileged/study/api.js",
         "paths": [["study"]]
       }
-    },
-    "telemetry": {
-      "schema": "./privileged/telemetry/schema.json",
-      "parent": {
-        "scopes": ["addon_parent"],
-        "script": "./privileged/telemetry/api.js",
-        "paths": [["experiments", "telemetry"]]
-      }
     }
   },
   "permissions": [
