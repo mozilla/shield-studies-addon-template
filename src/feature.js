@@ -46,6 +46,12 @@ class Feature {
       throw new Error(validationResult);
     }
 
+    // Submit ping using the freceny-update schema/topic - will be picked up by the streaming ETL job
+    await browser.telemetry.submitPing("frecency-update", payload, {
+      addClientId: true
+    });
+
+    // Also submit ping using study utils - allows for automatic querying of study data in re:dash
     const stringStringMap = {
       model_version: String(payload.model_version),
       frecency_scores: JSON.stringify(payload.frecency_scores),
