@@ -1,4 +1,4 @@
-# Shield Studies Add-On Template
+# Federated Learning v2 - Study Add-On
 
 [![CircleCI badge](https://img.shields.io/circleci/project/github/motin/federated-learning-v2-study-addon/master.svg?label=CircleCI)](https://circleci.com/gh/motin/federated-learning-v2-study-addon/)
 [![Coverage Status](https://coveralls.io/repos/github/motin/federated-learning-v2-study-addon/badge.svg)](https://coveralls.io/github/motin/federated-learning-v2-study-addon)
