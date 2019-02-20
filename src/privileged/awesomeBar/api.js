@@ -20,7 +20,7 @@ const NON_HISTORY_STYLES = [
   "keyword",
 ];
 
-const awesomeBar = class extends ExtensionAPI {
+this.awesomeBar = class extends ExtensionAPI {
   getAPI(context) {
     return {
       experiments: {

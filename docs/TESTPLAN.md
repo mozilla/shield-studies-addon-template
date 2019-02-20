@@ -87,7 +87,7 @@ No user interface elements are modified in this study.
 
 **Correct branches and weights**
 
-* Make sure that the branches and weights in the add-on configuration ([./src/studySetup.js](./src/studySetup.js)) corresponds to the branch weights of the Experimenter entry.
+* Make sure that the branches and weights in the add-on configuration ([../src/studySetup.js](../src/studySetup.js)) corresponds to the branch weights of the Experimenter entry.
 
 ### Note: checking "sent telemetry is correct"
 

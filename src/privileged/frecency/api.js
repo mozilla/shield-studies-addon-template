@@ -37,7 +37,7 @@ async function getMozPlacesCount() {
   return res[0].getResultByName("count");
 }
 
-const frecency = class extends ExtensionAPI {
+this.frecency = class extends ExtensionAPI {
   getAPI() {
     return {
       experiments: {
