@@ -54,10 +54,22 @@
     }
   },
   "permissions": [
-    "telemetry", "webRequest", "<all_urls>", "management", "storage", "alarms"
+    "telemetry",
+    "webRequest",
+    "<all_urls>",
+    "management",
+    "storage",
+    "alarms"
   ],
   "background": {
-    "scripts": ["lib/prefs.js", "lib/synchronization.js", "lib/optimization.js", "studySetup.js", "feature.js", "background.js"]
+    "scripts": [
+      "lib/prefs.js",
+      "lib/synchronization.js",
+      "lib/optimization.js",
+      "studySetup.js",
+      "feature.js",
+      "background.js"
+    ]
   },
   "icons": {
     "48": "icons/shield-icon.48.png",

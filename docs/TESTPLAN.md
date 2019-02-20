@@ -40,54 +40,54 @@ No user interface elements are modified in this study.
 
 **Fetching of the latest upstream model at study start**
 
-- Install the add-on as per above
-- Verify that the study runs
-- Verify that the study add-on log out includes "Fetching model" and "Applying frecency weights"
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that the study add-on log out includes "Fetching model" and "Applying frecency weights"
 
 **Fetching of the latest upstream model periodically**
 
-- Install the add-on as per above
-- Verify that the study runs
-- Verify that the study add-on log out includes "Fetching model" and "Applying frecency weights" every 5 minutes, starting from a full hour (eg 12:00, 12:05, 12:10 etc)
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that the study add-on log out includes "Fetching model" and "Applying frecency weights" every 5 minutes, starting from a full hour (eg 12:00, 12:05, 12:10 etc)
 
 **Sending of the updated model**
 
-- Install the add-on as per above
-- Verify that the study runs
-- Open up a new tab and write "example.com" + ENTER
-- Close the tab
-- Open up a new tab and start writing "example.com"
-- Instead of pressing ENTER, choose the "example.com" history entry in the suggestions that are shown (history entries have a wireframe globe as an icon)
-- Verify that sent telemetry is correct
+* Install the add-on as per above
+* Verify that the study runs
+* Open up a new tab and write "example.com" + ENTER
+* Close the tab
+* Open up a new tab and start writing "example.com"
+* Instead of pressing ENTER, choose the "example.com" history entry in the suggestions that are shown (history entries have a wireframe globe as an icon)
+* Verify that sent telemetry is correct
 
 **Enabling of permanent private browsing before study has begun**
 
-- Enable permanent private browsing
-- Install the add-on as per above
-- Verify that the study does not run
+* Enable permanent private browsing
+* Install the add-on as per above
+* Verify that the study does not run
 
 **Enabling of permanent private browsing after study has begun**
 
-- Install the add-on as per above
-- Verify that the study runs
-- Enable permanent private browsing
-- Verify that the study ends upon the subsequent restart of the browser
+* Install the add-on as per above
+* Verify that the study runs
+* Enable permanent private browsing
+* Verify that the study ends upon the subsequent restart of the browser
 
 **Private browsing mode test 1**
 
-- Install the add-on as per above
-- Verify that the study runs
-- Verify that no information is recorded and sent when private browsing mode is active
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that no information is recorded and sent when private browsing mode is active
 
 **Not showing in `about:addons`**
 
-- Install the add-on as per above
-- Verify that the study runs
-- Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
 
 **Correct branches and weights**
 
-- Make sure that the branches and weights in the add-on configuration ([./src/studySetup.js](./src/studySetup.js)) corresponds to the branch weights of the Experimenter entry.
+* Make sure that the branches and weights in the add-on configuration ([./src/studySetup.js](./src/studySetup.js)) corresponds to the branch weights of the Experimenter entry.
 
 ### Note: checking "sent telemetry is correct"
 

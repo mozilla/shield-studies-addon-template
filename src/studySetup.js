@@ -55,17 +55,17 @@ const baseStudySetup = {
 
   weightedVariations: [
     {
-      name: 'treatment',
-      weight: 0.6
+      name: "treatment",
+      weight: 0.6,
     },
     {
-      name: 'control',
-      weight: 0.2
+      name: "control",
+      weight: 0.2,
     },
     {
-      name: 'control-no-decay',
-      weight: 0.2
-    }
+      name: "control-no-decay",
+      weight: 0.2,
+    },
   ],
 
   // maximum time that the study should run, from the first run

@@ -1,67 +1,84 @@
-'use strict'
+"use strict";
 
-ChromeUtils.import('resource://gre/modules/Services.jsm')
+ChromeUtils.import("resource://gre/modules/Services.jsm");
 
 const { ExtensionCommon } = ChromeUtils.import(
-  'resource://gre/modules/ExtensionCommon.jsm'
-)
+  "resource://gre/modules/ExtensionCommon.jsm",
+);
 
-const { EventManager } = ExtensionCommon
+const { EventManager } = ExtensionCommon;
 
-const EVENT = 'autocomplete-will-enter-text'
+const EVENT = "autocomplete-will-enter-text";
 // Bookmarks are not included for now because we also want to take them into account
-const NON_HISTORY_STYLES = ['switchtab', 'remotetab', 'searchengine', 'visiturl', 'extension', 'suggestion', 'keyword']
+const NON_HISTORY_STYLES = [
+  "switchtab",
+  "remotetab",
+  "searchengine",
+  "visiturl",
+  "extension",
+  "suggestion",
+  "keyword",
+];
 
-var awesomeBar = class extends ExtensionAPI {
-  getAPI (context) {
+const awesomeBar = class extends ExtensionAPI {
+  getAPI(context) {
     return {
       experiments: {
         awesomeBar: {
           onHistorySearch: new EventManager({
             context,
-            name: 'awesomeBar.onHistorySearch',
+            name: "awesomeBar.onHistorySearch",
             register: fire => {
-              Services.obs.addObserver(el => processAwesomeBarSearch(el, fire.async), EVENT, false)
-            }
-          }).api()
-        }
-      }
-    }
+              Services.obs.addObserver(
+                el => processAwesomeBarSearch(el, fire.async),
+                EVENT,
+              );
+            },
+          }).api(),
+        },
+      },
+    };
   }
-}
+};
 
-function processAwesomeBarSearch (el, callback) {
-  let popup = el.popup
+function processAwesomeBarSearch(el, callback) {
+  const popup = el.popup;
   if (!popup) {
-    console.error("Popup was found undefined - not triggering awesomeBar.onHistorySearch", el, el.popup);
+    console.error(
+      "Popup was found undefined - not triggering awesomeBar.onHistorySearch",
+      el,
+      el.popup,
+    );
     return;
   }
-  let controller = popup.view.QueryInterface(Ci.nsIAutoCompleteController)
+  const controller = popup.view.QueryInterface(Ci.nsIAutoCompleteController);
 
-  let selectedIndex = popup.selectedIndex
-  let selectedStyle = controller.getStyleAt(selectedIndex)
-  let searchQuery = controller.searchString
+  const selectedIndex = popup.selectedIndex;
+  const selectedStyle = controller.getStyleAt(selectedIndex);
+  const searchQuery = controller.searchString;
 
-  if (isHistoryStyle(selectedStyle) && searchQuery !== '') {
-    let numberOfSuggestions = controller.matchCount
-    let historySuggestions = []
+  if (isHistoryStyle(selectedStyle) && searchQuery !== "") {
+    const numberOfSuggestions = controller.matchCount;
+    const historySuggestions = [];
 
-    for (var i = 0; i < numberOfSuggestions; i++) {
-      let isHistory = isHistoryStyle(controller.getStyleAt(i))
+    for (let i = 0; i < numberOfSuggestions; i++) {
+      const isHistory = isHistoryStyle(controller.getStyleAt(i));
 
       if (isHistory) {
-        let url = controller.getFinalCompleteValueAt(i)
-        historySuggestions.push(url)
+        const url = controller.getFinalCompleteValueAt(i);
+        historySuggestions.push(url);
       }
     }
 
-    let selectedHistoryIndex = historySuggestions.indexOf(controller.getFinalCompleteValueAt(selectedIndex))
-    callback(historySuggestions, selectedHistoryIndex, searchQuery.length)
+    const selectedHistoryIndex = historySuggestions.indexOf(
+      controller.getFinalCompleteValueAt(selectedIndex),
+    );
+    callback(historySuggestions, selectedHistoryIndex, searchQuery.length);
   }
 }
 
-function isHistoryStyle (styleString) {
-  let styles = new Set(styleString.split(/\s+/))
-  let isNonHistoryStyle = NON_HISTORY_STYLES.some(s => styles.has(s))
-  return !isNonHistoryStyle
+function isHistoryStyle(styleString) {
+  const styles = new Set(styleString.split(/\s+/));
+  const isNonHistoryStyle = NON_HISTORY_STYLES.some(s => styles.has(s));
+  return !isNonHistoryStyle;
 }

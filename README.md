@@ -12,9 +12,9 @@ These updates are collected using Telemetry.
 
 ## Study variations
 
-- `treatment`: The full optimization process is performed, weights change after every iteration and the ranking is recomputed
-- `control`: Search works exactly the same way it currently does in Firefox, we only collect additional statistics
-- `control-no-decay`: In the current algorithm, frecency scores are decayed over time. `treatment` loses this effect since scores are recomputed all the time. To see if the decaying is useful and to make a fairer comparison, this variation only removes the decaying effect
+* `treatment`: The full optimization process is performed, weights change after every iteration and the ranking is recomputed
+* `control`: Search works exactly the same way it currently does in Firefox, we only collect additional statistics
+* `control-no-decay`: In the current algorithm, frecency scores are decayed over time. `treatment` loses this effect since scores are recomputed all the time. To see if the decaying is useful and to make a fairer comparison, this variation only removes the decaying effect
 
 ## Seeing the add-on in action
 
@@ -37,11 +37,13 @@ See [DEV.md](./docs/DEV.md) for more details on how to work with this add-on as 
 ## References
 
 ### Version 2
-- [Bugzilla](https://bugzilla.mozilla.org/show_bug.cgi?id=TODO)
+
+* [Bugzilla](https://bugzilla.mozilla.org/show_bug.cgi?id=TODO)
 
 ### Version 1
-- [Blog post](https://florian.github.io/federated-learning/) explaining the concepts behind federated learning
-- [Bugzilla](https://bugzilla.mozilla.org/show_bug.cgi?id=1462102)
-- [Federated learning simulations](https://github.com/florian/federated-learning)
-- Documentation about
-   - [frecency](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/Places/Frecency_algorithm) (a bit outdated)
+
+* [Blog post](https://florian.github.io/federated-learning/) explaining the concepts behind federated learning
+* [Bugzilla](https://bugzilla.mozilla.org/show_bug.cgi?id=1462102)
+* [Federated learning simulations](https://github.com/florian/federated-learning)
+* Documentation about
+  * [frecency](https://developer.mozilla.org/en-US/docs/Mozilla/Tech/Places/Frecency_algorithm) (a bit outdated)

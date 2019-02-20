@@ -6,7 +6,8 @@
       {
         "name": "calculateByURL",
         "type": "function",
-        "description": "Recomputes the frecency score for the given URL and returns it",
+        "description":
+          "Recomputes the frecency score for the given URL and returns it",
         "async": true,
         "parameters": [
           {

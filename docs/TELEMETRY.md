@@ -39,7 +39,7 @@ This study has no surveys and as such has NO SPECIFIC ENDINGS.
 
 ## `shield-study-addon` pings, specific to THIS study.
 
-Every time a `freceny-update` ping is submitted (see below), a corresponding `shield-study-addon` ping is submitted, allowing for automatic querying of study data in re:dash. Note that `shield-study-addon` pings only accepts string attributes, why a stringification of all ping attributes is performed before submitting the `shield-study-addon` ping. This does not affect the `freceny-update` ping. 
+Every time a `freceny-update` ping is submitted (see below), a corresponding `shield-study-addon` ping is submitted, allowing for automatic querying of study data in re:dash. Note that `shield-study-addon` pings only accepts string attributes, why a stringification of all ping attributes is performed before submitting the `shield-study-addon` ping. This does not affect the `freceny-update` ping.
 
 ## `frecency-update` ping ([schema](https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/frecency-update))
 
@@ -47,7 +47,7 @@ This ping is sent every time an enrolled user performs a history / bookmark sear
 The following data is sent with this ping:
 
 | name                        | type              | description                                                                                         |
-|-----------------------------|-------------------|-----------------------------------------------------------------------------------------------------|
+| --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------- |
 | `model_version`             | integer           | the version of the model that all the other data is based on                                        |
 | `study_variation`           | string            | in what variation is the user enrolled in (e.g. treatment, control)                                 |
 | `update`                    | array of floats   | the model improvement that the user is proposing                                                    |
@@ -61,42 +61,37 @@ The following data is sent with this ping:
 
 ```json
 {
-    "frecency_scores": [
-      38223,
-      3933.4,
-      304933.3,
-      21
-    ],
-    "loss": 291989.21,
-    "model_version": 3,
-    "num_chars_typed": 5,
-    "num_suggestions_displayed": 5,
-    "rank_selected": 2,
-    "study_variation": "treatment",
-    "update": [
-      1.2,
-      3.2,
-      -3.1,
-      4.4,
-      0.5,
-      0.234,
-      -0.98,
-      0.33,
-      0.34,
-      0.28,
-      0.302,
-      0.4,
-      -0.8,
-      0.25,
-      0.9,
-      -0.8,
-      0.29,
-      0.42,
-      0.89,
-      0.39,
-      0.54,
-      0.78
-    ]
+  "frecency_scores": [38223, 3933.4, 304933.3, 21],
+  "loss": 291989.21,
+  "model_version": 3,
+  "num_chars_typed": 5,
+  "num_suggestions_displayed": 5,
+  "rank_selected": 2,
+  "study_variation": "treatment",
+  "update": [
+    1.2,
+    3.2,
+    -3.1,
+    4.4,
+    0.5,
+    0.234,
+    -0.98,
+    0.33,
+    0.34,
+    0.28,
+    0.302,
+    0.4,
+    -0.8,
+    0.25,
+    0.9,
+    -0.8,
+    0.29,
+    0.42,
+    0.89,
+    0.39,
+    0.54,
+    0.78
+  ]
 }
 ```
 
@@ -159,5 +154,5 @@ version       3
 
 ## References
 
-- [Bugzilla bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1462109) detailing the data review request
-- [ping schema](https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/frecency-update)
+* [Bugzilla bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1462109) detailing the data review request
+* [ping schema](https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/frecency-update)

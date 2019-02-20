@@ -6,13 +6,14 @@
       {
         "name": "onHistorySearch",
         "type": "function",
-        "description": "Fires when a history search is performed in the awesome bar",
+        "description":
+          "Fires when a history search is performed in the awesome bar",
         "parameters": [
           {
             "name": "historySuggestions",
             "type": "array",
             "items": {
-                  "type": "number"
+              "type": "number"
             }
           },
           {
