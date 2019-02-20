@@ -1,6 +1,9 @@
+/* global ExtensionAPI */
+
 "use strict";
 
-/* global ExtensionAPI */
+this.privacyContext = class extends ExtensionAPI {
+  getAPI(context) {
 
 const { Services } = ChromeUtils.import(
   "resource://gre/modules/Services.jsm",
@@ -11,8 +14,6 @@ const { PrivateBrowsingUtils } = ChromeUtils.import(
   "resource://gre/modules/PrivateBrowsingUtils.jsm",
 );
 
-this.privacyContext = class extends ExtensionAPI {
-  getAPI(context) {
     return {
       privacyContext: {
         permanentPrivateBrowsing: async function permanentPrivateBrowsing() {

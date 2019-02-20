@@ -7,7 +7,7 @@ process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line 
 const utils = require("./test/functional/utils");
 
 const STUDY_TYPE = process.env.STUDY_TYPE || "shield";
-const LOG_LEVEL = process.env.LOG_LEVEL || "info";
+const LOG_LEVEL = process.env.LOG_LEVEL || "All";
 const EXPIRE_SECONDS = process.env.EXPIRE_SECONDS || false;
 const EXPIRED = process.env.EXPIRED || false;
 

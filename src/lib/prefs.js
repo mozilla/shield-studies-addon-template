@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(PREFS)" }]*/
+
 const PREFS = [
   "places.frecency.firstBucketCutoff",
   "places.frecency.secondBucketCutoff",

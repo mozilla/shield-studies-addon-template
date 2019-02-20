@@ -1,3 +1,4 @@
+/* global PREFS, ModelSynchronization, svmLoss, FrecencyOptimizer */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(feature)" }]*/
 
 class Feature {
@@ -8,13 +9,17 @@ class Feature {
    *  - variation: study info about particular client study variation
    *  - reason: string of background.js install/startup/shutdown reason
    *
+   * @param {Object} studyInfo Study info
+   * @returns {Promise<void>} Promise that resolves after configure
    */
   async configure(studyInfo) {
     const synchronizer = new ModelSynchronization(studyInfo);
     const optimizer = new FrecencyOptimizer(synchronizer, svmLoss);
 
     browser.experiments.awesomeBar.onHistorySearch.addListener(
-      optimizer.step.bind(optimizer),
+      (urls, selectedIndex, numTypedChars) => {
+        optimizer.step(urls, selectedIndex, numTypedChars);
+      },
     );
   }
 
@@ -22,7 +27,7 @@ class Feature {
   async sendTelemetry(payload) {
     if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
       // drop the ping - do not send any telemetry
-      return;
+      return false;
     }
 
     await browser.study.logger.debug(
@@ -62,11 +67,14 @@ class Feature {
       num_chars_typed: String(payload.num_chars_typed),
       study_variation: String(payload.study_variation),
     };
-    return browser.study.sendTelemetry(stringStringMap);
+    await browser.study.sendTelemetry(stringStringMap);
+    await browser.study.logger.log("Telemetry submitted");
+    return true;
   }
 
   /**
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
+   * @returns {Promise<*>} Promise that resolves after cleanup
    */
   async cleanup() {
     await browser.study.logger.log("Cleaning up study-specific prefs");

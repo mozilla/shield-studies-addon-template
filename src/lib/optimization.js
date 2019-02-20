@@ -1,3 +1,6 @@
+/* global PREFS */
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(svmLoss|FrecencyOptimizer)" }]*/
+
 async function svmLoss(urls, correct) {
   const frecencies = await urlsToFrecencies(urls);
   const correctFrecency = frecencies[correct];
@@ -27,10 +30,10 @@ class FrecencyOptimizer {
   }
 
   async step(urls, selectedIndex, numTypedChars) {
-    await browser.study.logger.debug("FrecencyOptimizer.step");
+    await browser.study.logger.debug("FrecencyOptimizer.step entered");
     const gradient = await this.computeGradient(urls, selectedIndex);
     const frecencies = await urlsToFrecencies(urls);
-    await this.synchronizer.pushModelUpdate(
+    return this.synchronizer.pushModelUpdate(
       gradient,
       await svmLoss(urls, selectedIndex),
       urls.length,

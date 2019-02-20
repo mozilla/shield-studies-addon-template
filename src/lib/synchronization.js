@@ -1,4 +1,5 @@
-/* global feature */
+/* global feature, PREFS */
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(ModelSynchronization)" }]*/
 
 const URL_ENDPOINT =
   "https://public-data.telemetry.mozilla.org/awesomebar_study/latest.json";
@@ -47,7 +48,7 @@ class ModelSynchronization {
   }
 
   async applyModelUpdate({ iteration, model }) {
-    await browser.study.logger.log({ iteration, model });
+    await browser.study.logger.debug({ iteration, model });
     this.iteration = iteration;
 
     if (this.studyInfo.variation.name === TREATMENT_GROUP) {
@@ -71,7 +72,7 @@ class ModelSynchronization {
     numTypedChars,
     frecency_scores,
   ) {
-    await browser.study.logger.debug("Pushing model update via telemetry");
+    await browser.study.logger.log("Pushing model update via telemetry");
     const payload = {
       model_version: this.iteration,
       frecency_scores,
