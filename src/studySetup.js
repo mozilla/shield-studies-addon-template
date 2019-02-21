@@ -37,10 +37,21 @@ const baseStudySetup = {
 
   // endings with urls
   endings: {
-    /** standard endings */
+    /** normandy-defined endings */
+    "individual-opt-out": {
+      baseUrls: [
+        "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey/?reason=individual-opt-out",
+      ],
+    },
+    "shield-study-ended": {
+      baseUrls: [
+        "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey/?reason=shield-study-ended",
+      ],
+    },
+    /** study-utils-defined endings */
     "user-disable": {
       baseUrls: [
-        "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey?reason=user-disable",
+        "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey/?reason=user-disable",
       ],
     },
     ineligible: {
@@ -48,7 +59,7 @@ const baseStudySetup = {
     },
     expired: {
       baseUrls: [
-        "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey?reason=expired",
+        "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey/?reason=expired",
       ],
     },
   },
