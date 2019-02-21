@@ -95,6 +95,7 @@ class ModelSynchronization {
       rank_selected: selectedIndex,
       num_chars_typed: numTypedChars,
       study_variation: this.studyInfo.variation.name,
+      study_addon_version: browser.runtime.getManifest().version,
     };
     await feature.sendTelemetry(payload);
   }

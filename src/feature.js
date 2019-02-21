@@ -120,6 +120,9 @@ class Feature {
         selected_style: {
           type: "string",
         },
+        study_addon_version: {
+          type: "string",
+        },
         study_variation: {
           type: "string",
         },
@@ -140,6 +143,7 @@ class Feature {
         "num_suggestions_displayed",
         "rank_selected",
         "selected_style",
+        "study_addon_version",
         "study_variation",
         "update",
       ],
@@ -168,6 +172,7 @@ class Feature {
       rank_selected: String(payload.rank_selected),
       num_chars_typed: String(payload.num_chars_typed),
       study_variation: String(payload.study_variation),
+      study_addon_version: String(payload.study_addon_version),
     };
     await browser.study.sendTelemetry(stringStringMap);
     await browser.study.logger.log("Telemetry submitted");
