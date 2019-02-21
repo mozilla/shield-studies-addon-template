@@ -30,6 +30,8 @@ class FrecencyOptimizer {
   }
 
   async step(
+    numberOfSuggestions,
+    selectedIndex,
     bookmarkOrHistoryUrlSuggestions,
     selectedBookmarkOrHistoryIndex,
     numTypedChars,
@@ -55,9 +57,12 @@ class FrecencyOptimizer {
         bookmarkOrHistoryUrlSuggestions,
         selectedBookmarkOrHistoryIndex,
       ),
-      numSuggestionsDisplayed: bookmarkOrHistoryUrlSuggestions.length,
+      numberOfSuggestions,
+      selectedIndex,
+      numBookmarkAndHistorySuggestionsDisplayed:
+        bookmarkOrHistoryUrlSuggestions.length,
+      selectedBookmarkOrHistoryIndex,
       selectedStyle,
-      selectedIndex: selectedBookmarkOrHistoryIndex,
       numTypedChars,
       frecencyScores: frecencies,
     });

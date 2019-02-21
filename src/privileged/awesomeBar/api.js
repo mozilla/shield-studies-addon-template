@@ -64,6 +64,8 @@ this.awesomeBar = class extends ExtensionAPI {
         controller.getFinalCompleteValueAt(selectedIndex),
       );
       callback(
+        numberOfSuggestions,
+        selectedIndex,
         bookmarkOrHistoryUrlSuggestions,
         selectedBookmarkOrHistoryIndex,
         searchQuery.length,

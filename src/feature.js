@@ -59,6 +59,8 @@ class Feature {
     if (branchConfiguration.training) {
       browser.experiments.awesomeBar.onAutocompleteSuggestionSelected.addListener(
         async(
+          numberOfSuggestions,
+          selectedIndex,
           bookmarkOrHistoryUrlSuggestions,
           selectedBookmarkOrHistoryIndex,
           numTypedChars,
@@ -69,6 +71,8 @@ class Feature {
             return false;
           }
           return optimizer.step(
+            numberOfSuggestions,
+            selectedIndex,
             bookmarkOrHistoryUrlSuggestions,
             selectedBookmarkOrHistoryIndex,
             numTypedChars,
@@ -117,6 +121,14 @@ class Feature {
           type: "number",
           minimum: 0,
         },
+        bookmark_and_history_num_suggestions_displayed: {
+          type: "number",
+          minimum: 0,
+        },
+        bookmark_and_history_rank_selected: {
+          type: "number",
+          minimum: 0,
+        },
         selected_style: {
           type: "string",
         },
@@ -142,6 +154,8 @@ class Feature {
         "num_chars_typed",
         "num_suggestions_displayed",
         "rank_selected",
+        "bookmark_and_history_num_suggestions_displayed",
+        "bookmark_and_history_rank_selected",
         "selected_style",
         "study_addon_version",
         "study_variation",
