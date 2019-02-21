@@ -78,19 +78,59 @@ class Feature {
     const validationResult = await browser.study.validateJSON(payload, {
       type: "object",
       properties: {
-        frecency_scores: { type: "array", items: { type: "number" } },
-        model_version: { type: "number" },
-        loss: { type: "number" },
-        num_chars_typed: { type: "number" },
-        num_suggestions_displayed: { type: "number" },
-        rank_selected: { type: "number" },
-        study_variation: { type: "string" },
-        update: { type: "array", items: { type: "number" } },
+        frecency_scores: {
+          type: "array",
+          items: {
+            type: "number",
+          },
+        },
+        loss: {
+          type: "number",
+        },
+        model_version: {
+          type: "number",
+        },
+        num_chars_typed: {
+          type: "number",
+          minimum: 0,
+        },
+        num_suggestions_displayed: {
+          type: "number",
+          minimum: 1,
+        },
+        rank_selected: {
+          type: "number",
+          minimum: 0,
+        },
+        study_variation: {
+          type: "string",
+        },
+        update: {
+          type: "array",
+          minItems: 22,
+          maxItems: 22,
+          items: {
+            type: "number",
+          },
+        },
       },
+      required: [
+        "frecency_scores",
+        "loss",
+        "model_version",
+        "num_chars_typed",
+        "num_suggestions_displayed",
+        "rank_selected",
+        "study_variation",
+        "update",
+      ],
     });
     if (!validationResult.valid) {
-      await browser.study.logger.error(["Invalid telemetry payload", payload]);
-      throw new Error(validationResult);
+      await browser.study.logger.error([
+        "Invalid telemetry payload",
+        { payload, validationResult },
+      ]);
+      throw new Error("Invalid telemetry payload");
     }
 
     // Submit ping using the frecency-update schema/topic - will be picked up by the streaming ETL job
