@@ -10,7 +10,8 @@ const STUDY_TYPE = process.env.STUDY_TYPE || "shield";
 const LOG_LEVEL = process.env.LOG_LEVEL || "All";
 const EXPIRE_SECONDS = process.env.EXPIRE_SECONDS || false;
 const EXPIRED = process.env.EXPIRED || false;
-const BRANCH = process.env.BRANCH || "treatment";
+const BRANCH = process.env.BRANCH || "dogfooding";
+const MODEL_URL_ENDPOINT = process.env.MODEL_URL_ENDPOINT || false;
 
 const run = async studyType => {
   const driver = await utils.setupWebdriver.promiseSetupDriver(
@@ -53,6 +54,14 @@ const run = async studyType => {
       driver,
       `extensions.${widgetId}.test.variationName`,
       BRANCH,
+    );
+  }
+  if (MODEL_URL_ENDPOINT) {
+    // Useful for local testing until production endpoints for v2 are up properly
+    await utils.preferences.set(
+      driver,
+      `extensions.${widgetId}.test.modelUrlEndpoint`,
+      MODEL_URL_ENDPOINT,
     );
   }
   await utils.preferences.set(driver, `shieldStudy.logLevel`, LOG_LEVEL);

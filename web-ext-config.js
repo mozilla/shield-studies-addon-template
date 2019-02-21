@@ -16,7 +16,8 @@ const defaultConfig = {
     pref: [
       "shieldStudy.logLevel=All",
       "browser.ctrlTab.recentlyUsedOrder=false",
-      "extensions.federated-learning-v2_shield_mozilla_org.test.variationName=treatment",
+      "extensions.federated-learning-v2_shield_mozilla_org.test.variationName=dogfooding",
+      "extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint=https://public-data.telemetry.mozilla.org/awesomebar_study/latest.json",
     ],
   },
 };

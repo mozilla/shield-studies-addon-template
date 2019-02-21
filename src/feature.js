@@ -2,7 +2,45 @@
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(feature)" }]*/
 
 class Feature {
-  constructor() {}
+  constructor() {
+    this.branchConfigurations = {
+      control: {
+        training: false,
+        validation: false,
+        crazySeed: false,
+      },
+      dogfooding: {
+        training: true,
+        validation: true,
+        crazySeed: false,
+      },
+      "dogfooding-crazy": {
+        training: true,
+        validation: true,
+        crazySeed: true,
+      },
+      "non-dogfooding-training": {
+        training: true,
+        validation: false,
+        crazySeed: false,
+      },
+      "non-dogfooding-validation": {
+        training: false,
+        validation: true,
+        crazySeed: false,
+      },
+      "non-dogfooding-crazy-training": {
+        training: true,
+        validation: false,
+        crazySeed: true,
+      },
+      "non-dogfooding-crazy-validation": {
+        training: false,
+        validation: true,
+        crazySeed: true,
+      },
+    };
+  }
 
   /**
    *
@@ -15,12 +53,16 @@ class Feature {
   async configure(studyInfo) {
     const synchronizer = new ModelSynchronization(studyInfo);
     const optimizer = new FrecencyOptimizer(synchronizer, svmLoss);
-
-    browser.experiments.awesomeBar.onHistorySearch.addListener(
-      (urls, selectedIndex, numTypedChars) => {
-        optimizer.step(urls, selectedIndex, numTypedChars);
-      },
-    );
+    const branchConfiguration = this.branchConfigurations[
+      studyInfo.variation.name
+    ];
+    if (branchConfiguration.training) {
+      browser.experiments.awesomeBar.onHistorySearch.addListener(
+        (urls, selectedIndex, numTypedChars) => {
+          optimizer.step(urls, selectedIndex, numTypedChars);
+        },
+      );
+    }
   }
 
   /* good practice to have the literal 'sending' be wrapped up */

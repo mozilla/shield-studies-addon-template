@@ -55,16 +55,32 @@ const baseStudySetup = {
 
   weightedVariations: [
     {
-      name: "treatment",
-      weight: 0.6,
-    },
-    {
       name: "control",
       weight: 0.2,
     },
     {
-      name: "control-no-decay",
+      name: "dogfooding",
       weight: 0.2,
+    },
+    {
+      name: "dogfooding-crazy",
+      weight: 0.2,
+    },
+    {
+      name: "non-dogfooding-training",
+      weight: 0.2 * 0.8,
+    },
+    {
+      name: "non-dogfooding-validation",
+      weight: 0.2 * 0.2,
+    },
+    {
+      name: "non-dogfooding-crazy-training",
+      weight: 0.2 * 0.8,
+    },
+    {
+      name: "non-dogfooding-crazy-validation",
+      weight: 0.2 * 0.2,
     },
   ],
 

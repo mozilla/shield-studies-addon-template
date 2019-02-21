@@ -1,17 +1,21 @@
 /* global feature, PREFS */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(ModelSynchronization)" }]*/
 
-const URL_ENDPOINT =
-  "https://public-data.telemetry.mozilla.org/awesomebar_study/latest.json";
+const URL_ENDPOINT_HUMAN_SEED =
+  "https://public-data.telemetry.mozilla.org/awesomebar_study_v2/human_seed/latest.json";
+const URL_ENDPOINT_CRAZY_SEED =
+  "https://public-data.telemetry.mozilla.org/awesomebar_study_v2/crazy_seed/latest.json";
 const MINUTES_PER_ITERATION = 5; // Should be a dividor of 60
-const TREATMENT_GROUP = "treatment";
-const CONTROL_GROUP = "control";
 
 class ModelSynchronization {
   constructor(studyInfo) {
     this.iteration = -1;
     this.studyInfo = studyInfo;
-    this.fetchModel();
+    const branchConfiguration =
+      feature.branchConfigurations[studyInfo.variation.name];
+    if (branchConfiguration.validation) {
+      this.fetchModel();
+    }
   }
 
   msUntilNextIteration() {
@@ -35,8 +39,19 @@ class ModelSynchronization {
   }
 
   async fetchModel() {
-    await browser.study.logger.log("Fetching model");
-    fetch(URL_ENDPOINT)
+    const { crazySeed } = this.studyInfo.variation;
+    let modelUrlEndpoint = crazySeed
+      ? URL_ENDPOINT_CRAZY_SEED
+      : URL_ENDPOINT_HUMAN_SEED;
+    const modelUrlEndPointTestingOverride = await browser.experiments.prefs.getStringPref(
+      "extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint",
+      "",
+    );
+    if (modelUrlEndPointTestingOverride !== "") {
+      modelUrlEndpoint = modelUrlEndPointTestingOverride;
+    }
+    await browser.study.logger.log("Fetching model from " + modelUrlEndpoint);
+    fetch(modelUrlEndpoint)
       .then(response => response.json())
       .then(this.applyModelUpdate.bind(this));
 
@@ -51,17 +66,13 @@ class ModelSynchronization {
     await browser.study.logger.debug({ iteration, model });
     this.iteration = iteration;
 
-    if (this.studyInfo.variation.name === TREATMENT_GROUP) {
-      await browser.study.logger.log("Applying frecency weights");
-      for (let i = 0; i < PREFS.length; i++) {
-        await browser.experiments.prefs.setIntPref(PREFS[i], model[i]);
-      }
+    await browser.study.logger.log("Applying frecency weights");
+    for (let i = 0; i < PREFS.length; i++) {
+      await browser.experiments.prefs.setIntPref(PREFS[i], model[i]);
     }
 
-    if (this.studyInfo.variation.name !== CONTROL_GROUP) {
-      await browser.study.logger.log("Updating all frecencies");
-      browser.experiments.frecency.updateAllFrecencies();
-    }
+    await browser.study.logger.log("Updating all frecencies");
+    browser.experiments.frecency.updateAllFrecencies();
   }
 
   async pushModelUpdate(
