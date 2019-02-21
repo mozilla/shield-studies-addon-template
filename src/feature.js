@@ -127,7 +127,7 @@ class Feature {
         },
         bookmark_and_history_rank_selected: {
           type: "number",
-          minimum: 0,
+          minimum: -1,
         },
         selected_style: {
           type: "string",
@@ -182,8 +182,14 @@ class Feature {
       loss: String(payload.loss),
       update: JSON.stringify(payload.update),
       num_suggestions_displayed: String(payload.num_suggestions_displayed),
-      selected_style: String(payload.selected_style),
       rank_selected: String(payload.rank_selected),
+      bookmark_and_history_num_suggestions_displayed: String(
+        payload.bookmark_and_history_num_suggestions_displayed,
+      ),
+      bookmark_and_history_rank_selected: String(
+        payload.bookmark_and_history_rank_selected,
+      ),
+      selected_style: String(payload.selected_style),
       num_chars_typed: String(payload.num_chars_typed),
       study_variation: String(payload.study_variation),
       study_addon_version: String(payload.study_addon_version),
