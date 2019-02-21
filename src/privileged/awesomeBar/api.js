@@ -17,7 +17,7 @@ this.awesomeBar = class extends ExtensionAPI {
 
     const EVENT = "autocomplete-will-enter-text";
     // Bookmarks are not included for now because we also want to take them into account
-    const NON_HISTORY_STYLES = [
+    const NON_BOOKMARK_OR_HISTORY_STYLES = [
       "switchtab",
       "remotetab",
       "searchengine",
@@ -47,27 +47,36 @@ this.awesomeBar = class extends ExtensionAPI {
       const searchQuery = controller.searchString;
 
       const numberOfSuggestions = controller.matchCount;
-      const historySuggestions = [];
+      const bookmarkOrHistoryUrlSuggestions = [];
 
       for (let i = 0; i < numberOfSuggestions; i++) {
-        const isHistory = isHistoryStyle(controller.getStyleAt(i));
+        const isBookmarkOrHistory = isBookmarkOrHistoryStyle(
+          controller.getStyleAt(i),
+        );
 
-        if (isHistory) {
+        if (isBookmarkOrHistory) {
           const url = controller.getFinalCompleteValueAt(i);
-          historySuggestions.push(url);
+          bookmarkOrHistoryUrlSuggestions.push(url);
         }
       }
 
-      const selectedHistoryIndex = historySuggestions.indexOf(
+      const selectedBookmarkOrHistoryIndex = bookmarkOrHistoryUrlSuggestions.indexOf(
         controller.getFinalCompleteValueAt(selectedIndex),
       );
-      callback(historySuggestions, selectedHistoryIndex, searchQuery.length);
+      callback(
+        bookmarkOrHistoryUrlSuggestions,
+        selectedBookmarkOrHistoryIndex,
+        searchQuery.length,
+        selectedStyle,
+      );
     }
 
-    function isHistoryStyle(styleString) {
+    function isBookmarkOrHistoryStyle(styleString) {
       const styles = new Set(styleString.split(/\s+/));
-      const isNonHistoryStyle = NON_HISTORY_STYLES.some(s => styles.has(s));
-      return !isNonHistoryStyle;
+      const isNonBookmarkOrHistoryStyle = NON_BOOKMARK_OR_HISTORY_STYLES.some(
+        s => styles.has(s),
+      );
+      return !isNonBookmarkOrHistoryStyle;
     }
 
     return {

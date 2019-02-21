@@ -29,34 +29,60 @@ class FrecencyOptimizer {
     this.eps = eps;
   }
 
-  async step(urls, selectedIndex, numTypedChars) {
+  async step(
+    bookmarkOrHistoryUrlSuggestions,
+    selectedBookmarkOrHistoryIndex,
+    numTypedChars,
+    selectedStyle,
+  ) {
     await browser.study.logger.debug([
       "FrecencyOptimizer.step entered",
-      { urls, selectedIndex, numTypedChars },
+      {
+        bookmarkOrHistoryUrlSuggestions,
+        selectedBookmarkOrHistoryIndex,
+        numTypedChars,
+        selectedStyle,
+      },
     ]);
-    const gradient = await this.computeGradient(urls, selectedIndex);
-    const frecencies = await urlsToFrecencies(urls);
-    return this.synchronizer.pushModelUpdate(
-      gradient,
-      await svmLoss(urls, selectedIndex),
-      urls.length,
-      selectedIndex,
-      numTypedChars,
-      frecencies,
+    const gradient = await this.computeGradient(
+      bookmarkOrHistoryUrlSuggestions,
+      selectedBookmarkOrHistoryIndex,
     );
+    const frecencies = await urlsToFrecencies(bookmarkOrHistoryUrlSuggestions);
+    return this.synchronizer.pushModelUpdate({
+      weights: gradient,
+      loss: await svmLoss(
+        bookmarkOrHistoryUrlSuggestions,
+        selectedBookmarkOrHistoryIndex,
+      ),
+      numSuggestionsDisplayed: bookmarkOrHistoryUrlSuggestions.length,
+      selectedStyle,
+      selectedIndex: selectedBookmarkOrHistoryIndex,
+      numTypedChars,
+      frecencyScores: frecencies,
+    });
   }
 
-  async computeGradient(urls, selectedIndex) {
+  async computeGradient(
+    bookmarkOrHistoryUrlSuggestions,
+    selectedBookmarkOrHistoryIndex,
+  ) {
     const gradient = [];
 
     for (const pref of PREFS) {
       const currentValue = await browser.experiments.prefs.getIntPref(pref);
 
       await browser.experiments.prefs.setIntPref(pref, currentValue - this.eps);
-      const loss1 = await this.lossFn(urls, selectedIndex);
+      const loss1 = await this.lossFn(
+        bookmarkOrHistoryUrlSuggestions,
+        selectedBookmarkOrHistoryIndex,
+      );
 
       await browser.experiments.prefs.setIntPref(pref, currentValue + this.eps);
-      const loss2 = await this.lossFn(urls, selectedIndex);
+      const loss2 = await this.lossFn(
+        bookmarkOrHistoryUrlSuggestions,
+        selectedBookmarkOrHistoryIndex,
+      );
 
       const finiteDifference = (loss1 - loss2) / (2 * this.eps);
       gradient.push(finiteDifference);

@@ -58,8 +58,18 @@ class Feature {
     ];
     if (branchConfiguration.training) {
       browser.experiments.awesomeBar.onAutocompleteSuggestionSelected.addListener(
-        (urls, selectedIndex, numTypedChars) => {
-          optimizer.step(urls, selectedIndex, numTypedChars);
+        (
+          bookmarkOrHistoryUrlSuggestions,
+          selectedBookmarkOrHistoryIndex,
+          numTypedChars,
+          selectedStyle,
+        ) => {
+          optimizer.step(
+            bookmarkOrHistoryUrlSuggestions,
+            selectedBookmarkOrHistoryIndex,
+            numTypedChars,
+            selectedStyle,
+          );
         },
       );
     }
@@ -72,9 +82,10 @@ class Feature {
       return false;
     }
 
-    await browser.study.logger.debug(
+    await browser.study.logger.debug([
       "Telemetry about to be validated using browser.study.validateJSON",
-    );
+      payload,
+    ]);
     const validationResult = await browser.study.validateJSON(payload, {
       type: "object",
       properties: {
@@ -102,6 +113,7 @@ class Feature {
           type: "number",
           minimum: 0,
         },
+        selected_style: { type: "string" },
         study_variation: {
           type: "string",
         },
@@ -120,6 +132,7 @@ class Feature {
         "model_version",
         "num_chars_typed",
         "num_suggestions_displayed",
+        "selected_style",
         "rank_selected",
         "study_variation",
         "update",
@@ -145,6 +158,7 @@ class Feature {
       loss: String(payload.loss),
       update: JSON.stringify(payload.update),
       num_suggestions_displayed: String(payload.num_suggestions_displayed),
+      selected_style: String(payload.selected_style),
       rank_selected: String(payload.rank_selected),
       num_chars_typed: String(payload.num_chars_typed),
       study_variation: String(payload.study_variation),

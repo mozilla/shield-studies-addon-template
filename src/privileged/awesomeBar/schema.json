@@ -7,22 +7,26 @@
         "name": "onAutocompleteSuggestionSelected",
         "type": "function",
         "description":
-          "Fires when a history search is performed in the awesome bar",
+          "Fires when a suggestion has been suggested in the awesome bar autocomplete popup",
         "parameters": [
           {
-            "name": "historySuggestions",
+            "name": "bookmarkOrHistoryUrlSuggestions",
             "type": "array",
             "items": {
               "type": "number"
             }
           },
           {
-            "name": "selectedHistoryIndex",
+            "name": "selectedBookmarkOrHistoryIndex",
             "type": "number"
           },
           {
             "name": "numTypedChars",
             "type": "number"
+          },
+          {
+            "name": "selectedStyle",
+            "type": "string"
           }
         ]
       }

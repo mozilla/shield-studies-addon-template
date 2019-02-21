@@ -75,21 +75,23 @@ class ModelSynchronization {
     browser.experiments.frecency.updateAllFrecencies();
   }
 
-  async pushModelUpdate(
+  async pushModelUpdate({
     weights,
     loss,
     numSuggestionsDisplayed,
+    selectedStyle,
     selectedIndex,
     numTypedChars,
-    frecency_scores,
-  ) {
+    frecencyScores,
+  }) {
     await browser.study.logger.log("Pushing model update via telemetry");
     const payload = {
       model_version: this.iteration,
-      frecency_scores,
+      frecency_scores: frecencyScores,
       loss,
       update: weights,
       num_suggestions_displayed: numSuggestionsDisplayed,
+      selected_style: selectedStyle,
       rank_selected: selectedIndex,
       num_chars_typed: numTypedChars,
       study_variation: this.studyInfo.variation.name,
