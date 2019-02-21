@@ -54,7 +54,7 @@ class ModelSynchronization {
     if (this.studyInfo.variation.name === TREATMENT_GROUP) {
       await browser.study.logger.log("Applying frecency weights");
       for (let i = 0; i < PREFS.length; i++) {
-        browser.experiments.prefs.setIntPref(PREFS[i], model[i]);
+        await browser.experiments.prefs.setIntPref(PREFS[i], model[i]);
       }
     }
 
