@@ -10,6 +10,7 @@ const STUDY_TYPE = process.env.STUDY_TYPE || "shield";
 const LOG_LEVEL = process.env.LOG_LEVEL || "All";
 const EXPIRE_SECONDS = process.env.EXPIRE_SECONDS || false;
 const EXPIRED = process.env.EXPIRED || false;
+const BRANCH = process.env.BRANCH || "treatment";
 
 const run = async studyType => {
   const driver = await utils.setupWebdriver.promiseSetupDriver(
@@ -44,6 +45,14 @@ const run = async studyType => {
       driver,
       `extensions.${widgetId}.test.expired`,
       true,
+    );
+  }
+  if (BRANCH) {
+    // Set preference that forces the selection of a specific branch
+    await utils.preferences.set(
+      driver,
+      `extensions.${widgetId}.test.variationName`,
+      BRANCH,
     );
   }
   await utils.preferences.set(driver, `shieldStudy.logLevel`, LOG_LEVEL);
