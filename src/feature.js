@@ -117,7 +117,9 @@ class Feature {
           type: "number",
           minimum: 0,
         },
-        selected_style: { type: "string" },
+        selected_style: {
+          type: "string",
+        },
         study_variation: {
           type: "string",
         },
@@ -136,8 +138,8 @@ class Feature {
         "model_version",
         "num_chars_typed",
         "num_suggestions_displayed",
-        "selected_style",
         "rank_selected",
+        "selected_style",
         "study_variation",
         "update",
       ],
