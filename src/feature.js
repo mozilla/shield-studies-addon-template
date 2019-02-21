@@ -57,7 +57,7 @@ class Feature {
       studyInfo.variation.name
     ];
     if (branchConfiguration.training) {
-      browser.experiments.awesomeBar.onHistorySearch.addListener(
+      browser.experiments.awesomeBar.onAutocompleteSuggestionSelected.addListener(
         (urls, selectedIndex, numTypedChars) => {
           optimizer.step(urls, selectedIndex, numTypedChars);
         },

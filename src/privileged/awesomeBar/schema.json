@@ -4,7 +4,7 @@
     "description": "Listen to history searches in the awesome bar",
     "events": [
       {
-        "name": "onHistorySearch",
+        "name": "onAutocompleteSuggestionSelected",
         "type": "function",
         "description":
           "Fires when a history search is performed in the awesome bar",

@@ -32,7 +32,7 @@ this.awesomeBar = class extends ExtensionAPI {
       if (!popup) {
         // eslint-disable-next-line no-console
         console.error(
-          "Popup was found undefined - not triggering awesomeBar.onHistorySearch",
+          "Popup was found undefined - not triggering awesomeBar.onAutocompleteSuggestionSelected",
           el,
           el.popup,
         );
@@ -46,24 +46,22 @@ this.awesomeBar = class extends ExtensionAPI {
       const selectedStyle = controller.getStyleAt(selectedIndex);
       const searchQuery = controller.searchString;
 
-      if (isHistoryStyle(selectedStyle) && searchQuery !== "") {
-        const numberOfSuggestions = controller.matchCount;
-        const historySuggestions = [];
+      const numberOfSuggestions = controller.matchCount;
+      const historySuggestions = [];
 
-        for (let i = 0; i < numberOfSuggestions; i++) {
-          const isHistory = isHistoryStyle(controller.getStyleAt(i));
+      for (let i = 0; i < numberOfSuggestions; i++) {
+        const isHistory = isHistoryStyle(controller.getStyleAt(i));
 
-          if (isHistory) {
-            const url = controller.getFinalCompleteValueAt(i);
-            historySuggestions.push(url);
-          }
+        if (isHistory) {
+          const url = controller.getFinalCompleteValueAt(i);
+          historySuggestions.push(url);
         }
-
-        const selectedHistoryIndex = historySuggestions.indexOf(
-          controller.getFinalCompleteValueAt(selectedIndex),
-        );
-        callback(historySuggestions, selectedHistoryIndex, searchQuery.length);
       }
+
+      const selectedHistoryIndex = historySuggestions.indexOf(
+        controller.getFinalCompleteValueAt(selectedIndex),
+      );
+      callback(historySuggestions, selectedHistoryIndex, searchQuery.length);
     }
 
     function isHistoryStyle(styleString) {
@@ -75,9 +73,9 @@ this.awesomeBar = class extends ExtensionAPI {
     return {
       experiments: {
         awesomeBar: {
-          onHistorySearch: new EventManager({
+          onAutocompleteSuggestionSelected: new EventManager({
             context,
-            name: "awesomeBar.onHistorySearch",
+            name: "awesomeBar.onAutocompleteSuggestionSelected",
             register: fire => {
               Services.obs.addObserver(
                 el => processAwesomeBarSearch(el, fire.async),
