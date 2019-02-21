@@ -42,33 +42,33 @@ this.awesomeBar = class extends ExtensionAPI {
         Ci.nsIAutoCompleteController,
       );
 
-      const selectedIndex = popup.selectedIndex;
-      const selectedStyle = controller.getStyleAt(selectedIndex);
-      const searchQuery = controller.searchString;
+      const rankSelected = popup.selectedIndex;
+      const selectedStyle = controller.getStyleAt(rankSelected);
+      const numCharsTyped = controller.searchString.length;
 
-      const numberOfSuggestions = controller.matchCount;
-      const bookmarkOrHistoryUrlSuggestions = [];
+      const numSuggestionsDisplayed = controller.matchCount;
+      const bookmarkAndHistoryUrlSuggestions = [];
 
-      for (let i = 0; i < numberOfSuggestions; i++) {
+      for (let i = 0; i < numSuggestionsDisplayed; i++) {
         const isBookmarkOrHistory = isBookmarkOrHistoryStyle(
           controller.getStyleAt(i),
         );
 
         if (isBookmarkOrHistory) {
           const url = controller.getFinalCompleteValueAt(i);
-          bookmarkOrHistoryUrlSuggestions.push(url);
+          bookmarkAndHistoryUrlSuggestions.push(url);
         }
       }
 
-      const selectedBookmarkOrHistoryIndex = bookmarkOrHistoryUrlSuggestions.indexOf(
-        controller.getFinalCompleteValueAt(selectedIndex),
+      const bookmarkAndHistoryRankSelected = bookmarkAndHistoryUrlSuggestions.indexOf(
+        controller.getFinalCompleteValueAt(rankSelected),
       );
       callback(
-        numberOfSuggestions,
-        selectedIndex,
-        bookmarkOrHistoryUrlSuggestions,
-        selectedBookmarkOrHistoryIndex,
-        searchQuery.length,
+        numSuggestionsDisplayed,
+        rankSelected,
+        bookmarkAndHistoryUrlSuggestions,
+        bookmarkAndHistoryRankSelected,
+        numCharsTyped,
         selectedStyle,
       );
     }
@@ -94,6 +94,39 @@ this.awesomeBar = class extends ExtensionAPI {
               );
             },
           }).api(),
+          /*
+          addAwesomeBarInputListeners: () => {
+            // If the panel was created in this window before, let's make sure to clean it up.
+            const winEnum = Services.wm.getEnumerator("navigator:browser");
+            while (winEnum.hasMoreElements()) {
+              const win = winEnum.getNext();
+              if (
+                win.gURLBar &&
+                !win.closed
+              ) {
+                const { panel, panelButton } = this._ensurePanel(win);
+                panelButton.removeEventListener("command", this);
+                panel.remove();
+              }
+            }
+          },
+          removeAwesomeBarInputListeners: () => {
+            // If the panel was created in this window before, let's make sure to clean it up.
+            const winEnum = Services.wm.getEnumerator("navigator:browser");
+            while (winEnum.hasMoreElements()) {
+              const win = winEnum.getNext();
+              if (
+                win.document &&
+                win.document.getElementById(TIP_PANEL_ID) &&
+                !win.closed
+              ) {
+                const { panel, panelButton } = this._ensurePanel(win);
+                panelButton.removeEventListener("command", this);
+                panel.remove();
+              }
+            }
+          },
+          */
         },
       },
     };

@@ -76,14 +76,15 @@ class ModelSynchronization {
   }
 
   async pushModelUpdate({
-    weights,
-    loss,
-    numberOfSuggestions,
-    selectedIndex,
-    numBookmarkAndHistorySuggestionsDisplayed,
-    selectedBookmarkOrHistoryIndex,
-    numTypedChars,
     frecencyScores,
+    loss,
+    weights,
+    numSuggestionsDisplayed,
+    rankSelected,
+    bookmarkAndHistoryNumSuggestionsDisplayed,
+    bookmarkAndHistoryRankSelected,
+    numCharsTyped,
+    selectedStyle,
   }) {
     await browser.study.logger.log("Pushing model update via telemetry");
     const payload = {
@@ -91,12 +92,12 @@ class ModelSynchronization {
       frecency_scores: frecencyScores,
       loss,
       update: weights,
-      num_suggestions_displayed: numberOfSuggestions,
-      rank_selected: selectedIndex,
+      num_suggestions_displayed: numSuggestionsDisplayed,
+      rank_selected: rankSelected,
+      bookmark_and_history_num_suggestions_displayed: bookmarkAndHistoryNumSuggestionsDisplayed,
+      bookmark_and_history_rank_selected: bookmarkAndHistoryRankSelected,
+      num_chars_typed: numCharsTyped,
       selected_style: selectedStyle,
-      bookmark_and_history_num_suggestions_displayed: numBookmarkAndHistorySuggestionsDisplayed,
-      bookmark_and_history_rank_selected: selectedBookmarkOrHistoryIndex,
-      num_chars_typed: numTypedChars,
       study_variation: this.studyInfo.variation.name,
       study_addon_version: browser.runtime.getManifest().version,
     };

@@ -10,18 +10,26 @@
           "Fires when a suggestion has been suggested in the awesome bar autocomplete popup",
         "parameters": [
           {
-            "name": "bookmarkOrHistoryUrlSuggestions",
-            "type": "array",
-            "items": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "selectedBookmarkOrHistoryIndex",
+            "name": "numSuggestionsDisplayed",
             "type": "number"
           },
           {
-            "name": "numTypedChars",
+            "name": "rankSelected",
+            "type": "number"
+          },
+          {
+            "name": "bookmarkAndHistoryUrlSuggestions",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bookmarkAndHistoryRankSelected",
+            "type": "number"
+          },
+          {
+            "name": "numCharsTyped",
             "type": "number"
           },
           {

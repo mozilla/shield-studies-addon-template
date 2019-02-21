@@ -48,7 +48,7 @@ class Feature {
    *  - reason: string of background.js install/startup/shutdown reason
    *
    * @param {Object} studyInfo Study info
-   * @returns {Promise<void>} Promise that resolves after configure
+   * @returns {Promise<*>} Promise that resolves after configure
    */
   async configure(studyInfo) {
     const synchronizer = new ModelSynchronization(studyInfo);
@@ -59,11 +59,11 @@ class Feature {
     if (branchConfiguration.training) {
       browser.experiments.awesomeBar.onAutocompleteSuggestionSelected.addListener(
         async(
-          numberOfSuggestions,
-          selectedIndex,
-          bookmarkOrHistoryUrlSuggestions,
-          selectedBookmarkOrHistoryIndex,
-          numTypedChars,
+          numSuggestionsDisplayed,
+          rankSelected,
+          bookmarkAndHistoryUrlSuggestions,
+          bookmarkAndHistoryRankSelected,
+          numCharsTyped,
           selectedStyle,
         ) => {
           if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
@@ -71,11 +71,11 @@ class Feature {
             return false;
           }
           return optimizer.step(
-            numberOfSuggestions,
-            selectedIndex,
-            bookmarkOrHistoryUrlSuggestions,
-            selectedBookmarkOrHistoryIndex,
-            numTypedChars,
+            numSuggestionsDisplayed,
+            rankSelected,
+            bookmarkAndHistoryUrlSuggestions,
+            bookmarkAndHistoryRankSelected,
+            numCharsTyped,
             selectedStyle,
           );
         },

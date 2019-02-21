@@ -30,47 +30,52 @@ class FrecencyOptimizer {
   }
 
   async step(
-    numberOfSuggestions,
-    selectedIndex,
-    bookmarkOrHistoryUrlSuggestions,
-    selectedBookmarkOrHistoryIndex,
-    numTypedChars,
+    numSuggestionsDisplayed,
+    rankSelected,
+    bookmarkAndHistoryUrlSuggestions,
+    bookmarkAndHistoryRankSelected,
+    numCharsTyped,
     selectedStyle,
   ) {
     await browser.study.logger.debug([
       "FrecencyOptimizer.step entered",
       {
-        bookmarkOrHistoryUrlSuggestions,
-        selectedBookmarkOrHistoryIndex,
-        numTypedChars,
+        numSuggestionsDisplayed,
+        rankSelected,
+        bookmarkAndHistoryUrlSuggestions,
+        bookmarkAndHistoryRankSelected,
+        numCharsTyped,
         selectedStyle,
       },
     ]);
-    const gradient = await this.computeGradient(
-      bookmarkOrHistoryUrlSuggestions,
-      selectedBookmarkOrHistoryIndex,
+    const frecencyScores = await urlsToFrecencies(
+      bookmarkAndHistoryUrlSuggestions,
     );
-    const frecencies = await urlsToFrecencies(bookmarkOrHistoryUrlSuggestions);
+    const loss = await svmLoss(
+      bookmarkAndHistoryUrlSuggestions,
+      bookmarkAndHistoryRankSelected,
+    );
+    const weights = await this.computeGradient(
+      bookmarkAndHistoryUrlSuggestions,
+      bookmarkAndHistoryRankSelected,
+    );
     return this.synchronizer.pushModelUpdate({
-      weights: gradient,
-      loss: await svmLoss(
-        bookmarkOrHistoryUrlSuggestions,
-        selectedBookmarkOrHistoryIndex,
-      ),
-      numberOfSuggestions,
-      selectedIndex,
-      numBookmarkAndHistorySuggestionsDisplayed:
-        bookmarkOrHistoryUrlSuggestions.length,
-      selectedBookmarkOrHistoryIndex,
+      frecencyScores,
+      loss,
+      weights,
+      numSuggestionsDisplayed,
+      rankSelected,
+      bookmarkAndHistoryNumSuggestionsDisplayed:
+        bookmarkAndHistoryUrlSuggestions.length,
+      bookmarkAndHistoryRankSelected,
+      numCharsTyped,
       selectedStyle,
-      numTypedChars,
-      frecencyScores: frecencies,
     });
   }
 
   async computeGradient(
-    bookmarkOrHistoryUrlSuggestions,
-    selectedBookmarkOrHistoryIndex,
+    bookmarkAndHistoryUrlSuggestions,
+    bookmarkAndHistoryRankSelected,
   ) {
     const gradient = [];
 
@@ -79,14 +84,14 @@ class FrecencyOptimizer {
 
       await browser.experiments.prefs.setIntPref(pref, currentValue - this.eps);
       const loss1 = await this.lossFn(
-        bookmarkOrHistoryUrlSuggestions,
-        selectedBookmarkOrHistoryIndex,
+        bookmarkAndHistoryUrlSuggestions,
+        bookmarkAndHistoryRankSelected,
       );
 
       await browser.experiments.prefs.setIntPref(pref, currentValue + this.eps);
       const loss2 = await this.lossFn(
-        bookmarkOrHistoryUrlSuggestions,
-        selectedBookmarkOrHistoryIndex,
+        bookmarkAndHistoryUrlSuggestions,
+        bookmarkAndHistoryRankSelected,
       );
 
       const finiteDifference = (loss1 - loss2) / (2 * this.eps);
