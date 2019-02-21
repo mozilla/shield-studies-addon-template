@@ -30,7 +30,10 @@ class FrecencyOptimizer {
   }
 
   async step(urls, selectedIndex, numTypedChars) {
-    await browser.study.logger.debug("FrecencyOptimizer.step entered");
+    await browser.study.logger.debug([
+      "FrecencyOptimizer.step entered",
+      { urls, selectedIndex, numTypedChars },
+    ]);
     const gradient = await this.computeGradient(urls, selectedIndex);
     const frecencies = await urlsToFrecencies(urls);
     return this.synchronizer.pushModelUpdate(
