@@ -14,7 +14,7 @@ const defaultConfig = {
     browserConsole: true,
     startUrl: ["about:debugging"],
     pref: [
-      "shieldStudy.logLevel=All",
+      "shieldStudy.logLevel=info",
       "browser.ctrlTab.recentlyUsedOrder=false",
       "extensions.federated-learning-v2_shield_mozilla_org.test.variationName=dogfooding",
       "extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint=https://public-data.telemetry.mozilla.org/awesomebar_study/latest.json",
