@@ -1,4 +1,4 @@
-/* global PREFS */
+/* global FRECENCY_PREFS */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(svmLoss|FrecencyOptimizer)" }]*/
 
 async function svmLoss(urls, correct) {
@@ -79,7 +79,7 @@ class FrecencyOptimizer {
   ) {
     const gradient = [];
 
-    for (const pref of PREFS) {
+    for (const pref of FRECENCY_PREFS) {
       const currentValue = await browser.experiments.prefs.getIntPref(pref);
 
       await browser.experiments.prefs.setIntPref(pref, currentValue - this.eps);

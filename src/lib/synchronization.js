@@ -1,4 +1,4 @@
-/* global feature, PREFS */
+/* global feature, FRECENCY_PREFS, MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(ModelSynchronization)" }]*/
 
 const URL_ENDPOINT_HUMAN_SEED =
@@ -44,7 +44,7 @@ class ModelSynchronization {
       ? URL_ENDPOINT_CRAZY_SEED
       : URL_ENDPOINT_HUMAN_SEED;
     const modelUrlEndPointTestingOverride = await browser.experiments.prefs.getStringPref(
-      "extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint",
+      MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF,
       "",
     );
     if (modelUrlEndPointTestingOverride !== "") {
@@ -67,8 +67,8 @@ class ModelSynchronization {
     this.iteration = iteration;
 
     await browser.study.logger.log("Applying frecency weights");
-    for (let i = 0; i < PREFS.length; i++) {
-      await browser.experiments.prefs.setIntPref(PREFS[i], model[i]);
+    for (let i = 0; i < FRECENCY_PREFS.length; i++) {
+      await browser.experiments.prefs.setIntPref(FRECENCY_PREFS[i], model[i]);
     }
 
     await browser.study.logger.log("Updating all frecencies");

@@ -1,4 +1,4 @@
-/* global PREFS, ModelSynchronization, svmLoss, FrecencyOptimizer */
+/* global FRECENCY_PREFS, ModelSynchronization, svmLoss, FrecencyOptimizer */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(feature)" }]*/
 
 class Feature {
@@ -206,8 +206,8 @@ class Feature {
   async cleanup() {
     await browser.study.logger.log("Cleaning up study-specific prefs");
     const promises = [];
-    for (let i = 0; i < PREFS.length; i++) {
-      promises.push(browser.experiments.prefs.clearUserPref(PREFS[i]));
+    for (let i = 0; i < FRECENCY_PREFS.length; i++) {
+      promises.push(browser.experiments.prefs.clearUserPref(FRECENCY_PREFS[i]));
     }
     return Promise.all(promises);
   }

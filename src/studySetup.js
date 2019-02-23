@@ -1,3 +1,4 @@
+/* global MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "getStudySetup" }]*/
 
 /**
@@ -173,6 +174,16 @@ async function getStudySetup() {
     expired: testingOverrides.expired,
   };
   // TODO: Possible add testing override for studySetup.telemetry.internalTelemetryArchive
+
+  // Set testing flag on shield-study-addon pings in case the model url endpoint is overridden for testing purposes
+  const modelUrlEndPointTestingOverride = await browser.experiments.prefs.getStringPref(
+    MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF,
+    "",
+  );
+  if (modelUrlEndPointTestingOverride !== "") {
+    await browser.study.logger.log(`Note: The model url endpoint is overridden for testing purposes ("${modelUrlEndPointTestingOverride}")`);
+    studySetup.telemetry.removeTestingFlag = false;
+  }
 
   return studySetup;
 }

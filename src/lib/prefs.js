@@ -1,6 +1,6 @@
-/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(PREFS)" }]*/
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(FRECENCY_PREFS|MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF)" }]*/
 
-const PREFS = [
+const FRECENCY_PREFS = [
   "places.frecency.firstBucketCutoff",
   "places.frecency.secondBucketCutoff",
   "places.frecency.thirdBucketCutoff",
@@ -24,3 +24,5 @@ const PREFS = [
   "places.frecency.unvisitedTypedBonus",
   "places.frecency.reloadVisitBonus",
 ];
+
+const MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF = "extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint";
