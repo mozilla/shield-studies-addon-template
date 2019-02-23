@@ -176,7 +176,7 @@ class Feature {
     });
 
     // Also submit ping using study utils - allows for automatic querying of study data in re:dash
-    const stringStringMap = {
+    const shieldStudyAddonPayload = {
       model_version: String(payload.model_version),
       frecency_scores: JSON.stringify(payload.frecency_scores),
       loss: String(payload.loss),
@@ -194,8 +194,9 @@ class Feature {
       study_variation: String(payload.study_variation),
       study_addon_version: String(payload.study_addon_version),
     };
-    await browser.study.sendTelemetry(stringStringMap);
-    await browser.study.logger.log("Telemetry submitted");
+    await browser.study.sendTelemetry(shieldStudyAddonPayload);
+    await browser.study.logger.log("Telemetry submitted:");
+    await browser.study.logger.log({payload, shieldStudyAddonPayload});
     return true;
   }
 
