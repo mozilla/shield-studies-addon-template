@@ -2,7 +2,7 @@
   "name": "Federated Learning Awesome Bar",
   "description":
     "A Firefox add-on study testing the application of federated learning to train our search suggestions algorithm without collecting specific user search data. We are trying out new ways of combining frequency and recency to improve the overall experience when using the Firefox Awesome Bar.",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "manifest_version": 2,
   "hidden": true,
   "applications": {

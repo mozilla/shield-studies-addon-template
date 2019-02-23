@@ -1,7 +1,7 @@
 {
   "name": "federated-learning-v2-study-addon",
   "description": "Federated Learning v2 Study Add-on",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": "Mozilla",
   "bugs": {
     "url": "https://github.com/motin/federated-learning-v2-study-addon/issues"
