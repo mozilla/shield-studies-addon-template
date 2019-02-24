@@ -70,14 +70,22 @@ class Feature {
             // drop the event - do not do any model training
             return false;
           }
-          return optimizer.step(
-            numSuggestionsDisplayed,
-            rankSelected,
-            bookmarkAndHistoryUrlSuggestions,
-            bookmarkAndHistoryRankSelected,
-            numCharsTyped,
-            selectedStyle,
-          );
+          try {
+            optimizer.step(
+              numSuggestionsDisplayed,
+              rankSelected,
+              bookmarkAndHistoryUrlSuggestions,
+              bookmarkAndHistoryRankSelected,
+              numCharsTyped,
+              selectedStyle,
+            );
+          } catch (error) {
+            await browser.study.logger.error([
+              "Training failed - optimizer.step ran into an error:",
+              error,
+            ]);
+          }
+          return true;
         },
       );
       await browser.experiments.awesomeBar.start();
