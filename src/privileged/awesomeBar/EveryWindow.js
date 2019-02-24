@@ -6,7 +6,10 @@
 
 /* globals Services */
 /* eslint-disable-next-line no-var */
-var {PrivateBrowsingUtils} = ChromeUtils.import("resource://gre/modules/PrivateBrowsingUtils.jsm", null);
+var { PrivateBrowsingUtils } = ChromeUtils.import(
+  "resource://gre/modules/PrivateBrowsingUtils.jsm",
+  null,
+);
 
 this.EveryWindow = {
   _callbacks: new Map(),
@@ -18,11 +21,13 @@ this.EveryWindow = {
     }
 
     this._callForEveryWindow(init);
-    this._callbacks.set(id, {id, init, uninit});
+    this._callbacks.set(id, { id, init, uninit });
 
     if (!this._initialized) {
-      Services.obs.addObserver(this._onOpenWindow.bind(this),
-        "browser-delayed-startup-finished");
+      Services.obs.addObserver(
+        this._onOpenWindow.bind(this),
+        "browser-delayed-startup-finished",
+      );
       this._initialized = true;
     }
   },
@@ -44,7 +49,9 @@ this.EveryWindow = {
     while (windowList.hasMoreElements()) {
       const win = windowList.getNext();
       if (!PrivateBrowsingUtils.isWindowPrivate(win)) {
-        win.delayedStartupPromise.then(() => { aFunction(win); });
+        win.delayedStartupPromise.then(() => {
+          aFunction(win);
+        });
       }
     }
   },
@@ -57,8 +64,9 @@ this.EveryWindow = {
       c.init(aWindow);
     }
 
-    aWindow.addEventListener("unload",
-      this._onWindowClosing.bind(this), { once: true });
+    aWindow.addEventListener("unload", this._onWindowClosing.bind(this), {
+      once: true,
+    });
   },
 
   _onWindowClosing(aEvent) {

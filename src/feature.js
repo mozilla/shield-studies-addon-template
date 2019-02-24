@@ -196,7 +196,7 @@ class Feature {
     };
     await browser.study.sendTelemetry(shieldStudyAddonPayload);
     await browser.study.logger.log("Telemetry submitted:");
-    await browser.study.logger.log({payload, shieldStudyAddonPayload});
+    await browser.study.logger.log({ payload, shieldStudyAddonPayload });
     return true;
   }
 

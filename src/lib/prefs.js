@@ -25,4 +25,5 @@ const FRECENCY_PREFS = [
   "places.frecency.reloadVisitBonus",
 ];
 
-const MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF = "extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint";
+const MODEL_URL_ENDPOINT_TESTING_OVERRIDE_PREF =
+  "extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint";

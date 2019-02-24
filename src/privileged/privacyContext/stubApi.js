@@ -16,18 +16,21 @@ this.privacyContext = class extends ExtensionAPI {
     const apiEventEmitter = new EventEmitter();
     return {
       privacyContext: {
-        /* @TODO no description given */
-        permanentPrivateBrowsing: async function permanentPrivateBrowsing() {
-          console.log("Called permanentPrivateBrowsing()");
-          return undefined;
-        },
-
-        /* @TODO no description given */
-        aPrivateBrowserWindowIsOpen: async function aPrivateBrowserWindowIsOpen() {
-          console.log("Called aPrivateBrowserWindowIsOpen()");
-          return undefined;
-        },
+        
+      /* @TODO no description given */
+      permanentPrivateBrowsing: async function permanentPrivateBrowsing  (  ) {
+        console.log("Called permanentPrivateBrowsing()", );
+        return undefined;
       },
-    };
+
+      /* @TODO no description given */
+      aPrivateBrowserWindowIsOpen: async function aPrivateBrowserWindowIsOpen  (  ) {
+        console.log("Called aPrivateBrowserWindowIsOpen()", );
+        return undefined;
+      },
+
+        
+      },
+    }
   }
-};
+}

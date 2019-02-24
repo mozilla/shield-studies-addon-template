@@ -16,7 +16,7 @@ this.awesomeBar = class extends ExtensionAPI {
     const { EventManager } = ExtensionCommon;
 
     const EVENT = "autocomplete-will-enter-text";
-    // Bookmarks are not included for now because we also want to take them into account
+
     const NON_BOOKMARK_OR_HISTORY_STYLES = [
       "switchtab",
       "remotetab",
@@ -94,39 +94,6 @@ this.awesomeBar = class extends ExtensionAPI {
               );
             },
           }).api(),
-          /*
-          addAwesomeBarInputListeners: () => {
-            // If the panel was created in this window before, let's make sure to clean it up.
-            const winEnum = Services.wm.getEnumerator("navigator:browser");
-            while (winEnum.hasMoreElements()) {
-              const win = winEnum.getNext();
-              if (
-                win.gURLBar &&
-                !win.closed
-              ) {
-                const { panel, panelButton } = this._ensurePanel(win);
-                panelButton.removeEventListener("command", this);
-                panel.remove();
-              }
-            }
-          },
-          removeAwesomeBarInputListeners: () => {
-            // If the panel was created in this window before, let's make sure to clean it up.
-            const winEnum = Services.wm.getEnumerator("navigator:browser");
-            while (winEnum.hasMoreElements()) {
-              const win = winEnum.getNext();
-              if (
-                win.document &&
-                win.document.getElementById(TIP_PANEL_ID) &&
-                !win.closed
-              ) {
-                const { panel, panelButton } = this._ensurePanel(win);
-                panelButton.removeEventListener("command", this);
-                panel.remove();
-              }
-            }
-          },
-          */
         },
       },
     };
