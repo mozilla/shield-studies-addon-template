@@ -1,13 +1,13 @@
 [
   {
     "namespace": "experiments.awesomeBar",
-    "description": "Listen to history searches in the awesome bar",
+    "description": "Listen to awesome bar interactions",
     "events": [
       {
         "name": "onAutocompleteSuggestionSelected",
         "type": "function",
         "description":
-          "Fires when a suggestion has been suggested in the awesome bar autocomplete popup",
+          "Fires when a suggestion has been suggested in the awesome bar autocomplete popup.",
         "parameters": [
           {
             "name": "numSuggestionsDisplayed",
