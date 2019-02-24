@@ -5,6 +5,7 @@
  */
 
 /* globals Services */
+/* eslint-disable mozilla/no-aArgs */
 /* eslint-disable-next-line no-var */
 var { PrivateBrowsingUtils } = ChromeUtils.import(
   "resource://gre/modules/PrivateBrowsingUtils.jsm",
