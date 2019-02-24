@@ -17,24 +17,54 @@ this.awesomeBar = class extends ExtensionAPI {
 
     const awesomeBarEventEmitter = new EventEmitter();
 
-    function processAutocompleteWillEnterText(el) {
-      function isBookmarkOrHistoryStyle(styleString) {
-        const NON_BOOKMARK_OR_HISTORY_STYLES = [
-          "switchtab",
-          "remotetab",
-          "searchengine",
-          "visiturl",
-          "extension",
-          "suggestion",
-          "keyword",
-        ];
-        const styles = new Set(styleString.split(/\s+/));
-        const isNonBookmarkOrHistoryStyle = NON_BOOKMARK_OR_HISTORY_STYLES.some(
-          s => styles.has(s),
-        );
-        return !isNonBookmarkOrHistoryStyle;
+    function isBookmarkOrHistoryStyle(styleString) {
+      const NON_BOOKMARK_OR_HISTORY_STYLES = [
+        "switchtab",
+        "remotetab",
+        "searchengine",
+        "visiturl",
+        "extension",
+        "suggestion",
+        "keyword",
+      ];
+      const styles = new Set(styleString.split(/\s+/));
+      const isNonBookmarkOrHistoryStyle = NON_BOOKMARK_OR_HISTORY_STYLES.some(
+        s => styles.has(s),
+      );
+      return !isNonBookmarkOrHistoryStyle;
+    }
+
+    function autocompletePopupMetadata(popup) {
+      const controller = popup.view.QueryInterface(
+        Ci.nsIAutoCompleteController,
+      );
+
+      const rankSelected = popup.selectedIndex;
+      const numCharsTyped = controller.searchString.length;
+      const numSuggestionsDisplayed = controller.matchCount;
+
+      const suggestions = [];
+      for (let i = 0; i < numSuggestionsDisplayed; i++) {
+        suggestions.push({
+          style: controller.getStyleAt(i),
+          url: controller.getFinalCompleteValueAt(i),
+        });
       }
 
+      return {
+        rankSelected,
+        numCharsTyped,
+        numSuggestionsDisplayed,
+        suggestions,
+      };
+    }
+
+    /**
+     * @param {object} el The URL bar element
+     * @returns {void}
+     */
+    function processAutocompleteWillEnterText(el) {
+      console.log("processAutocompleteWillEnterText", el, el.popup);
       const popup = el.popup;
       if (!popup) {
         // eslint-disable-next-line no-console
@@ -45,31 +75,26 @@ this.awesomeBar = class extends ExtensionAPI {
         );
         return;
       }
-      const controller = popup.view.QueryInterface(
-        Ci.nsIAutoCompleteController,
+
+      const {
+        rankSelected,
+        numCharsTyped,
+        numSuggestionsDisplayed,
+        suggestions,
+      } = autocompletePopupMetadata(popup);
+
+      const selectedSuggestion = suggestions[rankSelected];
+
+      const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
+        isBookmarkOrHistoryStyle(suggestion.style),
       );
-
-      const rankSelected = popup.selectedIndex;
-      const selectedStyle = controller.getStyleAt(rankSelected);
-      const numCharsTyped = controller.searchString.length;
-
-      const numSuggestionsDisplayed = controller.matchCount;
-      const bookmarkAndHistoryUrlSuggestions = [];
-
-      for (let i = 0; i < numSuggestionsDisplayed; i++) {
-        const isBookmarkOrHistory = isBookmarkOrHistoryStyle(
-          controller.getStyleAt(i),
-        );
-
-        if (isBookmarkOrHistory) {
-          const url = controller.getFinalCompleteValueAt(i);
-          bookmarkAndHistoryUrlSuggestions.push(url);
-        }
-      }
-
+      const bookmarkAndHistoryUrlSuggestions = bookmarkAndHistorySuggestions.map(
+        suggestion => suggestion.url,
+      );
       const bookmarkAndHistoryRankSelected = bookmarkAndHistoryUrlSuggestions.indexOf(
-        controller.getFinalCompleteValueAt(rankSelected),
+        selectedSuggestion.url,
       );
+
       awesomeBarEventEmitter.emit(
         "awesomeBar.onAutocompleteSuggestionSelected",
         numSuggestionsDisplayed,
@@ -77,32 +102,104 @@ this.awesomeBar = class extends ExtensionAPI {
         bookmarkAndHistoryUrlSuggestions,
         bookmarkAndHistoryRankSelected,
         numCharsTyped,
-        selectedStyle,
+        selectedSuggestion.style,
       );
     }
 
-    class ProcessAwesomeBarInputEvents {
-      constructor() {
-        this.events = ["focus", "blur", "change", "input"];
-      }
+    /**
+     * Note: The text is actually not reverted, it remains in the awesome bar, but the
+     * autocomplete popup has been cancelled by some mean, like pressing escape
+     * @param {object} el The URL bar element
+     * @returns {void}
+     */
+    function processAutocompleteDidRevertText(el) {
+      console.log("processAutocompleteDidRevertText", el);
+    }
 
+    const gURLBarEvents = ["focus", "blur", "change", "input"];
+
+    const { setTimeout } = ChromeUtils.import(
+      "resource://gre/modules/Timer.jsm",
+    );
+
+    class UrlBarEventListeners {
       static focus(event) {
-        console.log("focus", event);
+        console.log("focus");
+        UrlBarEventListeners.debug(event);
       }
 
       static blur(event) {
-        console.log("blur", event);
+        console.log("blur");
+        UrlBarEventListeners.debug(event);
       }
 
       static change(event) {
-        console.log("change", event);
+        console.log("change");
+        UrlBarEventListeners.debug(event);
       }
 
-      static input(event) {
-        console.log("input", event);
+      static async input(event) {
+        console.log("input");
+        UrlBarEventListeners.debug(event);
+        await UrlBarEventListeners.waitForSearchResults(event.srcElement);
+        console.log("input event - after search results are in");
+        UrlBarEventListeners.debug(event);
+      }
+
+      static debug(event) {
+        console.log(event, event.srcElement, event.srcElement.popup);
+
+        const autocompleteDebug = () => {
+          const {
+            rankSelected,
+            numCharsTyped,
+            numSuggestionsDisplayed,
+            suggestions,
+          } = autocompletePopupMetadata(event.srcElement.popup);
+
+          console.log({
+            rankSelected,
+            numCharsTyped,
+            numSuggestionsDisplayed,
+            suggestions,
+          });
+        };
+
+        autocompleteDebug();
+      }
+
+      /**
+       * @param {object} el The URL bar element
+       * @returns {Promise} Resolves after the search results are in
+       */
+      static waitForSearchResults(el) {
+        return new Promise((resolve, reject) => {
+          // Temporary hack - using setTimeout until have figured out how to properly register the callback
+          setTimeout(() => {
+            console.log("setTimeout");
+            resolve();
+          }, 500);
+          // These do not trigger:
+          el.popup.addEventListener("onsearchcomplete", () => {
+            console.log("addEventListener onsearchcomplete");
+            resolve();
+          });
+          el.popup.addEventListener("searchcomplete", () => {
+            console.log("addEventListener searchcomplete");
+            resolve();
+          });
+          el.popup.onSearchComplete = () => {
+            console.log("onSearchComplete func");
+            resolve();
+          };
+          // Timeout after 1000ms if no search results are in
+          setTimeout(() => {
+            console.log("setTimeout");
+            reject();
+          }, 1000);
+        });
       }
     }
-    const processAwesomeBarInputEvents = new ProcessAwesomeBarInputEvents();
 
     /* global EveryWindow */
     Services.scriptloader.loadSubScript(
@@ -111,13 +208,15 @@ this.awesomeBar = class extends ExtensionAPI {
 
     /**
      * Required to detect awesome bar interactions prior to autocomplete suggestion selection
+     * @param {object} win The chrome window object
+     * @returns {void}
      */
     function registerAwesomeBarInputListeners(win) {
       if (win.gURLBar && !win.closed) {
-        processAwesomeBarInputEvents.events.map(eventRef => {
+        gURLBarEvents.map(eventRef => {
           win.gURLBar.addEventListener(
             eventRef,
-            ProcessAwesomeBarInputEvents[eventRef],
+            UrlBarEventListeners[eventRef],
           );
         });
       }
@@ -125,12 +224,14 @@ this.awesomeBar = class extends ExtensionAPI {
 
     /**
      * Cleans up previously added listeners and prevents new listeners from being added to new windows
+     * @param {object} win The chrome window object
+     * @returns {void}
      */
     function unregisterAwesomeBarInputListeners(win) {
-      processAwesomeBarInputEvents.events.map(eventRef => {
+      gURLBarEvents.map(eventRef => {
         win.gURLBar.removeEventListener(
           eventRef,
-          ProcessAwesomeBarInputEvents[eventRef],
+          UrlBarEventListeners[eventRef],
         );
       });
     }
@@ -162,8 +263,12 @@ this.awesomeBar = class extends ExtensionAPI {
               processAutocompleteWillEnterText,
               "autocomplete-will-enter-text",
             );
+            Services.obs.addObserver(
+              processAutocompleteDidRevertText,
+              "autocomplete-did-revert-text",
+            );
             EveryWindow.registerCallback(
-              "set-awesome-bar-input-listeners",
+              "set-awesome-bar-interaction-listeners",
               registerAwesomeBarInputListeners,
               unregisterAwesomeBarInputListeners,
             );
@@ -173,7 +278,13 @@ this.awesomeBar = class extends ExtensionAPI {
               processAutocompleteWillEnterText,
               "autocomplete-will-enter-text",
             );
-            EveryWindow.unregisterCallback("set-awesome-bar-input-listeners");
+            Services.obs.removeObserver(
+              processAutocompleteDidRevertText,
+              "autocomplete-did-revert-text",
+            );
+            EveryWindow.unregisterCallback(
+              "set-awesome-bar-interaction-listeners",
+            );
           },
         },
       },
