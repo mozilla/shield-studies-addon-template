@@ -80,6 +80,7 @@ class Feature {
           );
         },
       );
+      await browser.experiments.awesomeBar.start();
     }
   }
 
@@ -205,6 +206,7 @@ class Feature {
    * @returns {Promise<*>} Promise that resolves after cleanup
    */
   async cleanup() {
+    await browser.experiments.awesomeBar.stop();
     await browser.study.logger.log("Cleaning up study-specific prefs");
     const promises = [];
     for (let i = 0; i < FRECENCY_PREFS.length; i++) {

@@ -1,6 +1,18 @@
 - namespace: experiments.awesomeBar
   description: Listen to awesome bar interactions
 
+  functions:
+  - name: start
+    type: 'function'
+    async: true
+    description: Start listening to awesome bar interactions
+    parameters: []
+  - name: stop
+    type: 'function'
+    async: true
+    description: Stop listening to awesome bar interactions
+    parameters: []
+
   events:
   - name: onAutocompleteSuggestionSelected
     type: function

@@ -4,7 +4,17 @@ Listen to awesome bar interactions
 
 ## Functions
 
-(None)
+### `browser.experiments.awesomeBar.start( )`
+
+Start listening to awesome bar interactions
+
+**Parameters**
+
+### `browser.experiments.awesomeBar.stop( )`
+
+Stop listening to awesome bar interactions
+
+**Parameters**
 
 ## Events
 
