@@ -1,15 +1,21 @@
 /**
- * Based on https://github.com/mozilla/blurts-addon/blob/master/src/privileged/subscripts/EveryWindow.jsm
+ * Based on https://github.com/mozilla/CookieRestrictionsBreakageStudy/blob/master/src/privileged/pageMonitor/EveryWindow.js
+ * (which in turn is based on https://github.com/mozilla/blurts-addon/blob/master/src/privileged/subscripts/EveryWindow.jsm)
  * Ensure a function runs on every window, including future windows.
  * Ignoring private windows.
  */
 
 /* globals Services */
 /* eslint-disable mozilla/no-aArgs */
-/* eslint-disable-next-line no-var */
-var { PrivateBrowsingUtils } = ChromeUtils.import(
+
+const { PrivateBrowsingUtils } = ChromeUtils.import(
   "resource://gre/modules/PrivateBrowsingUtils.jsm",
-  null,
+  {},
+);
+
+const { Services } = ChromeUtils.import(
+  "resource://gre/modules/Services.jsm",
+  {},
 );
 
 this.EveryWindow = {
