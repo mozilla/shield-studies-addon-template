@@ -15,6 +15,7 @@ class AwesomeBarObserver {
       "onAutocompleteSuggestionsUpdated",
       "onAutocompleteSuggestionSelected",
     ];
+    this.observedEventsSinceLastFocus = [];
   }
   async start() {
     this.eventsToObserve.map(eventRef => {
@@ -32,13 +33,7 @@ class AwesomeBarObserver {
     });
   }
 
-  async onAutocompleteSuggestionSelected(awesomeBarState) {
-    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
-      // drop the event - do not do any model training
-      return false;
-    }
-    console.log("onAutocompleteSuggestionSelected", awesomeBarState);
-
+  async updateModel(awesomeBarState) {
     try {
       const {
         rankSelected,
@@ -77,11 +72,17 @@ class AwesomeBarObserver {
   }
 
   async onFocus(awesomeBarState) {
+    // Always reset on focus, since it marks the beginning of the awesome bar interaction
+    this.observedEventsSinceLastFocus = [];
     if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
       // drop the event - do not do any model training
       return false;
     }
-    console.log("onFocus", awesomeBarState);
+    this.observedEventsSinceLastFocus.push({
+      awesomeBarState,
+      timestamp: new Date(),
+      type: "onFocus",
+    });
     return true;
   }
 
@@ -90,7 +91,12 @@ class AwesomeBarObserver {
       // drop the event - do not do any model training
       return false;
     }
-    console.log("onBlur", awesomeBarState);
+    this.observedEventsSinceLastFocus.push({
+      awesomeBarState,
+      timestamp: new Date(),
+      type: "onBlur",
+    });
+    console.log("onBlur", this.observedEventsSinceLastFocus);
     return true;
   }
 
@@ -99,7 +105,11 @@ class AwesomeBarObserver {
       // drop the event - do not do any model training
       return false;
     }
-    console.log("onInput", awesomeBarState);
+    this.observedEventsSinceLastFocus.push({
+      awesomeBarState,
+      timestamp: new Date(),
+      type: "onInput",
+    });
     return true;
   }
 
@@ -108,7 +118,11 @@ class AwesomeBarObserver {
       // drop the event - do not do any model training
       return false;
     }
-    console.log("onAutocompleteSuggestionsHidden", awesomeBarState);
+    this.observedEventsSinceLastFocus.push({
+      awesomeBarState,
+      timestamp: new Date(),
+      type: "onAutocompleteSuggestionsHidden",
+    });
     return true;
   }
 
@@ -117,7 +131,25 @@ class AwesomeBarObserver {
       // drop the event - do not do any model training
       return false;
     }
-    console.log("onAutocompleteSuggestionsUpdated", awesomeBarState);
+    this.observedEventsSinceLastFocus.push({
+      awesomeBarState,
+      timestamp: new Date(),
+      type: "onAutocompleteSuggestionsUpdated",
+    });
+    return true;
+  }
+
+  async onAutocompleteSuggestionSelected(awesomeBarState) {
+    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
+      // drop the event - do not do any model training
+      return false;
+    }
+    this.observedEventsSinceLastFocus.push({
+      awesomeBarState,
+      timestamp: new Date(),
+      type: "onAutocompleteSuggestionSelected",
+    });
+    await this.updateModel(awesomeBarState);
     return true;
   }
 
