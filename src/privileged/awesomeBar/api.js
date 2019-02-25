@@ -174,27 +174,11 @@ this.awesomeBar = class extends ExtensionAPI {
        */
       static waitForSearchResults(el) {
         return new Promise((resolve, reject) => {
-          // Temporary hack - using setTimeout until have figured out how to properly register the callback
-          setTimeout(() => {
-            console.log("setTimeout");
-            resolve();
-          }, 500);
-          // These do not trigger:
-          el.popup.addEventListener("onsearchcomplete", () => {
-            console.log("addEventListener onsearchcomplete");
-            resolve();
-          });
-          el.popup.addEventListener("searchcomplete", () => {
-            console.log("addEventListener searchcomplete");
-            resolve();
-          });
-          el.popup.onSearchComplete = () => {
-            console.log("onSearchComplete func");
+          el.onSearchComplete = () => {
             resolve();
           };
           // Timeout after 1000ms if no search results are in
           setTimeout(() => {
-            console.log("setTimeout");
             reject();
           }, 1000);
         });
