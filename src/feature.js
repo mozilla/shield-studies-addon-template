@@ -1,4 +1,4 @@
-/* global FRECENCY_PREFS, ModelSynchronization, svmLoss, FrecencyOptimizer */
+/* global FRECENCY_PREFS, ModelSynchronization, svmLoss, FrecencyOptimizer, AwesomeBarObserver */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(feature)" }]*/
 
 class Feature {
@@ -52,43 +52,15 @@ class Feature {
    */
   async configure(studyInfo) {
     const synchronizer = new ModelSynchronization(studyInfo);
-    const optimizer = new FrecencyOptimizer(synchronizer, svmLoss);
     const branchConfiguration = this.branchConfigurations[
       studyInfo.variation.name
     ];
     if (branchConfiguration.training) {
-      browser.experiments.awesomeBar.onAutocompleteSuggestionSelected.addListener(
-        async({
-          numSuggestionsDisplayed,
-          rankSelected,
-          bookmarkAndHistoryUrlSuggestions,
-          bookmarkAndHistoryRankSelected,
-          numCharsTyped,
-          selectedStyle,
-        }) => {
-          if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
-            // drop the event - do not do any model training
-            return false;
-          }
-          try {
-            optimizer.step(
-              numSuggestionsDisplayed,
-              rankSelected,
-              bookmarkAndHistoryUrlSuggestions,
-              bookmarkAndHistoryRankSelected,
-              numCharsTyped,
-              selectedStyle,
-            );
-          } catch (error) {
-            await browser.study.logger.error([
-              "Training failed - optimizer.step ran into an error:",
-              error,
-            ]);
-          }
-          return true;
-        },
+      const optimizer = new FrecencyOptimizer(synchronizer, svmLoss);
+      this.awesomeBarObserver = new AwesomeBarObserver(
+        optimizer.step.bind(optimizer),
       );
-      await browser.experiments.awesomeBar.start();
+      this.awesomeBarObserver.start();
     }
   }
 
@@ -214,7 +186,9 @@ class Feature {
    * @returns {Promise<*>} Promise that resolves after cleanup
    */
   async cleanup() {
-    await browser.experiments.awesomeBar.stop();
+    if (this.awesomeBarObserver) {
+      await this.awesomeBarObserver.stop();
+    }
     await browser.study.logger.log("Cleaning up study-specific prefs");
     const promises = [];
     for (let i = 0; i < FRECENCY_PREFS.length; i++) {

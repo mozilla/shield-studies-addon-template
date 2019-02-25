@@ -65,6 +65,7 @@
   "background": {
     "scripts": [
       "lib/prefs.js",
+      "lib/awesomeBarObserver.js",
       "lib/synchronization.js",
       "lib/optimization.js",
       "studySetup.js",
