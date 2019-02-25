@@ -105,20 +105,10 @@
         ]
       },
       {
-        "name": "onAutocompleteSuggestionsDisplayed",
-        "type": "function",
-        "description": "Autocomplete popup show",
-        "parameters": [
-          {
-            "name": "awesomeBarState",
-            "$ref": "awesomeBarState"
-          }
-        ]
-      },
-      {
         "name": "onAutocompleteSuggestionsHidden",
         "type": "function",
-        "description": "Autocomplete popup hide",
+        "description":
+          "Fires when autocomplete popup has been cancelled by some means, like pressing escape",
         "parameters": [
           {
             "name": "awesomeBarState",

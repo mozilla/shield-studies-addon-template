@@ -62,7 +62,6 @@ this.awesomeBar = class extends ExtensionAPI {
      * @returns {void}
      */
     function processAutocompleteWillEnterText(el) {
-      console.log("processAutocompleteWillEnterText", el, el.popup);
       awesomeBarEventEmitter.emit(
         "awesomeBar.onAutocompleteSuggestionSelected",
         awesomeBarState(el),
@@ -71,12 +70,15 @@ this.awesomeBar = class extends ExtensionAPI {
 
     /**
      * Note: The text is actually not reverted, it remains in the awesome bar, but the
-     * autocomplete popup has been cancelled by some mean, like pressing escape
+     * autocomplete popup has been cancelled by some means, like pressing escape
      * @param {object} el The URL bar element
      * @returns {void}
      */
     function processAutocompleteDidRevertText(el) {
-      console.log("processAutocompleteDidRevertText", el);
+      awesomeBarEventEmitter.emit(
+        "awesomeBar.onAutocompleteSuggestionsHidden",
+        awesomeBarState(el),
+      );
     }
 
     const gURLBarEvents = ["focus", "blur", "change", "input"];
@@ -87,48 +89,29 @@ this.awesomeBar = class extends ExtensionAPI {
 
     class UrlBarEventListeners {
       static focus(event) {
-        console.log("focus");
-        UrlBarEventListeners.debug(event);
+        awesomeBarEventEmitter.emit(
+          "awesomeBar.onFocus",
+          awesomeBarState(event.srcElement),
+        );
       }
 
       static blur(event) {
-        console.log("blur");
-        UrlBarEventListeners.debug(event);
-      }
-
-      static change(event) {
-        console.log("change");
-        UrlBarEventListeners.debug(event);
+        awesomeBarEventEmitter.emit(
+          "awesomeBar.onBlur",
+          awesomeBarState(event.srcElement),
+        );
       }
 
       static async input(event) {
-        console.log("input");
-        UrlBarEventListeners.debug(event);
+        awesomeBarEventEmitter.emit(
+          "awesomeBar.onInput",
+          awesomeBarState(event.srcElement),
+        );
         await UrlBarEventListeners.waitForSearchResults(event.srcElement);
-        console.log("input event - after search results are in");
-        UrlBarEventListeners.debug(event);
-      }
-
-      static debug(event) {
-        console.log(event, event.srcElement, event.srcElement.popup);
-
-        const autocompleteDebug = () => {
-          const {
-            rankSelected,
-            numCharsTyped,
-            numSuggestionsDisplayed,
-            suggestions,
-          } = awesomeBarState(event.srcElement);
-
-          console.log({
-            rankSelected,
-            numCharsTyped,
-            numSuggestionsDisplayed,
-            suggestions,
-          });
-        };
-
-        autocompleteDebug();
+        awesomeBarEventEmitter.emit(
+          "awesomeBar.onAutocompleteSuggestionsUpdated",
+          awesomeBarState(event.srcElement),
+        );
       }
 
       /**
@@ -186,7 +169,8 @@ this.awesomeBar = class extends ExtensionAPI {
     /**
      * Proxy between awesomeBarEventEmitter.emit("awesomeBar.onAutocompleteSuggestionSelected", ...args)
      * and the actual web extension event being emitted
-     * @param eventRef
+     * @param {string} eventRef the event reference, eg "onAutocompleteSuggestionSelected"
+     * @returns {void}
      */
     const eventManagerFactory = eventRef => {
       const eventId = `awesomeBar.${eventRef}`;
@@ -209,9 +193,6 @@ this.awesomeBar = class extends ExtensionAPI {
           onFocus: eventManagerFactory("onFocus").api(),
           onBlur: eventManagerFactory("onBlur").api(),
           onInput: eventManagerFactory("onInput").api(),
-          onAutocompleteSuggestionsDisplayed: eventManagerFactory(
-            "onAutocompleteSuggestionsDisplayed",
-          ).api(),
           onAutocompleteSuggestionsHidden: eventManagerFactory(
             "onAutocompleteSuggestionsHidden",
           ).api(),

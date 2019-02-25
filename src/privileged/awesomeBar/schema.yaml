@@ -56,15 +56,9 @@
     parameters:  # for the callback
     - name: awesomeBarState
       $ref: awesomeBarState
-  - name: onAutocompleteSuggestionsDisplayed
-    type: function
-    description: Autocomplete popup show
-    parameters:  # for the callback
-    - name: awesomeBarState
-      $ref: awesomeBarState
   - name: onAutocompleteSuggestionsHidden
     type: function
-    description: Autocomplete popup hide
+    description: Fires when autocomplete popup has been cancelled by some means, like pressing escape
     parameters:  # for the callback
     - name: awesomeBarState
       $ref: awesomeBarState

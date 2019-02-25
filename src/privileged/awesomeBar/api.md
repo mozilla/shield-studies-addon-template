@@ -62,20 +62,9 @@ Character typed/deleted
   * $ref:
   * optional: false
 
-### `browser.experiments.awesomeBar.onAutocompleteSuggestionsDisplayed ()` Event
-
-Autocomplete popup show
-
-**Parameters**
-
-* `awesomeBarState`
-  * type: awesomeBarState
-  * $ref:
-  * optional: false
-
 ### `browser.experiments.awesomeBar.onAutocompleteSuggestionsHidden ()` Event
 
-Autocomplete popup hide
+Fires when autocomplete popup has been cancelled by some means, like pressing escape
 
 **Parameters**
 

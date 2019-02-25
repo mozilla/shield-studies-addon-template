@@ -56,8 +56,8 @@ class Feature {
       studyInfo.variation.name
     ];
     if (branchConfiguration.training) {
-      this.awesomeBarObserver = new AwesomeBarObserver();
-      this.awesomeBarObserver.start(synchronizer);
+      this.awesomeBarObserver = new AwesomeBarObserver(synchronizer);
+      this.awesomeBarObserver.start();
     }
   }
 
