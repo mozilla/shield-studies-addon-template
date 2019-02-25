@@ -17,24 +17,22 @@ this.awesomeBar = class extends ExtensionAPI {
 
     const awesomeBarEventEmitter = new EventEmitter();
 
-    function isBookmarkOrHistoryStyle(styleString) {
-      const NON_BOOKMARK_OR_HISTORY_STYLES = [
-        "switchtab",
-        "remotetab",
-        "searchengine",
-        "visiturl",
-        "extension",
-        "suggestion",
-        "keyword",
-      ];
-      const styles = new Set(styleString.split(/\s+/));
-      const isNonBookmarkOrHistoryStyle = NON_BOOKMARK_OR_HISTORY_STYLES.some(
-        s => styles.has(s),
-      );
-      return !isNonBookmarkOrHistoryStyle;
-    }
+    /**
+     * @param {object} el The URL bar element
+     * @returns {object} The awesome bar state
+     */
+    function awesomeBarState(el) {
+      const popup = el.popup;
+      if (!popup) {
+        // eslint-disable-next-line no-console
+        console.error(
+          "Awesome bar autocomplete popup was found undefined while attempting to assess the state of the awesome bar",
+          el,
+          el.popup,
+        );
+        return {};
+      }
 
-    function autocompletePopupMetadata(popup) {
       const controller = popup.view.QueryInterface(
         Ci.nsIAutoCompleteController,
       );
@@ -65,48 +63,9 @@ this.awesomeBar = class extends ExtensionAPI {
      */
     function processAutocompleteWillEnterText(el) {
       console.log("processAutocompleteWillEnterText", el, el.popup);
-      const popup = el.popup;
-      if (!popup) {
-        // eslint-disable-next-line no-console
-        console.error(
-          "Popup was found undefined - not emitting awesomeBar.onAutocompleteSuggestionSelected",
-          el,
-          el.popup,
-        );
-        return;
-      }
-
-      const {
-        rankSelected,
-        numCharsTyped,
-        numSuggestionsDisplayed,
-        suggestions,
-      } = autocompletePopupMetadata(popup);
-
-      const selectedSuggestion = suggestions[rankSelected];
-
-      const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
-        isBookmarkOrHistoryStyle(suggestion.style),
-      );
-      const bookmarkAndHistoryUrlSuggestions = bookmarkAndHistorySuggestions.map(
-        suggestion => suggestion.url,
-      );
-      const bookmarkAndHistoryRankSelected = bookmarkAndHistoryUrlSuggestions.indexOf(
-        selectedSuggestion.url,
-      );
-
-      const awesomeBarState = {
-        numSuggestionsDisplayed,
-        rankSelected,
-        bookmarkAndHistoryUrlSuggestions,
-        bookmarkAndHistoryRankSelected,
-        numCharsTyped,
-        selectedStyle: selectedSuggestion.style,
-      };
-
       awesomeBarEventEmitter.emit(
         "awesomeBar.onAutocompleteSuggestionSelected",
-        awesomeBarState,
+        awesomeBarState(el),
       );
     }
 
@@ -159,7 +118,7 @@ this.awesomeBar = class extends ExtensionAPI {
             numCharsTyped,
             numSuggestionsDisplayed,
             suggestions,
-          } = autocompletePopupMetadata(event.srcElement.popup);
+          } = awesomeBarState(event.srcElement);
 
           console.log({
             rankSelected,

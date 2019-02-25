@@ -6,20 +6,16 @@
     $schema: "http://json-schema.org/draft-04/schema"
     type: object
     properties:
-      numSuggestionsDisplayed:
-        type: number
       rankSelected:
-        type: number
-      bookmarkAndHistoryUrlSuggestions:
-        type: array
-        items:
-          type: string
-      bookmarkAndHistoryRankSelected:
         type: number
       numCharsTyped:
         type: number
-      selectedStyle:
-        type: string
+      numSuggestionsDisplayed:
+        type: number
+      suggestions:
+        type: array
+        items:
+          type: string
     required: ["numSuggestionsDisplayed", "rankSelected", "bookmarkAndHistoryUrlSuggestions", "bookmarkAndHistoryRankSelected", "numCharsTyped", "selectedStyle"]
     testcase: {bookmarkAndHistoryRankSelected: -1, bookmarkAndHistoryUrlSuggestions: [], numCharsTyped: 3, numSuggestionsDisplayed: 11, rankSelected: 2, selectedStyle: "action searchengine suggestion"}
 

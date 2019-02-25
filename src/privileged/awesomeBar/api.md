@@ -107,26 +107,20 @@ Autocomplete suggestions changed
   "$schema": "http://json-schema.org/draft-04/schema",
   "type": "object",
   "properties": {
-    "numSuggestionsDisplayed": {
-      "type": "number"
-    },
     "rankSelected": {
-      "type": "number"
-    },
-    "bookmarkAndHistoryUrlSuggestions": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "bookmarkAndHistoryRankSelected": {
       "type": "number"
     },
     "numCharsTyped": {
       "type": "number"
     },
-    "selectedStyle": {
-      "type": "string"
+    "numSuggestionsDisplayed": {
+      "type": "number"
+    },
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [
