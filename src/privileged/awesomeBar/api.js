@@ -92,7 +92,7 @@ this.awesomeBar = class extends ExtensionAPI {
       );
     }
 
-    const gURLBarEvents = ["focus", "blur", "change", "input"];
+    const gURLBarEvents = ["focus", "blur", "keydown", "keypress", "input"];
 
     const { clearTimeout, setTimeout } = ChromeUtils.import(
       "resource://gre/modules/Timer.jsm",
@@ -111,6 +111,48 @@ this.awesomeBar = class extends ExtensionAPI {
           "awesomeBar.onBlur",
           awesomeBarState(event.srcElement),
         );
+      }
+
+      static keydown(event) {
+        const {
+          charCode,
+          keyCode,
+          key,
+          altKey,
+          shiftKey,
+          ctrlKey,
+          metaKey,
+        } = event;
+        awesomeBarEventEmitter.emit("awesomeBar.onKeyDown", {
+          charCode,
+          keyCode,
+          key,
+          altKey,
+          shiftKey,
+          ctrlKey,
+          metaKey,
+        });
+      }
+
+      static keypress(event) {
+        const {
+          charCode,
+          keyCode,
+          key,
+          altKey,
+          shiftKey,
+          ctrlKey,
+          metaKey,
+        } = event;
+        awesomeBarEventEmitter.emit("awesomeBar.onKeyPress", {
+          charCode,
+          keyCode,
+          key,
+          altKey,
+          shiftKey,
+          ctrlKey,
+          metaKey,
+        });
       }
 
       static async input(event) {
@@ -206,6 +248,8 @@ this.awesomeBar = class extends ExtensionAPI {
           ).api(),
           onFocus: eventManagerFactory("onFocus").api(),
           onBlur: eventManagerFactory("onBlur").api(),
+          onKeyDown: eventManagerFactory("onKeyDown").api(),
+          onKeyPress: eventManagerFactory("onKeyPress").api(),
           onInput: eventManagerFactory("onInput").api(),
           onAutocompleteSuggestionsHidden: eventManagerFactory(
             "onAutocompleteSuggestionsHidden",

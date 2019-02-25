@@ -84,6 +84,28 @@ Autocomplete suggestions changed
   * $ref:
   * optional: false
 
+### `browser.experiments.awesomeBar.onKeyDown ()` Event
+
+Fires when a key is pressed down in the awesome bar (including meta/modifier keys). May repeat if key is held down.
+
+**Parameters**
+
+* `keyEvent`
+  * type: keyEvent
+  * $ref:
+  * optional: false
+
+### `browser.experiments.awesomeBar.onKeyPress ()` Event
+
+Fires after one or a combination of keys has been pressed and lead to an input into the awesome bar (without information about which meta/modifier key was used). May repeat if key is held down.
+
+**Parameters**
+
+* `keyEvent`
+  * type: keyEvent
+  * $ref:
+  * optional: false
+
 ## Properties TBD
 
 ## Data Types
@@ -127,6 +149,57 @@ Autocomplete suggestions changed
     "numSuggestionsDisplayed": 11,
     "rankSelected": 2,
     "selectedStyle": "action searchengine suggestion"
+  }
+}
+```
+
+### [1] keyEvent
+
+```json
+{
+  "id": "keyEvent",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "type": "object",
+  "properties": {
+    "charCode": {
+      "type": "number"
+    },
+    "keyCode": {
+      "type": "number"
+    },
+    "key": {
+      "type": "string"
+    },
+    "altKey": {
+      "type": "boolean"
+    },
+    "shiftKey": {
+      "type": "boolean"
+    },
+    "ctrlKey": {
+      "type": "boolean"
+    },
+    "metaKey": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "charCode",
+    "keyCode",
+    "key",
+    "altKey",
+    "shiftKey",
+    "ctrlKey",
+    "metaKey"
+  ],
+  "testcase": {
+    "altKey": false,
+    "charCode": 0,
+    "ctrlKey": false,
+    "key": "Enter",
+    "keyCode": 13,
+    "metaKey": false,
+    "shiftKey": false
   }
 }
 ```

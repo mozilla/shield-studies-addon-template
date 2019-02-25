@@ -10,6 +10,8 @@ class AwesomeBarObserver {
     this.eventsToObserve = [
       "onFocus",
       "onBlur",
+      "onKeyDown",
+      "onKeyPress",
       "onInput",
       "onAutocompleteSuggestionsHidden",
       "onAutocompleteSuggestionsUpdated",
@@ -97,6 +99,32 @@ class AwesomeBarObserver {
       type: "onBlur",
     });
     console.log("onBlur", this.observedEventsSinceLastFocus);
+    return true;
+  }
+
+  async onKeyDown(keyEvent) {
+    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
+      // drop the event - do not do any model training
+      return false;
+    }
+    this.observedEventsSinceLastFocus.push({
+      keyEvent,
+      timestamp: new Date(),
+      type: "onKeyDown",
+    });
+    return true;
+  }
+
+  async onKeyPress(keyEvent) {
+    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
+      // drop the event - do not do any model training
+      return false;
+    }
+    this.observedEventsSinceLastFocus.push({
+      keyEvent,
+      timestamp: new Date(),
+      type: "onKeyPress",
+    });
     return true;
   }
 
