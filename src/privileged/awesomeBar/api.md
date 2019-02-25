@@ -24,38 +24,74 @@ Fires when a suggestion has been suggested in the awesome bar autocomplete popup
 
 **Parameters**
 
-* `numSuggestionsDisplayed`
-
-  * type: numSuggestionsDisplayed
+* `awesomeBarState`
+  * type: awesomeBarState
   * $ref:
   * optional: false
 
-* `rankSelected`
+### `browser.experiments.awesomeBar.onFocus ()` Event
 
-  * type: rankSelected
+Enter the awesome bar
+
+**Parameters**
+
+* `awesomeBarState`
+  * type: awesomeBarState
   * $ref:
   * optional: false
 
-* `bookmarkAndHistoryUrlSuggestions`
+### `browser.experiments.awesomeBar.onBlur ()` Event
 
-  * type: bookmarkAndHistoryUrlSuggestions
+Exit the awesome bar
+
+**Parameters**
+
+* `awesomeBarState`
+  * type: awesomeBarState
   * $ref:
   * optional: false
 
-* `bookmarkAndHistoryRankSelected`
+### `browser.experiments.awesomeBar.onInput ()` Event
 
-  * type: bookmarkAndHistoryRankSelected
+Character typed/deleted
+
+**Parameters**
+
+* `awesomeBarState`
+  * type: awesomeBarState
   * $ref:
   * optional: false
 
-* `numCharsTyped`
+### `browser.experiments.awesomeBar.onAutocompleteSuggestionsDisplayed ()` Event
 
-  * type: numCharsTyped
+Autocomplete popup show
+
+**Parameters**
+
+* `awesomeBarState`
+  * type: awesomeBarState
   * $ref:
   * optional: false
 
-* `selectedStyle`
-  * type: selectedStyle
+### `browser.experiments.awesomeBar.onAutocompleteSuggestionsHidden ()` Event
+
+Autocomplete popup hide
+
+**Parameters**
+
+* `awesomeBarState`
+  * type: awesomeBarState
+  * $ref:
+  * optional: false
+
+### `browser.experiments.awesomeBar.onAutocompleteSuggestionsUpdated ()` Event
+
+Autocomplete suggestions changed
+
+**Parameters**
+
+* `awesomeBarState`
+  * type: awesomeBarState
   * $ref:
   * optional: false
 
@@ -63,4 +99,57 @@ Fires when a suggestion has been suggested in the awesome bar autocomplete popup
 
 ## Data Types
 
-(None)
+### [0] awesomeBarState
+
+```json
+{
+  "id": "awesomeBarState",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "type": "object",
+  "properties": [
+    {
+      "name": "numSuggestionsDisplayed",
+      "type": "number"
+    },
+    {
+      "name": "rankSelected",
+      "type": "number"
+    },
+    {
+      "name": "bookmarkAndHistoryUrlSuggestions",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "bookmarkAndHistoryRankSelected",
+      "type": "number"
+    },
+    {
+      "name": "numCharsTyped",
+      "type": "number"
+    },
+    {
+      "name": "selectedStyle",
+      "type": "string"
+    }
+  ],
+  "required": [
+    "numSuggestionsDisplayed",
+    "rankSelected",
+    "bookmarkAndHistoryUrlSuggestions",
+    "bookmarkAndHistoryRankSelected",
+    "numCharsTyped",
+    "selectedStyle"
+  ],
+  "testcase": {
+    "bookmarkAndHistoryRankSelected": -1,
+    "bookmarkAndHistoryUrlSuggestions": [],
+    "numCharsTyped": 3,
+    "numSuggestionsDisplayed": 11,
+    "rankSelected": 2,
+    "selectedStyle": "action searchengine suggestion"
+  }
+}
+```

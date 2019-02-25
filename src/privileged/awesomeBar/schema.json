@@ -2,29 +2,12 @@
   {
     "namespace": "experiments.awesomeBar",
     "description": "Listen to awesome bar interactions",
-    "functions": [
+    "types": [
       {
-        "name": "start",
-        "type": "function",
-        "async": true,
-        "description": "Start listening to awesome bar interactions",
-        "parameters": []
-      },
-      {
-        "name": "stop",
-        "type": "function",
-        "async": true,
-        "description": "Stop listening to awesome bar interactions",
-        "parameters": []
-      }
-    ],
-    "events": [
-      {
-        "name": "onAutocompleteSuggestionSelected",
-        "type": "function",
-        "description":
-          "Fires when a suggestion has been suggested in the awesome bar autocomplete popup.",
-        "parameters": [
+        "id": "awesomeBarState",
+        "$schema": "http://json-schema.org/draft-04/schema",
+        "type": "object",
+        "properties": [
           {
             "name": "numSuggestionsDisplayed",
             "type": "number"
@@ -51,6 +34,118 @@
           {
             "name": "selectedStyle",
             "type": "string"
+          }
+        ],
+        "required": [
+          "numSuggestionsDisplayed",
+          "rankSelected",
+          "bookmarkAndHistoryUrlSuggestions",
+          "bookmarkAndHistoryRankSelected",
+          "numCharsTyped",
+          "selectedStyle"
+        ],
+        "testcase": {
+          "bookmarkAndHistoryRankSelected": -1,
+          "bookmarkAndHistoryUrlSuggestions": [],
+          "numCharsTyped": 3,
+          "numSuggestionsDisplayed": 11,
+          "rankSelected": 2,
+          "selectedStyle": "action searchengine suggestion"
+        }
+      }
+    ],
+    "functions": [
+      {
+        "name": "start",
+        "type": "function",
+        "async": true,
+        "description": "Start listening to awesome bar interactions",
+        "parameters": []
+      },
+      {
+        "name": "stop",
+        "type": "function",
+        "async": true,
+        "description": "Stop listening to awesome bar interactions",
+        "parameters": []
+      }
+    ],
+    "events": [
+      {
+        "name": "onAutocompleteSuggestionSelected",
+        "type": "function",
+        "description":
+          "Fires when a suggestion has been suggested in the awesome bar autocomplete popup.",
+        "parameters": [
+          {
+            "name": "awesomeBarState",
+            "$ref": "awesomeBarState"
+          }
+        ]
+      },
+      {
+        "name": "onFocus",
+        "type": "function",
+        "description": "Enter the awesome bar",
+        "parameters": [
+          {
+            "name": "awesomeBarState",
+            "$ref": "awesomeBarState"
+          }
+        ]
+      },
+      {
+        "name": "onBlur",
+        "type": "function",
+        "description": "Exit the awesome bar",
+        "parameters": [
+          {
+            "name": "awesomeBarState",
+            "$ref": "awesomeBarState"
+          }
+        ]
+      },
+      {
+        "name": "onInput",
+        "type": "function",
+        "description": "Character typed/deleted",
+        "parameters": [
+          {
+            "name": "awesomeBarState",
+            "$ref": "awesomeBarState"
+          }
+        ]
+      },
+      {
+        "name": "onAutocompleteSuggestionsDisplayed",
+        "type": "function",
+        "description": "Autocomplete popup show",
+        "parameters": [
+          {
+            "name": "awesomeBarState",
+            "$ref": "awesomeBarState"
+          }
+        ]
+      },
+      {
+        "name": "onAutocompleteSuggestionsHidden",
+        "type": "function",
+        "description": "Autocomplete popup hide",
+        "parameters": [
+          {
+            "name": "awesomeBarState",
+            "$ref": "awesomeBarState"
+          }
+        ]
+      },
+      {
+        "name": "onAutocompleteSuggestionsUpdated",
+        "type": "function",
+        "description": "Autocomplete suggestions changed",
+        "parameters": [
+          {
+            "name": "awesomeBarState",
+            "$ref": "awesomeBarState"
           }
         ]
       }

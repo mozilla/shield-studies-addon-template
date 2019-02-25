@@ -1,6 +1,28 @@
 - namespace: experiments.awesomeBar
   description: Listen to awesome bar interactions
 
+  types:
+  - id: awesomeBarState
+    $schema: "http://json-schema.org/draft-04/schema"
+    type: 'object'
+    properties:
+    - name: numSuggestionsDisplayed
+      type: number
+    - name: rankSelected
+      type: number
+    - name: bookmarkAndHistoryUrlSuggestions
+      type: array
+      items:
+        type: string
+    - name: bookmarkAndHistoryRankSelected
+      type: number
+    - name: numCharsTyped
+      type: number
+    - name: selectedStyle
+      type: string
+    required: ["numSuggestionsDisplayed", "rankSelected", "bookmarkAndHistoryUrlSuggestions", "bookmarkAndHistoryRankSelected", "numCharsTyped", "selectedStyle"]
+    testcase: {bookmarkAndHistoryRankSelected: -1, bookmarkAndHistoryUrlSuggestions: [], numCharsTyped: 3, numSuggestionsDisplayed: 11, rankSelected: 2, selectedStyle: "action searchengine suggestion"}
+
   functions:
   - name: start
     type: 'function'
@@ -18,17 +40,41 @@
     type: function
     description: Fires when a suggestion has been suggested in the awesome bar autocomplete popup.
     parameters:  # for the callback
-    - name: numSuggestionsDisplayed
-      type: number
-    - name: rankSelected
-      type: number
-    - name: bookmarkAndHistoryUrlSuggestions
-      type: array
-      items:
-        type: string
-    - name: bookmarkAndHistoryRankSelected
-      type: number
-    - name: numCharsTyped
-      type: number
-    - name: selectedStyle
-      type: string
+    - name: awesomeBarState
+      $ref: awesomeBarState
+  - name: onFocus
+    type: function
+    description: Enter the awesome bar
+    parameters:  # for the callback
+    - name: awesomeBarState
+      $ref: awesomeBarState
+  - name: onBlur
+    type: function
+    description: Exit the awesome bar
+    parameters:  # for the callback
+    - name: awesomeBarState
+      $ref: awesomeBarState
+  - name: onInput
+    type: function
+    description: Character typed/deleted
+    parameters:  # for the callback
+    - name: awesomeBarState
+      $ref: awesomeBarState
+  - name: onAutocompleteSuggestionsDisplayed
+    type: function
+    description: Autocomplete popup show
+    parameters:  # for the callback
+    - name: awesomeBarState
+      $ref: awesomeBarState
+  - name: onAutocompleteSuggestionsHidden
+    type: function
+    description: Autocomplete popup hide
+    parameters:  # for the callback
+    - name: awesomeBarState
+      $ref: awesomeBarState
+  - name: onAutocompleteSuggestionsUpdated
+    type: function
+    description: Autocomplete suggestions changed
+    parameters:  # for the callback
+    - name: awesomeBarState
+      $ref: awesomeBarState

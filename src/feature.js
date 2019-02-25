@@ -58,14 +58,14 @@ class Feature {
     ];
     if (branchConfiguration.training) {
       browser.experiments.awesomeBar.onAutocompleteSuggestionSelected.addListener(
-        async(
+        async({
           numSuggestionsDisplayed,
           rankSelected,
           bookmarkAndHistoryUrlSuggestions,
           bookmarkAndHistoryRankSelected,
           numCharsTyped,
           selectedStyle,
-        ) => {
+        }) => {
           if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
             // drop the event - do not do any model training
             return false;

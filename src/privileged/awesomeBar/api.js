@@ -95,14 +95,18 @@ this.awesomeBar = class extends ExtensionAPI {
         selectedSuggestion.url,
       );
 
-      awesomeBarEventEmitter.emit(
-        "awesomeBar.onAutocompleteSuggestionSelected",
+      const awesomeBarState = {
         numSuggestionsDisplayed,
         rankSelected,
         bookmarkAndHistoryUrlSuggestions,
         bookmarkAndHistoryRankSelected,
         numCharsTyped,
-        selectedSuggestion.style,
+        selectedStyle: selectedSuggestion.style,
+      };
+
+      awesomeBarEventEmitter.emit(
+        "awesomeBar.onAutocompleteSuggestionSelected",
+        awesomeBarState,
       );
     }
 
@@ -220,28 +224,42 @@ this.awesomeBar = class extends ExtensionAPI {
       });
     }
 
+    /**
+     * Proxy between awesomeBarEventEmitter.emit("awesomeBar.onAutocompleteSuggestionSelected", ...args)
+     * and the actual web extension event being emitted
+     * @param eventRef
+     */
+    const eventManagerFactory = eventRef => {
+      const eventId = `awesomeBar.${eventRef}`;
+      return new EventManager(context, eventId, fire => {
+        const listener = (event, ...args) => fire.async(...args);
+        awesomeBarEventEmitter.on(eventId, listener);
+        return () => {
+          awesomeBarEventEmitter.off(eventId, listener);
+        };
+      });
+    };
+
     return {
       experiments: {
         awesomeBar: {
-          onAutocompleteSuggestionSelected: new EventManager(
-            context,
-            "awesomeBar.onAutocompleteSuggestionSelected",
-            fire => {
-              const listener = (event, ...args) => {
-                fire.async(...args);
-              };
-              awesomeBarEventEmitter.on(
-                "awesomeBar.onAutocompleteSuggestionSelected",
-                listener,
-              );
-              return () => {
-                awesomeBarEventEmitter.off(
-                  "awesomeBar.onAutocompleteSuggestionSelected",
-                  listener,
-                );
-              };
-            },
+          // Event boilerplate with listeners that forwards all but the first argument to the web extension event
+          onAutocompleteSuggestionSelected: eventManagerFactory(
+            "onAutocompleteSuggestionSelected",
           ).api(),
+          onFocus: eventManagerFactory("onFocus").api(),
+          onBlur: eventManagerFactory("onBlur").api(),
+          onInput: eventManagerFactory("onInput").api(),
+          onAutocompleteSuggestionsDisplayed: eventManagerFactory(
+            "onAutocompleteSuggestionsDisplayed",
+          ).api(),
+          onAutocompleteSuggestionsHidden: eventManagerFactory(
+            "onAutocompleteSuggestionsHidden",
+          ).api(),
+          onAutocompleteSuggestionsUpdated: eventManagerFactory(
+            "onAutocompleteSuggestionsUpdated",
+          ).api(),
+          // Functions
           start: async() => {
             Services.obs.addObserver(
               processAutocompleteWillEnterText,
