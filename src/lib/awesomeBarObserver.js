@@ -1,12 +1,12 @@
-/* global optimizer */
+/* global FrecencyOptimizer */
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(svmLoss|AwesomeBarObserver)" }]*/
 
 class AwesomeBarObserver {
-  constructor(trainingStepFunction) {
-    this.trainingStepFunction = trainingStepFunction;
-  }
-
-  async start() {
+  async start(synchronizer) {
+    const optimizer = new FrecencyOptimizer(
+      synchronizer,
+      FrecencyOptimizer.svmLoss,
+    );
     browser.experiments.awesomeBar.onAutocompleteSuggestionSelected.addListener(
       async({
         rankSelected,
@@ -32,7 +32,7 @@ class AwesomeBarObserver {
         );
 
         try {
-          await this.trainingStepFunction(
+          await optimizer.step(
             numSuggestionsDisplayed,
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,

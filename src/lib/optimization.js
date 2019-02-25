@@ -1,28 +1,28 @@
 /* global FRECENCY_PREFS */
-/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(svmLoss|FrecencyOptimizer)" }]*/
-
-async function svmLoss(urls, correct) {
-  const frecencies = await urlsToFrecencies(urls);
-  const correctFrecency = frecencies[correct];
-
-  let loss = 0;
-
-  for (const frecency of frecencies) {
-    if (frecency > correctFrecency) {
-      loss += frecency - correctFrecency;
-    }
-  }
-
-  return loss;
-}
-
-async function urlsToFrecencies(urls) {
-  return Promise.all(
-    urls.map(url => browser.experiments.frecency.calculateByURL(url)),
-  );
-}
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(FrecencyOptimizer)" }]*/
 
 class FrecencyOptimizer {
+  static async svmLoss(urls, correct) {
+    const frecencies = await FrecencyOptimizer.urlsToFrecencies(urls);
+    const correctFrecency = frecencies[correct];
+
+    let loss = 0;
+
+    for (const frecency of frecencies) {
+      if (frecency > correctFrecency) {
+        loss += frecency - correctFrecency;
+      }
+    }
+
+    return loss;
+  }
+
+  static async urlsToFrecencies(urls) {
+    return Promise.all(
+      urls.map(url => browser.experiments.frecency.calculateByURL(url)),
+    );
+  }
+
   constructor(synchronizer, lossFn, eps = 1) {
     this.synchronizer = synchronizer;
     this.lossFn = lossFn;
@@ -48,10 +48,10 @@ class FrecencyOptimizer {
         selectedStyle,
       },
     ]);
-    const frecencyScores = await urlsToFrecencies(
+    const frecencyScores = await FrecencyOptimizer.urlsToFrecencies(
       bookmarkAndHistoryUrlSuggestions,
     );
-    const loss = await svmLoss(
+    const loss = await this.lossFn(
       bookmarkAndHistoryUrlSuggestions,
       bookmarkAndHistoryRankSelected,
     );

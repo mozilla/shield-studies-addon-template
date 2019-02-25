@@ -56,11 +56,8 @@ class Feature {
       studyInfo.variation.name
     ];
     if (branchConfiguration.training) {
-      const optimizer = new FrecencyOptimizer(synchronizer, svmLoss);
-      this.awesomeBarObserver = new AwesomeBarObserver(
-        optimizer.step.bind(optimizer),
-      );
-      this.awesomeBarObserver.start();
+      this.awesomeBarObserver = new AwesomeBarObserver();
+      this.awesomeBarObserver.start(synchronizer);
     }
   }
 
