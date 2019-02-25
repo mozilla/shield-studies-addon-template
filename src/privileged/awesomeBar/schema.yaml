@@ -4,33 +4,33 @@
   types:
   - id: awesomeBarState
     $schema: "http://json-schema.org/draft-04/schema"
-    type: 'object'
+    type: object
     properties:
-    - name: numSuggestionsDisplayed
-      type: number
-    - name: rankSelected
-      type: number
-    - name: bookmarkAndHistoryUrlSuggestions
-      type: array
-      items:
+      numSuggestionsDisplayed:
+        type: number
+      rankSelected:
+        type: number
+      bookmarkAndHistoryUrlSuggestions:
+        type: array
+        items:
+          type: string
+      bookmarkAndHistoryRankSelected:
+        type: number
+      numCharsTyped:
+        type: number
+      selectedStyle:
         type: string
-    - name: bookmarkAndHistoryRankSelected
-      type: number
-    - name: numCharsTyped
-      type: number
-    - name: selectedStyle
-      type: string
     required: ["numSuggestionsDisplayed", "rankSelected", "bookmarkAndHistoryUrlSuggestions", "bookmarkAndHistoryRankSelected", "numCharsTyped", "selectedStyle"]
     testcase: {bookmarkAndHistoryRankSelected: -1, bookmarkAndHistoryUrlSuggestions: [], numCharsTyped: 3, numSuggestionsDisplayed: 11, rankSelected: 2, selectedStyle: "action searchengine suggestion"}
 
   functions:
   - name: start
-    type: 'function'
+    type: function
     async: true
     description: Start listening to awesome bar interactions
     parameters: []
   - name: stop
-    type: 'function'
+    type: function
     async: true
     description: Stop listening to awesome bar interactions
     parameters: []

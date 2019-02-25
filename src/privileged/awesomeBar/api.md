@@ -106,35 +106,29 @@ Autocomplete suggestions changed
   "id": "awesomeBarState",
   "$schema": "http://json-schema.org/draft-04/schema",
   "type": "object",
-  "properties": [
-    {
-      "name": "numSuggestionsDisplayed",
+  "properties": {
+    "numSuggestionsDisplayed": {
       "type": "number"
     },
-    {
-      "name": "rankSelected",
+    "rankSelected": {
       "type": "number"
     },
-    {
-      "name": "bookmarkAndHistoryUrlSuggestions",
+    "bookmarkAndHistoryUrlSuggestions": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    {
-      "name": "bookmarkAndHistoryRankSelected",
+    "bookmarkAndHistoryRankSelected": {
       "type": "number"
     },
-    {
-      "name": "numCharsTyped",
+    "numCharsTyped": {
       "type": "number"
     },
-    {
-      "name": "selectedStyle",
+    "selectedStyle": {
       "type": "string"
     }
-  ],
+  },
   "required": [
     "numSuggestionsDisplayed",
     "rankSelected",
