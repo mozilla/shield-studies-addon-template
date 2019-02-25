@@ -39,26 +39,26 @@ class AwesomeBarObserver {
     }
     console.log("onAutocompleteSuggestionSelected", awesomeBarState);
 
-    const {
-      rankSelected,
-      numCharsTyped,
-      numSuggestionsDisplayed,
-      suggestions,
-    } = awesomeBarState;
-
-    const selectedSuggestion = suggestions[rankSelected];
-
-    const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
-      AwesomeBarObserver.isBookmarkOrHistoryStyle(suggestion.style),
-    );
-    const bookmarkAndHistoryUrlSuggestions = bookmarkAndHistorySuggestions.map(
-      suggestion => suggestion.url,
-    );
-    const bookmarkAndHistoryRankSelected = bookmarkAndHistoryUrlSuggestions.indexOf(
-      selectedSuggestion.url,
-    );
-
     try {
+      const {
+        rankSelected,
+        numCharsTyped,
+        numSuggestionsDisplayed,
+        suggestions,
+      } = awesomeBarState;
+
+      const selectedSuggestion = suggestions[rankSelected];
+
+      const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
+        AwesomeBarObserver.isBookmarkOrHistoryStyle(suggestion.style),
+      );
+      const bookmarkAndHistoryUrlSuggestions = bookmarkAndHistorySuggestions.map(
+        suggestion => suggestion.url,
+      );
+      const bookmarkAndHistoryRankSelected = bookmarkAndHistoryUrlSuggestions.indexOf(
+        selectedSuggestion.url,
+      );
+
       await this.optimizer.step(
         numSuggestionsDisplayed,
         rankSelected,
@@ -68,10 +68,10 @@ class AwesomeBarObserver {
         selectedSuggestion.style,
       );
     } catch (error) {
-      await browser.study.logger.error([
-        "Training failed - optimizer.step ran into an error:",
-        error,
-      ]);
+      // Surfacing otherwise silent errors
+      // eslint-disable-next-line no-console
+      console.error(error.toString());
+      throw new Error(error.toString());
     }
     return true;
   }

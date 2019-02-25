@@ -48,29 +48,36 @@ class FrecencyOptimizer {
         selectedStyle,
       },
     ]);
-    const frecencyScores = await FrecencyOptimizer.urlsToFrecencies(
-      bookmarkAndHistoryUrlSuggestions,
-    );
-    const loss = await this.lossFn(
-      bookmarkAndHistoryUrlSuggestions,
-      bookmarkAndHistoryRankSelected,
-    );
-    const weights = await this.computeGradient(
-      bookmarkAndHistoryUrlSuggestions,
-      bookmarkAndHistoryRankSelected,
-    );
-    return this.synchronizer.pushModelUpdate({
-      frecencyScores,
-      loss,
-      weights,
-      numSuggestionsDisplayed,
-      rankSelected,
-      bookmarkAndHistoryNumSuggestionsDisplayed:
-        bookmarkAndHistoryUrlSuggestions.length,
-      bookmarkAndHistoryRankSelected,
-      numCharsTyped,
-      selectedStyle,
-    });
+    try {
+      const frecencyScores = await FrecencyOptimizer.urlsToFrecencies(
+        bookmarkAndHistoryUrlSuggestions,
+      );
+      const loss = await this.lossFn(
+        bookmarkAndHistoryUrlSuggestions,
+        bookmarkAndHistoryRankSelected,
+      );
+      const weights = await this.computeGradient(
+        bookmarkAndHistoryUrlSuggestions,
+        bookmarkAndHistoryRankSelected,
+      );
+      return this.synchronizer.pushModelUpdate({
+        frecencyScores,
+        loss,
+        weights,
+        numSuggestionsDisplayed,
+        rankSelected,
+        bookmarkAndHistoryNumSuggestionsDisplayed:
+          bookmarkAndHistoryUrlSuggestions.length,
+        bookmarkAndHistoryRankSelected,
+        numCharsTyped,
+        selectedStyle,
+      });
+    } catch (error) {
+      // Surfacing otherwise silent errors
+      // eslint-disable-next-line no-console
+      console.error(error.toString());
+      throw new Error(error.toString());
+    }
   }
 
   async computeGradient(

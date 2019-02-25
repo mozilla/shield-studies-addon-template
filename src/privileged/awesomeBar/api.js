@@ -15,6 +15,12 @@ this.awesomeBar = class extends ExtensionAPI {
 
     const { EventManager, EventEmitter } = ExtensionCommon;
 
+    const { ExtensionUtils } = ChromeUtils.import(
+      "resource://gre/modules/ExtensionUtils.jsm",
+      {},
+    );
+    const { ExtensionError } = ExtensionUtils;
+
     const awesomeBarEventEmitter = new EventEmitter();
 
     /**
@@ -22,39 +28,44 @@ this.awesomeBar = class extends ExtensionAPI {
      * @returns {object} The awesome bar state
      */
     function awesomeBarState(el) {
-      const popup = el.popup;
-      if (!popup) {
-        // eslint-disable-next-line no-console
-        console.error(
-          "Awesome bar autocomplete popup was found undefined while attempting to assess the state of the awesome bar",
-          el,
-          el.popup,
+      try {
+        const popup = el.popup;
+        if (!popup) {
+          // eslint-disable-next-line no-console
+          console.error(
+            "Awesome bar autocomplete popup was found undefined while attempting to assess the state of the awesome bar",
+            el,
+            el.popup,
+          );
+          return {};
+        }
+
+        const controller = popup.view.QueryInterface(
+          Ci.nsIAutoCompleteController,
         );
-        return {};
+
+        const rankSelected = popup.selectedIndex;
+        const numCharsTyped = controller.searchString.length;
+        const numSuggestionsDisplayed = controller.matchCount;
+
+        const suggestions = [];
+        for (let i = 0; i < numSuggestionsDisplayed; i++) {
+          suggestions.push({
+            style: controller.getStyleAt(i),
+            url: controller.getFinalCompleteValueAt(i),
+          });
+        }
+
+        return {
+          rankSelected,
+          numCharsTyped,
+          numSuggestionsDisplayed,
+          suggestions,
+        };
+      } catch (error) {
+        // Surfacing otherwise silent errors
+        throw new ExtensionError(error.toString());
       }
-
-      const controller = popup.view.QueryInterface(
-        Ci.nsIAutoCompleteController,
-      );
-
-      const rankSelected = popup.selectedIndex;
-      const numCharsTyped = controller.searchString.length;
-      const numSuggestionsDisplayed = controller.matchCount;
-
-      const suggestions = [];
-      for (let i = 0; i < numSuggestionsDisplayed; i++) {
-        suggestions.push({
-          style: controller.getStyleAt(i),
-          url: controller.getFinalCompleteValueAt(i),
-        });
-      }
-
-      return {
-        rankSelected,
-        numCharsTyped,
-        numSuggestionsDisplayed,
-        suggestions,
-      };
     }
 
     /**
@@ -83,7 +94,7 @@ this.awesomeBar = class extends ExtensionAPI {
 
     const gURLBarEvents = ["focus", "blur", "change", "input"];
 
-    const { setTimeout } = ChromeUtils.import(
+    const { clearTimeout, setTimeout } = ChromeUtils.import(
       "resource://gre/modules/Timer.jsm",
     );
 
@@ -120,13 +131,14 @@ this.awesomeBar = class extends ExtensionAPI {
        */
       static waitForSearchResults(el) {
         return new Promise((resolve, reject) => {
-          el.onSearchComplete = () => {
-            resolve();
-          };
-          // Timeout after 1000ms if no search results are in
-          setTimeout(() => {
+          // Fallback timeout after 1000ms if no search results are in by then
+          const timer = setTimeout(() => {
             reject();
           }, 1000);
+          el.onSearchComplete = () => {
+            clearTimeout(timer);
+            resolve();
+          };
         });
       }
     }
@@ -158,12 +170,14 @@ this.awesomeBar = class extends ExtensionAPI {
      * @returns {void}
      */
     function unregisterAwesomeBarInputListeners(win) {
-      gURLBarEvents.map(eventRef => {
-        win.gURLBar.removeEventListener(
-          eventRef,
-          UrlBarEventListeners[eventRef],
-        );
-      });
+      if (win.gURLBar) {
+        gURLBarEvents.map(eventRef => {
+          win.gURLBar.removeEventListener(
+            eventRef,
+            UrlBarEventListeners[eventRef],
+          );
+        });
+      }
     }
 
     /**
