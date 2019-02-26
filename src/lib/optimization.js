@@ -40,7 +40,7 @@ class FrecencyOptimizer {
     selectedStyle,
   ) {
     await browser.study.logger.debug([
-      "FrecencyOptimizer.step entered",
+      "frecencyOptimizer.step entered",
       {
         numSuggestionsDisplayed,
         rankSelected,

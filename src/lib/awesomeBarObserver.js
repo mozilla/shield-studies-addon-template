@@ -3,7 +3,7 @@
 
 class AwesomeBarObserver {
   constructor(synchronizer) {
-    this.optimizer = new FrecencyOptimizer(
+    this.frecencyOptimizer = new FrecencyOptimizer(
       synchronizer,
       FrecencyOptimizer.svmLoss,
     );
@@ -44,8 +44,12 @@ class AwesomeBarObserver {
    */
   async updateModel() {
     try {
-      console.log("updateModel TODO", this.observedEventsSinceLastFocus);
-
+      await browser.study.logger.debug([
+        "awesomeBarObserver.updateModel entered",
+        {
+          observedEventsSinceLastFocus: this.observedEventsSinceLastFocus,
+        },
+      ]);
       const selectionEvent = this.observedEventsSinceLastFocus
         .slice()
         .reverse()
@@ -89,7 +93,7 @@ class AwesomeBarObserver {
           eventsAtSelectedsFirstEntry,
         );
 
-        await this.optimizer.step(
+        await this.frecencyOptimizer.step(
           numSuggestionsDisplayed,
           rankSelected,
           bookmarkAndHistoryUrlSuggestions,
@@ -135,7 +139,7 @@ class AwesomeBarObserver {
           const bookmarkAndHistoryRankSelected = -1;
           const selectedStyle = "";
 
-          await this.optimizer.step(
+          await this.frecencyOptimizer.step(
             numSuggestionsDisplayed,
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
@@ -172,7 +176,7 @@ class AwesomeBarObserver {
           const bookmarkAndHistoryRankSelected = -1;
           const selectedStyle = "";
 
-          await this.optimizer.step(
+          await this.frecencyOptimizer.step(
             numSuggestionsDisplayed,
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
@@ -218,7 +222,6 @@ class AwesomeBarObserver {
       timestamp: new Date(),
       type: "onBlur",
     });
-    console.log("onBlur", this.observedEventsSinceLastFocus);
     await this.updateModel(awesomeBarState);
     return true;
   }
