@@ -82,11 +82,19 @@ class AwesomeBarObserver {
         );
         const selectedStyle = selectedSuggestion.style;
 
+        const eventsAtSelectedsFirstEntry = AwesomeBarObserver.eventsAtSelectedsFirstEntry(
+          this.observedEventsSinceLastFocus,
+        );
+        const numKeyDownsAtFirstAppearanceOfSelected = AwesomeBarObserver.numKeyDowns(
+          eventsAtSelectedsFirstEntry,
+        );
+
         await this.optimizer.step(
           numSuggestionsDisplayed,
           rankSelected,
           bookmarkAndHistoryUrlSuggestions,
           bookmarkAndHistoryRankSelected,
+          numKeyDownsAtFirstAppearanceOfSelected,
           numKeyDowns,
           searchStringLength,
           selectedStyle,
@@ -113,6 +121,7 @@ class AwesomeBarObserver {
             suggestions,
           } = latestUpdateEvent.awesomeBarState;
 
+          const numKeyDownsAtFirstAppearanceOfSelected = -1;
           const numKeyDowns = AwesomeBarObserver.numKeyDowns(
             this.observedEventsSinceLastFocus,
           );
@@ -131,6 +140,7 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
+            numKeyDownsAtFirstAppearanceOfSelected,
             numKeyDowns,
             searchStringLength,
             selectedStyle,
@@ -152,6 +162,7 @@ class AwesomeBarObserver {
 
           const { searchStringLength } = focusEvent.awesomeBarState;
 
+          const numKeyDownsAtFirstAppearanceOfSelected = -1;
           const numKeyDowns = AwesomeBarObserver.numKeyDowns(
             this.observedEventsSinceLastFocus,
           );
@@ -166,6 +177,7 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
+            numKeyDownsAtFirstAppearanceOfSelected,
             numKeyDowns,
             searchStringLength,
             selectedStyle,
@@ -319,5 +331,50 @@ class AwesomeBarObserver {
       );
     });
     return keyDownEvents.length;
+  }
+
+  /**
+   * @param {array} observedEventsSinceLastFocus Self-explanatory hopefully
+   * @returns {int} The eventsAtSelectedsFirstEntry
+   */
+  static eventsAtSelectedsFirstEntry(observedEventsSinceLastFocus) {
+    const selectionEvent = observedEventsSinceLastFocus
+      .slice()
+      .reverse()
+      .find(observedEvent => {
+        return (
+          observedEvent.awesomeBarState &&
+          observedEvent.type === "onAutocompleteSuggestionSelected"
+        );
+      });
+
+    if (!selectionEvent) {
+      throw new Error("No selection event observed");
+    }
+
+    const selectedUrl =
+      selectionEvent.awesomeBarState.suggestions[
+        selectionEvent.awesomeBarState.rankSelected
+      ].url;
+
+    const eventWhereTheSelectedUrlAppearedForTheFirstTime = observedEventsSinceLastFocus.find(
+      observedEvent => {
+        return (
+          observedEvent.awesomeBarState &&
+          observedEvent.awesomeBarState.suggestions.find(
+            suggestion => suggestion.url === selectedUrl,
+          )
+        );
+      },
+    );
+
+    if (!eventWhereTheSelectedUrlAppearedForTheFirstTime) {
+      throw new Error("No event with the selected url observed");
+    }
+
+    const index = observedEventsSinceLastFocus.indexOf(
+      eventWhereTheSelectedUrlAppearedForTheFirstTime,
+    );
+    return observedEventsSinceLastFocus.slice(0, index);
   }
 }
