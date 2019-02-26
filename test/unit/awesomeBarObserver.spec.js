@@ -4,13 +4,13 @@
 "use strict";
 
 describe("awesomeBarObserver.js", function() {
-  describe("AwesomeBarObserver.numKeyDowns(observedEventsSinceLastFocus)", function() {
+  describe("AwesomeBarObserver.numKeyDownEvents(observedEventsSinceLastFocus)", function() {
     it("test 1", function() {
       const observedEventsSinceLastFocus = [];
-      const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+      const numKeyDownEvents = AwesomeBarObserver.numKeyDownEvents(
         observedEventsSinceLastFocus,
       );
-      assert.equal(numKeyDowns, 0);
+      assert.equal(numKeyDownEvents, 0);
     });
     it("test 2", function() {
       const observedEventsSinceLastFocus = [
@@ -39,10 +39,10 @@ describe("awesomeBarObserver.js", function() {
           type: "onKeyDown",
         },
       ];
-      const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+      const numKeyDownEvents = AwesomeBarObserver.numKeyDownEvents(
         observedEventsSinceLastFocus,
       );
-      assert.equal(numKeyDowns, 3);
+      assert.equal(numKeyDownEvents, 3);
     });
   });
   describe("AwesomeBarObserver.eventsAtSelectedsFirstEntry(observedEventsSinceLastFocus)", function() {

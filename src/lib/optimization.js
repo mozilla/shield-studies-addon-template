@@ -34,8 +34,8 @@ class FrecencyOptimizer {
     rankSelected,
     bookmarkAndHistoryUrlSuggestions,
     bookmarkAndHistoryRankSelected,
-    numKeyDownsAtFirstAppearanceOfSelected,
-    numKeyDowns,
+    numKeyDownEventsAtFirstAppearanceOfSelected,
+    numKeyDownEvents,
     searchStringLength,
     selectedStyle,
   ) {
@@ -46,7 +46,7 @@ class FrecencyOptimizer {
         rankSelected,
         bookmarkAndHistoryUrlSuggestions,
         bookmarkAndHistoryRankSelected,
-        numKeyDowns,
+        numKeyDownEvents,
         searchStringLength,
         selectedStyle,
       },
@@ -72,8 +72,8 @@ class FrecencyOptimizer {
         bookmarkAndHistoryNumSuggestionsDisplayed:
           bookmarkAndHistoryUrlSuggestions.length,
         bookmarkAndHistoryRankSelected,
-        numKeyDownsAtFirstAppearanceOfSelected,
-        numKeyDowns,
+        numKeyDownEventsAtFirstAppearanceOfSelected,
+        numKeyDownEvents,
         searchStringLength,
         selectedStyle,
       });

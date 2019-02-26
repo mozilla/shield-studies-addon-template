@@ -87,11 +87,11 @@ class Feature {
         model_version: {
           type: "number",
         },
-        num_key_downs_at_first_appearance_of_selected: {
+        num_key_down_events_at_first_appearance_of_selected: {
           type: "number",
           minimum: 0,
         },
-        num_key_downs: {
+        num_key_down_events: {
           type: "number",
           minimum: 0,
         },
@@ -137,8 +137,8 @@ class Feature {
         "frecency_scores",
         "loss",
         "model_version",
-        "num_key_downs_at_first_appearance_of_selected",
-        "num_key_downs",
+        "num_key_down_events_at_first_appearance_of_selected",
+        "num_key_down_events",
         "num_suggestions_displayed",
         "rank_selected",
         "bookmark_and_history_num_suggestions_displayed",
@@ -178,10 +178,10 @@ class Feature {
         payload.bookmark_and_history_rank_selected,
       ),
       selected_style: String(payload.selected_style),
-      num_key_downs_at_first_appearance_of_selected: String(
-        payload.num_key_downs_at_first_appearance_of_selected,
+      num_key_down_events_at_first_appearance_of_selected: String(
+        payload.num_key_down_events_at_first_appearance_of_selected,
       ),
-      num_key_downs: String(payload.num_key_downs),
+      num_key_down_events: String(payload.num_key_down_events),
       search_string_length: String(payload.search_string_length),
       study_variation: String(payload.study_variation),
       study_addon_version: String(payload.study_addon_version),

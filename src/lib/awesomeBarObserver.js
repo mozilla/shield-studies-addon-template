@@ -69,7 +69,7 @@ class AwesomeBarObserver {
           suggestions,
         } = selectionEvent.awesomeBarState;
 
-        const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+        const numKeyDownEvents = AwesomeBarObserver.numKeyDownEvents(
           this.observedEventsSinceLastFocus,
         );
 
@@ -89,7 +89,7 @@ class AwesomeBarObserver {
         const eventsAtSelectedsFirstEntry = AwesomeBarObserver.eventsAtSelectedsFirstEntry(
           this.observedEventsSinceLastFocus,
         );
-        const numKeyDownsAtFirstAppearanceOfSelected = AwesomeBarObserver.numKeyDowns(
+        const numKeyDownEventsAtFirstAppearanceOfSelected = AwesomeBarObserver.numKeyDownEvents(
           eventsAtSelectedsFirstEntry,
         );
 
@@ -98,8 +98,8 @@ class AwesomeBarObserver {
           rankSelected,
           bookmarkAndHistoryUrlSuggestions,
           bookmarkAndHistoryRankSelected,
-          numKeyDownsAtFirstAppearanceOfSelected,
-          numKeyDowns,
+          numKeyDownEventsAtFirstAppearanceOfSelected,
+          numKeyDownEvents,
           searchStringLength,
           selectedStyle,
         );
@@ -125,8 +125,8 @@ class AwesomeBarObserver {
             suggestions,
           } = latestUpdateEvent.awesomeBarState;
 
-          const numKeyDownsAtFirstAppearanceOfSelected = -1;
-          const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+          const numKeyDownEventsAtFirstAppearanceOfSelected = -1;
+          const numKeyDownEvents = AwesomeBarObserver.numKeyDownEvents(
             this.observedEventsSinceLastFocus,
           );
 
@@ -144,8 +144,8 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
-            numKeyDownsAtFirstAppearanceOfSelected,
-            numKeyDowns,
+            numKeyDownEventsAtFirstAppearanceOfSelected,
+            numKeyDownEvents,
             searchStringLength,
             selectedStyle,
           );
@@ -166,8 +166,8 @@ class AwesomeBarObserver {
 
           const { searchStringLength } = focusEvent.awesomeBarState;
 
-          const numKeyDownsAtFirstAppearanceOfSelected = -1;
-          const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+          const numKeyDownEventsAtFirstAppearanceOfSelected = -1;
+          const numKeyDownEvents = AwesomeBarObserver.numKeyDownEvents(
             this.observedEventsSinceLastFocus,
           );
 
@@ -181,8 +181,8 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
-            numKeyDownsAtFirstAppearanceOfSelected,
-            numKeyDowns,
+            numKeyDownEventsAtFirstAppearanceOfSelected,
+            numKeyDownEvents,
             searchStringLength,
             selectedStyle,
           );
@@ -325,7 +325,7 @@ class AwesomeBarObserver {
    * @param {array} observedEventsSinceLastFocus Self-explanatory hopefully
    * @returns {int} the amount of key down events since last focus, excluding "Enter" key down events
    */
-  static numKeyDowns(observedEventsSinceLastFocus) {
+  static numKeyDownEvents(observedEventsSinceLastFocus) {
     const keyDownEvents = observedEventsSinceLastFocus.filter(observedEvent => {
       return (
         observedEvent.type === "onKeyDown" &&
