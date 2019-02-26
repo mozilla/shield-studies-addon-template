@@ -35,35 +35,113 @@ class AwesomeBarObserver {
     });
   }
 
-  async updateModel(awesomeBarState) {
+  /**
+   * Three main interactions with the awesome bar trigger a model update via study telemetry:
+   * 1. A suggestion was selected from the autocomplete popup
+   * 2. The autocomplete popup got some suggestions displayed but none were selected
+   * 3. The autocomplete popup did not get some suggestions displayed and none was selected
+   * @returns {Promise<boolean>} Promise that resolves when the method has completed
+   */
+  async updateModel() {
     try {
-      const {
-        rankSelected,
-        numCharsTyped,
-        numSuggestionsDisplayed,
-        suggestions,
-      } = awesomeBarState;
+      console.log("updateModel TODO", this.observedEventsSinceLastFocus);
 
-      const selectedSuggestion = suggestions[rankSelected];
+      const selectionEvent = this.observedEventsSinceLastFocus
+        .reverse()
+        .find(observedEvent => {
+          return (
+            observedEvent.awesomeBarState &&
+            observedEvent.type === "onAutocompleteSuggestionSelected"
+          );
+        });
 
-      const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
-        AwesomeBarObserver.isBookmarkOrHistoryStyle(suggestion.style),
-      );
-      const bookmarkAndHistoryUrlSuggestions = bookmarkAndHistorySuggestions.map(
-        suggestion => suggestion.url,
-      );
-      const bookmarkAndHistoryRankSelected = bookmarkAndHistoryUrlSuggestions.indexOf(
-        selectedSuggestion.url,
-      );
+      // 1. A suggestion was selected from the autocomplete popup
+      if (selectionEvent) {
+        const {
+          rankSelected,
+          numCharsTyped,
+          numSuggestionsDisplayed,
+          suggestions,
+        } = selectionEvent.awesomeBarState;
 
-      await this.optimizer.step(
-        numSuggestionsDisplayed,
-        rankSelected,
-        bookmarkAndHistoryUrlSuggestions,
-        bookmarkAndHistoryRankSelected,
-        numCharsTyped,
-        selectedSuggestion.style,
-      );
+        const selectedSuggestion = suggestions[rankSelected];
+
+        const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
+          AwesomeBarObserver.isBookmarkOrHistoryStyle(suggestion.style),
+        );
+        const bookmarkAndHistoryUrlSuggestions = bookmarkAndHistorySuggestions.map(
+          suggestion => suggestion.url,
+        );
+        const bookmarkAndHistoryRankSelected = bookmarkAndHistoryUrlSuggestions.indexOf(
+          selectedSuggestion.url,
+        );
+        const selectedStyle = selectedSuggestion.style;
+
+        await this.optimizer.step(
+          numSuggestionsDisplayed,
+          rankSelected,
+          bookmarkAndHistoryUrlSuggestions,
+          bookmarkAndHistoryRankSelected,
+          numCharsTyped,
+          selectedStyle,
+        );
+      } else {
+        // Find awesomeBarState at latest search result update if any
+        const latestUpdateEvent = this.observedEventsSinceLastFocus
+          .reverse()
+          .find(observedEvent => {
+            return (
+              observedEvent.awesomeBarState &&
+              observedEvent.type === "onAutocompleteSuggestionsUpdated"
+            );
+          });
+
+        // 2. The autocomplete popup got some suggestions displayed but none were selected
+        if (latestUpdateEvent) {
+          const rankSelected = -1;
+
+          const {
+            numCharsTyped,
+            numSuggestionsDisplayed,
+            suggestions,
+          } = latestUpdateEvent.awesomeBarState;
+
+          const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
+            AwesomeBarObserver.isBookmarkOrHistoryStyle(suggestion.style),
+          );
+          const bookmarkAndHistoryUrlSuggestions = bookmarkAndHistorySuggestions.map(
+            suggestion => suggestion.url,
+          );
+          const bookmarkAndHistoryRankSelected = -1;
+          const selectedStyle = "";
+
+          await this.optimizer.step(
+            numSuggestionsDisplayed,
+            rankSelected,
+            bookmarkAndHistoryUrlSuggestions,
+            bookmarkAndHistoryRankSelected,
+            numCharsTyped,
+            selectedStyle,
+          );
+        } else {
+          // 3. The autocomplete popup did not get some suggestions displayed and none was selected
+          const rankSelected = -1;
+          const numCharsTyped = 0;
+          const numSuggestionsDisplayed = 0;
+          const bookmarkAndHistoryUrlSuggestions = [];
+          const bookmarkAndHistoryRankSelected = -1;
+          const selectedStyle = "";
+
+          await this.optimizer.step(
+            numSuggestionsDisplayed,
+            rankSelected,
+            bookmarkAndHistoryUrlSuggestions,
+            bookmarkAndHistoryRankSelected,
+            numCharsTyped,
+            selectedStyle,
+          );
+        }
+      }
     } catch (error) {
       // Surfacing otherwise silent errors
       // eslint-disable-next-line no-console
@@ -99,6 +177,7 @@ class AwesomeBarObserver {
       type: "onBlur",
     });
     console.log("onBlur", this.observedEventsSinceLastFocus);
+    await this.updateModel(awesomeBarState);
     return true;
   }
 
@@ -177,7 +256,6 @@ class AwesomeBarObserver {
       timestamp: new Date(),
       type: "onAutocompleteSuggestionSelected",
     });
-    await this.updateModel(awesomeBarState);
     return true;
   }
 

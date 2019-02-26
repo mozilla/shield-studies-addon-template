@@ -93,11 +93,11 @@ class Feature {
         },
         num_suggestions_displayed: {
           type: "number",
-          minimum: 1,
+          minimum: 0,
         },
         rank_selected: {
           type: "number",
-          minimum: 0,
+          minimum: -1,
         },
         bookmark_and_history_num_suggestions_displayed: {
           type: "number",
