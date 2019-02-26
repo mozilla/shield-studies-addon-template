@@ -8,7 +8,7 @@
     properties:
       rankSelected:
         type: number
-      numCharsTyped:
+      searchStringLength:
         type: number
       numSuggestionsDisplayed:
         type: number
@@ -16,8 +16,8 @@
         type: array
         items:
           type: string
-    required: ["numSuggestionsDisplayed", "rankSelected", "bookmarkAndHistoryUrlSuggestions", "bookmarkAndHistoryRankSelected", "numCharsTyped", "selectedStyle"]
-    testcase: {bookmarkAndHistoryRankSelected: -1, bookmarkAndHistoryUrlSuggestions: [], numCharsTyped: 3, numSuggestionsDisplayed: 11, rankSelected: 2, selectedStyle: "action searchengine suggestion"}
+    required: ["numSuggestionsDisplayed", "rankSelected", "bookmarkAndHistoryUrlSuggestions", "bookmarkAndHistoryRankSelected", "searchStringLength", "selectedStyle"]
+    testcase: {bookmarkAndHistoryRankSelected: -1, bookmarkAndHistoryUrlSuggestions: [], searchStringLength: 3, numSuggestionsDisplayed: 11, rankSelected: 2, selectedStyle: "action searchengine suggestion"}
   - id: keyEvent
     $schema: "http://json-schema.org/draft-04/schema"
     type: object

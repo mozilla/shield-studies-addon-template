@@ -87,7 +87,11 @@ class Feature {
         model_version: {
           type: "number",
         },
-        num_chars_typed: {
+        num_key_downs: {
+          type: "number",
+          minimum: 0,
+        },
+        search_string_length: {
           type: "number",
           minimum: 0,
         },
@@ -129,11 +133,12 @@ class Feature {
         "frecency_scores",
         "loss",
         "model_version",
-        "num_chars_typed",
+        "num_key_downs",
         "num_suggestions_displayed",
         "rank_selected",
         "bookmark_and_history_num_suggestions_displayed",
         "bookmark_and_history_rank_selected",
+        "search_string_length",
         "selected_style",
         "study_addon_version",
         "study_variation",
@@ -168,7 +173,8 @@ class Feature {
         payload.bookmark_and_history_rank_selected,
       ),
       selected_style: String(payload.selected_style),
-      num_chars_typed: String(payload.num_chars_typed),
+      num_key_downs: String(payload.num_key_downs),
+      search_string_length: String(payload.search_string_length),
       study_variation: String(payload.study_variation),
       study_addon_version: String(payload.study_addon_version),
     };

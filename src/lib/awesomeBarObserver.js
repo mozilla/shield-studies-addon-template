@@ -47,6 +47,7 @@ class AwesomeBarObserver {
       console.log("updateModel TODO", this.observedEventsSinceLastFocus);
 
       const selectionEvent = this.observedEventsSinceLastFocus
+        .slice()
         .reverse()
         .find(observedEvent => {
           return (
@@ -59,10 +60,14 @@ class AwesomeBarObserver {
       if (selectionEvent) {
         const {
           rankSelected,
-          numCharsTyped,
+          searchStringLength,
           numSuggestionsDisplayed,
           suggestions,
         } = selectionEvent.awesomeBarState;
+
+        const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+          this.observedEventsSinceLastFocus,
+        );
 
         const selectedSuggestion = suggestions[rankSelected];
 
@@ -82,12 +87,14 @@ class AwesomeBarObserver {
           rankSelected,
           bookmarkAndHistoryUrlSuggestions,
           bookmarkAndHistoryRankSelected,
-          numCharsTyped,
+          numKeyDowns,
+          searchStringLength,
           selectedStyle,
         );
       } else {
         // Find awesomeBarState at latest search result update if any
         const latestUpdateEvent = this.observedEventsSinceLastFocus
+          .slice()
           .reverse()
           .find(observedEvent => {
             return (
@@ -101,10 +108,14 @@ class AwesomeBarObserver {
           const rankSelected = -1;
 
           const {
-            numCharsTyped,
+            searchStringLength,
             numSuggestionsDisplayed,
             suggestions,
           } = latestUpdateEvent.awesomeBarState;
+
+          const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+            this.observedEventsSinceLastFocus,
+          );
 
           const bookmarkAndHistorySuggestions = suggestions.filter(suggestion =>
             AwesomeBarObserver.isBookmarkOrHistoryStyle(suggestion.style),
@@ -120,13 +131,31 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
-            numCharsTyped,
+            numKeyDowns,
+            searchStringLength,
             selectedStyle,
           );
         } else {
           // 3. The autocomplete popup did not get some suggestions displayed and none was selected
+
+          const focusEvent = this.observedEventsSinceLastFocus
+            .slice()
+            .reverse()
+            .find(observedEvent => {
+              return (
+                observedEvent.awesomeBarState &&
+                observedEvent.type === "onFocus"
+              );
+            });
+
           const rankSelected = -1;
-          const numCharsTyped = 0;
+
+          const { searchStringLength } = focusEvent.awesomeBarState;
+
+          const numKeyDowns = AwesomeBarObserver.numKeyDowns(
+            this.observedEventsSinceLastFocus,
+          );
+
           const numSuggestionsDisplayed = 0;
           const bookmarkAndHistoryUrlSuggestions = [];
           const bookmarkAndHistoryRankSelected = -1;
@@ -137,7 +166,8 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
-            numCharsTyped,
+            numKeyDowns,
+            searchStringLength,
             selectedStyle,
           );
         }
@@ -274,5 +304,20 @@ class AwesomeBarObserver {
       styles.has(s),
     );
     return !isNonBookmarkOrHistoryStyle;
+  }
+
+  /**
+   * @param {array} observedEventsSinceLastFocus Self-explanatory hopefully
+   * @returns {int} the amount of key down events since last focus, excluding "Enter" key down events
+   */
+  static numKeyDowns(observedEventsSinceLastFocus) {
+    const keyDownEvents = observedEventsSinceLastFocus.filter(observedEvent => {
+      return (
+        observedEvent.type === "onKeyDown" &&
+        observedEvent.keyEvent &&
+        observedEvent.keyEvent.key !== "Enter"
+      );
+    });
+    return keyDownEvents.length;
   }
 }

@@ -34,7 +34,8 @@ class FrecencyOptimizer {
     rankSelected,
     bookmarkAndHistoryUrlSuggestions,
     bookmarkAndHistoryRankSelected,
-    numCharsTyped,
+    numKeyDowns,
+    searchStringLength,
     selectedStyle,
   ) {
     await browser.study.logger.debug([
@@ -44,7 +45,8 @@ class FrecencyOptimizer {
         rankSelected,
         bookmarkAndHistoryUrlSuggestions,
         bookmarkAndHistoryRankSelected,
-        numCharsTyped,
+        numKeyDowns,
+        searchStringLength,
         selectedStyle,
       },
     ]);
@@ -69,7 +71,8 @@ class FrecencyOptimizer {
         bookmarkAndHistoryNumSuggestionsDisplayed:
           bookmarkAndHistoryUrlSuggestions.length,
         bookmarkAndHistoryRankSelected,
-        numCharsTyped,
+        numKeyDowns,
+        searchStringLength,
         selectedStyle,
       });
     } catch (error) {

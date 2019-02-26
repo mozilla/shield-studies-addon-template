@@ -83,7 +83,8 @@ class ModelSynchronization {
     rankSelected,
     bookmarkAndHistoryNumSuggestionsDisplayed,
     bookmarkAndHistoryRankSelected,
-    numCharsTyped,
+    numKeyDowns,
+    searchStringLength,
     selectedStyle,
   }) {
     await browser.study.logger.log("Pushing model update via telemetry");
@@ -96,7 +97,8 @@ class ModelSynchronization {
       rank_selected: rankSelected,
       bookmark_and_history_num_suggestions_displayed: bookmarkAndHistoryNumSuggestionsDisplayed,
       bookmark_and_history_rank_selected: bookmarkAndHistoryRankSelected,
-      num_chars_typed: numCharsTyped,
+      num_key_downs: numKeyDowns,
+      search_string_length: searchStringLength,
       selected_style: selectedStyle,
       study_variation: this.studyInfo.variation.name,
       study_addon_version: browser.runtime.getManifest().version,

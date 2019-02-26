@@ -121,7 +121,7 @@ Fires after one or a combination of keys has been pressed and lead to an input i
     "rankSelected": {
       "type": "number"
     },
-    "numCharsTyped": {
+    "searchStringLength": {
       "type": "number"
     },
     "numSuggestionsDisplayed": {
@@ -139,13 +139,13 @@ Fires after one or a combination of keys has been pressed and lead to an input i
     "rankSelected",
     "bookmarkAndHistoryUrlSuggestions",
     "bookmarkAndHistoryRankSelected",
-    "numCharsTyped",
+    "searchStringLength",
     "selectedStyle"
   ],
   "testcase": {
     "bookmarkAndHistoryRankSelected": -1,
     "bookmarkAndHistoryUrlSuggestions": [],
-    "numCharsTyped": 3,
+    "searchStringLength": 3,
     "numSuggestionsDisplayed": 11,
     "rankSelected": 2,
     "selectedStyle": "action searchengine suggestion"
