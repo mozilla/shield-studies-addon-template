@@ -114,7 +114,7 @@ class Feature {
         },
         num_key_down_events_at_first_appearance_of_selected: {
           type: "number",
-          minimum: 0,
+          minimum: -1,
         },
         num_key_down_events: {
           type: "number",
