@@ -79,13 +79,9 @@ The following data is sent with this ping:
 
 ```json
 {
+  "model_version": 140,
   "frecency_scores": [38223, 3933.4, 304933.3, 21],
   "loss": 291989.21,
-  "model_version": 3,
-  "num_chars_typed": 5,
-  "num_suggestions_displayed": 5,
-  "rank_selected": 2,
-  "study_variation": "treatment",
   "update": [
     1.2,
     3.2,
@@ -109,7 +105,20 @@ The following data is sent with this ping:
     0.39,
     0.54,
     0.78
-  ]
+  ],
+  "num_suggestions_displayed": 1,
+  "rank_selected": 0,
+  "bookmark_and_history_num_suggestions_displayed": 1,
+  "bookmark_and_history_rank_selected": 0,
+  "num_key_down_events_at_selecteds_first_entry": 8,
+  "num_key_down_events": 14,
+  "search_string_length": 13,
+  "selected_style": "autofill heuristic",
+  "time_start_interaction": 0,
+  "time_end_interaction": 2275,
+  "time_at_selecteds_first_entry": 1458,
+  "study_variation": "dogfooding",
+  "study_addon_version": "2.1.1"
 }
 ```
 
