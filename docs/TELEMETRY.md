@@ -203,4 +203,5 @@ version       3
 ## References
 
 * [Bugzilla bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1462109) detailing the data review request
-* [ping schema](https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/frecency-update)
+* [Payload ping schema](../schemas/frecency-update.payload.schema.json)
+* [Pipeline frecency-update ping schema](https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/frecency-update)

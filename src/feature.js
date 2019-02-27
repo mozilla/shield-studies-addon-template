@@ -71,7 +71,7 @@ class Feature {
       payload,
     ]);
 
-    const validationResult = await browser.study.validateJSON(payload, {
+    const payloadSchema = {
       type: "object",
       properties: {
         model_version: {
@@ -163,7 +163,14 @@ class Feature {
         "study_variation",
         "study_addon_version",
       ],
-    });
+    };
+    const validationResult = await browser.study.validateJSON(
+      payload,
+      payloadSchema,
+    );
+
+    // Use to update frecency-update.payload.schema.json
+    // console.log(JSON.stringify(payloadSchema));
 
     if (!validationResult.valid) {
       await browser.study.logger.error([
