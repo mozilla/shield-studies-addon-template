@@ -27,7 +27,7 @@
 * (Create profile: <https://developer.mozilla.org/Firefox/Multiple_profiles>, or via some other method)
 * Navigate to _about:config_ and set the following preferences. (If a preference does not exist, create it be right-clicking in the white area and selecting New -> String)
 * Set `shieldStudy.logLevel` to `info`. This permits shield-add-on log output in browser console.
-* Set `extensions.federated-learning-v2_shield_mozilla_org.test.variationName` to `treatment` (or any other study variation/branch to test specifically)
+* Set `extensions.federated-learning-v2_shield_mozilla_org.test.variationName` to `dogfooding` (or any other study variation/branch to test specifically)
 * Go to [this study's tracking bug](tbd: replace with your study's launch bug link in bugzilla) and install the latest add-on zip file
 * (If you are installing an unsigned version of the add-on, you need to set `extensions.legacy.enabled` to `true` before installing the add-on)
 
@@ -88,9 +88,18 @@ Depending on the study branch (see configuration in [../src/feature.js]()), a re
 * Verify that the study runs
 * Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
 
+**Cleans up preferences upon Normandy unenrollment**
+
+* Set the branch preference to one of the validation branches
+* Enroll a client using the Normandy staging server
+* Verify that the study runs
+* Verify that `places.frecency.firstBucketCutoff` has a non-default value
+* Unenroll a client using the Normandy staging server
+* Verify that `places.frecency.firstBucketCutoff` has been restored to use the default value
+
 **Correct branches and weights**
 
-* Make sure that the branches and weights in the add-on configuration ([../src/studySetup.js](../src/studySetup.js)) corresponds to the branch weights of the Experimenter entry.
+* Make sure that the branches and weights in the add-on configuration ([../src/studySetup.js](../src/studySetup.js)) corresponds to the branch weights of the Experimenter entry. (Note that for practical reasons, the implementation uses 7 branches instead of the 5 defined study branches. The study branches that separate use different populations for training and validation corresponding to separate branches in the implementation)
 
 ### Note: checking "sent telemetry is correct"
 
