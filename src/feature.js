@@ -52,9 +52,6 @@ class Feature {
    */
   async configure(studyInfo) {
     const synchronizer = new ModelSynchronization(studyInfo);
-    const branchConfiguration = this.branchConfigurations[
-      studyInfo.variation.name
-    ];
     this.awesomeBarObserver = new AwesomeBarObserver(synchronizer);
     this.awesomeBarObserver.start();
   }

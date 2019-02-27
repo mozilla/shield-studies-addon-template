@@ -1,5 +1,6 @@
 /* eslint-env node */
 /* global browser */
+/* eslint-disable no-console */
 
 // for unhandled promise rejection debugging
 process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line no-console
