@@ -129,11 +129,11 @@ class Feature {
         },
         time_start_interaction: {
           type: "number",
-          minimum: -1,
+          minimum: 0,
         },
         time_end_interaction: {
           type: "number",
-          minimum: -1,
+          minimum: 0,
         },
         time_at_first_appearance_of_selected: {
           type: "number",
