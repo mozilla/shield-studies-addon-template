@@ -65,6 +65,7 @@ class AwesomeBarObserver {
         await browser.study.logger.debug(
           "Dropping awesome bar interaction metadata since no onFocus event was captured",
         );
+        return false;
       }
 
       const blurEvent = this.observedEventsSinceLastFocus
