@@ -58,6 +58,15 @@ class AwesomeBarObserver {
             observedEvent.awesomeBarState && observedEvent.type === "onFocus"
           );
         });
+
+      // Drop interactions where we did not catch the focus event (happens at browser startup
+      // and if the study is enabled while an interaction is ongoing)
+      if (!focusEvent) {
+        await browser.study.logger.debug(
+          "Dropping awesome bar interaction metadata since no onFocus event was captured",
+        );
+      }
+
       const blurEvent = this.observedEventsSinceLastFocus
         .slice()
         .reverse()
