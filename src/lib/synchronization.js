@@ -103,11 +103,11 @@ class ModelSynchronization {
       bookmark_and_history_rank_selected: bookmarkAndHistoryRankSelected,
       num_key_down_events_at_selecteds_first_entry: numKeyDownEventsAtSelectedsFirstEntry,
       num_key_down_events: numKeyDownEvents,
-      search_string_length: searchStringLength,
-      selected_style: selectedStyle,
       time_start_interaction: timeStartInteraction,
       time_end_interaction: timeEndInteraction,
       time_at_selecteds_first_entry: timeAtSelectedsFirstEntry,
+      search_string_length: searchStringLength,
+      selected_style: selectedStyle,
       study_variation: this.studyInfo.variation.name,
       study_addon_version: browser.runtime.getManifest().version,
     };

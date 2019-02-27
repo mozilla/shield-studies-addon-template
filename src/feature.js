@@ -115,13 +115,6 @@ class Feature {
           type: "number",
           minimum: 0,
         },
-        search_string_length: {
-          type: "number",
-          minimum: 0,
-        },
-        selected_style: {
-          type: "string",
-        },
         time_start_interaction: {
           type: "number",
           minimum: 0,
@@ -133,6 +126,13 @@ class Feature {
         time_at_selecteds_first_entry: {
           type: "number",
           minimum: -1,
+        },
+        search_string_length: {
+          type: "number",
+          minimum: 0,
+        },
+        selected_style: {
+          type: "string",
         },
         study_variation: {
           type: "string",
