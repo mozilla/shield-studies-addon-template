@@ -85,6 +85,7 @@
     "prebuild": "npm-run-all bundle:*",
     "prestart": "npm run pretest",
     "pretest": "node test/ensure_minimum_node_version.js && npm run build",
+    "pretest:manual": "npm run pretest",
     "prewatch": "npm-run-all bundle:*",
     "sign": "echo 'TBD, see: https://bugzilla.mozilla.org/show_bug.cgi?id=1407757'",
     "start": "web-ext run --no-reload",
