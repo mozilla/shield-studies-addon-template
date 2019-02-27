@@ -120,14 +120,14 @@ class AwesomeBarObserver {
         const eventsAtSelectedsFirstEntry = AwesomeBarObserver.eventsAtSelectedsFirstEntry(
           this.observedEventsSinceLastFocus,
         );
-        const numKeyDownEventsAtFirstAppearanceOfSelected = AwesomeBarObserver.numKeyDownEvents(
+        const numKeyDownEventsAtSelectedsFirstEntry = AwesomeBarObserver.numKeyDownEvents(
           eventsAtSelectedsFirstEntry,
         );
-        const eventAtFirstAppearanceOfSelected = eventsAtSelectedsFirstEntry
+        const eventAtSelectedsFirstEntry = eventsAtSelectedsFirstEntry
           .slice()
           .pop();
-        const timeAtFirstAppearanceOfSelected =
-          eventAtFirstAppearanceOfSelected.timestamp.getTime() -
+        const timeAtSelectedsFirstEntry =
+          eventAtSelectedsFirstEntry.timestamp.getTime() -
           focusEvent.timestamp.getTime();
 
         await this.frecencyOptimizer.step(
@@ -135,11 +135,11 @@ class AwesomeBarObserver {
           rankSelected,
           bookmarkAndHistoryUrlSuggestions,
           bookmarkAndHistoryRankSelected,
-          numKeyDownEventsAtFirstAppearanceOfSelected,
+          numKeyDownEventsAtSelectedsFirstEntry,
           numKeyDownEvents,
           timeStartInteraction,
           timeEndInteraction,
-          timeAtFirstAppearanceOfSelected,
+          timeAtSelectedsFirstEntry,
           searchStringLength,
           selectedStyle,
         );
@@ -165,7 +165,7 @@ class AwesomeBarObserver {
             suggestions,
           } = latestUpdateEvent.awesomeBarState;
 
-          const numKeyDownEventsAtFirstAppearanceOfSelected = -1;
+          const numKeyDownEventsAtSelectedsFirstEntry = -1;
           const numKeyDownEvents = AwesomeBarObserver.numKeyDownEvents(
             this.observedEventsSinceLastFocus,
           );
@@ -177,7 +177,7 @@ class AwesomeBarObserver {
             suggestion => suggestion.url,
           );
           const bookmarkAndHistoryRankSelected = -1;
-          const timeAtFirstAppearanceOfSelected = -1;
+          const timeAtSelectedsFirstEntry = -1;
           const selectedStyle = "";
 
           await this.frecencyOptimizer.step(
@@ -185,11 +185,11 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
-            numKeyDownEventsAtFirstAppearanceOfSelected,
+            numKeyDownEventsAtSelectedsFirstEntry,
             numKeyDownEvents,
             timeStartInteraction,
             timeEndInteraction,
-            timeAtFirstAppearanceOfSelected,
+            timeAtSelectedsFirstEntry,
             searchStringLength,
             selectedStyle,
           );
@@ -200,7 +200,7 @@ class AwesomeBarObserver {
 
           const { searchStringLength } = focusEvent.awesomeBarState;
 
-          const numKeyDownEventsAtFirstAppearanceOfSelected = -1;
+          const numKeyDownEventsAtSelectedsFirstEntry = -1;
           const numKeyDownEvents = AwesomeBarObserver.numKeyDownEvents(
             this.observedEventsSinceLastFocus,
           );
@@ -208,7 +208,7 @@ class AwesomeBarObserver {
           const numSuggestionsDisplayed = 0;
           const bookmarkAndHistoryUrlSuggestions = [];
           const bookmarkAndHistoryRankSelected = -1;
-          const timeAtFirstAppearanceOfSelected = -1;
+          const timeAtSelectedsFirstEntry = -1;
           const selectedStyle = "";
 
           await this.frecencyOptimizer.step(
@@ -216,11 +216,11 @@ class AwesomeBarObserver {
             rankSelected,
             bookmarkAndHistoryUrlSuggestions,
             bookmarkAndHistoryRankSelected,
-            numKeyDownEventsAtFirstAppearanceOfSelected,
+            numKeyDownEventsAtSelectedsFirstEntry,
             numKeyDownEvents,
             timeStartInteraction,
             timeEndInteraction,
-            timeAtFirstAppearanceOfSelected,
+            timeAtSelectedsFirstEntry,
             searchStringLength,
             selectedStyle,
           );

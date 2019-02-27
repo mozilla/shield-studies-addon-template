@@ -112,7 +112,7 @@ class Feature {
           type: "number",
           minimum: -1,
         },
-        num_key_down_events_at_first_appearance_of_selected: {
+        num_key_down_events_at_selecteds_first_entry: {
           type: "number",
           minimum: -1,
         },
@@ -135,7 +135,7 @@ class Feature {
           type: "number",
           minimum: 0,
         },
-        time_at_first_appearance_of_selected: {
+        time_at_selecteds_first_entry: {
           type: "number",
           minimum: -1,
         },
@@ -155,11 +155,11 @@ class Feature {
         "rank_selected",
         "bookmark_and_history_num_suggestions_displayed",
         "bookmark_and_history_rank_selected",
-        "num_key_down_events_at_first_appearance_of_selected",
+        "num_key_down_events_at_selecteds_first_entry",
         "num_key_down_events",
         "time_start_interaction",
         "time_end_interaction",
-        "time_at_first_appearance_of_selected",
+        "time_at_selecteds_first_entry",
         "search_string_length",
         "selected_style",
         "study_variation",
@@ -194,14 +194,14 @@ class Feature {
       bookmark_and_history_rank_selected: String(
         payload.bookmark_and_history_rank_selected,
       ),
-      num_key_down_events_at_first_appearance_of_selected: String(
-        payload.num_key_down_events_at_first_appearance_of_selected,
+      num_key_down_events_at_selecteds_first_entry: String(
+        payload.num_key_down_events_at_selecteds_first_entry,
       ),
       num_key_down_events: String(payload.num_key_down_events),
       time_start_interaction: String(payload.time_start_interaction),
       time_end_interaction: String(payload.time_end_interaction),
-      time_at_first_appearance_of_selected: String(
-        payload.time_at_first_appearance_of_selected,
+      time_at_selecteds_first_entry: String(
+        payload.time_at_selecteds_first_entry,
       ),
       search_string_length: String(payload.search_string_length),
       selected_style: String(payload.selected_style),
