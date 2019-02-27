@@ -72,9 +72,13 @@ class Feature {
       "Telemetry about to be validated using browser.study.validateJSON",
       payload,
     ]);
+
     const validationResult = await browser.study.validateJSON(payload, {
       type: "object",
       properties: {
+        model_version: {
+          type: "number",
+        },
         frecency_scores: {
           type: "array",
           items: {
@@ -84,20 +88,13 @@ class Feature {
         loss: {
           type: "number",
         },
-        model_version: {
-          type: "number",
-        },
-        num_key_down_events_at_first_appearance_of_selected: {
-          type: "number",
-          minimum: 0,
-        },
-        num_key_down_events: {
-          type: "number",
-          minimum: 0,
-        },
-        search_string_length: {
-          type: "number",
-          minimum: 0,
+        update: {
+          type: "array",
+          minItems: 22,
+          maxItems: 22,
+          items: {
+            type: "number",
+          },
         },
         num_suggestions_displayed: {
           type: "number",
@@ -115,41 +112,46 @@ class Feature {
           type: "number",
           minimum: -1,
         },
-        selected_style: {
-          type: "string",
+        num_key_down_events_at_first_appearance_of_selected: {
+          type: "number",
+          minimum: 0,
         },
-        study_addon_version: {
+        num_key_down_events: {
+          type: "number",
+          minimum: 0,
+        },
+        search_string_length: {
+          type: "number",
+          minimum: 0,
+        },
+        selected_style: {
           type: "string",
         },
         study_variation: {
           type: "string",
         },
-        update: {
-          type: "array",
-          minItems: 22,
-          maxItems: 22,
-          items: {
-            type: "number",
-          },
+        study_addon_version: {
+          type: "string",
         },
       },
       required: [
+        "model_version",
         "frecency_scores",
         "loss",
-        "model_version",
-        "num_key_down_events_at_first_appearance_of_selected",
-        "num_key_down_events",
+        "update",
         "num_suggestions_displayed",
         "rank_selected",
         "bookmark_and_history_num_suggestions_displayed",
         "bookmark_and_history_rank_selected",
+        "num_key_down_events_at_first_appearance_of_selected",
+        "num_key_down_events",
         "search_string_length",
         "selected_style",
-        "study_addon_version",
         "study_variation",
-        "update",
+        "study_addon_version",
       ],
     });
+
     if (!validationResult.valid) {
       await browser.study.logger.error([
         "Invalid telemetry payload",
@@ -177,12 +179,12 @@ class Feature {
       bookmark_and_history_rank_selected: String(
         payload.bookmark_and_history_rank_selected,
       ),
-      selected_style: String(payload.selected_style),
       num_key_down_events_at_first_appearance_of_selected: String(
         payload.num_key_down_events_at_first_appearance_of_selected,
       ),
       num_key_down_events: String(payload.num_key_down_events),
       search_string_length: String(payload.search_string_length),
+      selected_style: String(payload.selected_style),
       study_variation: String(payload.study_variation),
       study_addon_version: String(payload.study_addon_version),
     };
