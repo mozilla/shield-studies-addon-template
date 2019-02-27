@@ -85,6 +85,9 @@ class ModelSynchronization {
     bookmarkAndHistoryRankSelected,
     numKeyDownEventsAtFirstAppearanceOfSelected,
     numKeyDownEvents,
+    timeStartInteraction,
+    timeEndInteraction,
+    timeAtFirstAppearanceOfSelected,
     searchStringLength,
     selectedStyle,
   }) {
@@ -102,6 +105,9 @@ class ModelSynchronization {
       num_key_down_events: numKeyDownEvents,
       search_string_length: searchStringLength,
       selected_style: selectedStyle,
+      time_start_interaction: timeStartInteraction,
+      time_end_interaction: timeEndInteraction,
+      time_at_first_appearance_of_selected: timeAtFirstAppearanceOfSelected,
       study_variation: this.studyInfo.variation.name,
       study_addon_version: browser.runtime.getManifest().version,
     };

@@ -127,6 +127,18 @@ class Feature {
         selected_style: {
           type: "string",
         },
+        time_start_interaction: {
+          type: "number",
+          minimum: -1,
+        },
+        time_end_interaction: {
+          type: "number",
+          minimum: -1,
+        },
+        time_at_first_appearance_of_selected: {
+          type: "number",
+          minimum: -1,
+        },
         study_variation: {
           type: "string",
         },
@@ -145,6 +157,9 @@ class Feature {
         "bookmark_and_history_rank_selected",
         "num_key_down_events_at_first_appearance_of_selected",
         "num_key_down_events",
+        "time_start_interaction",
+        "time_end_interaction",
+        "time_at_first_appearance_of_selected",
         "search_string_length",
         "selected_style",
         "study_variation",
@@ -183,6 +198,11 @@ class Feature {
         payload.num_key_down_events_at_first_appearance_of_selected,
       ),
       num_key_down_events: String(payload.num_key_down_events),
+      time_start_interaction: String(payload.time_start_interaction),
+      time_end_interaction: String(payload.time_end_interaction),
+      time_at_first_appearance_of_selected: String(
+        payload.time_at_first_appearance_of_selected,
+      ),
       search_string_length: String(payload.search_string_length),
       selected_style: String(payload.selected_style),
       study_variation: String(payload.study_variation),

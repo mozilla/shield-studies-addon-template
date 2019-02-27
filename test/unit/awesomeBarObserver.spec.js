@@ -157,7 +157,7 @@ describe("awesomeBarObserver.js", function() {
       const eventsAtSelectedsFirstEntry = AwesomeBarObserver.eventsAtSelectedsFirstEntry(
         observedEventsSinceLastFocus,
       );
-      assert.equal(eventsAtSelectedsFirstEntry.length, 5);
+      assert.equal(eventsAtSelectedsFirstEntry.length, 6);
     });
   });
 });

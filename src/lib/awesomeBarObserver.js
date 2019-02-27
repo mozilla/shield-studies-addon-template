@@ -50,6 +50,28 @@ class AwesomeBarObserver {
           observedEventsSinceLastFocus: this.observedEventsSinceLastFocus,
         },
       ]);
+      const focusEvent = this.observedEventsSinceLastFocus
+        .slice()
+        .reverse()
+        .find(observedEvent => {
+          return (
+            observedEvent.awesomeBarState && observedEvent.type === "onFocus"
+          );
+        });
+      const blurEvent = this.observedEventsSinceLastFocus
+        .slice()
+        .reverse()
+        .find(observedEvent => {
+          return (
+            observedEvent.awesomeBarState && observedEvent.type === "onBlur"
+          );
+        });
+
+      // Timings are normalized relative to the start of the interaction
+      const timeStartInteraction = 0;
+      const timeEndInteraction =
+        blurEvent.timestamp.getTime() - focusEvent.timestamp.getTime();
+
       const selectionEvent = this.observedEventsSinceLastFocus
         .slice()
         .reverse()
@@ -92,6 +114,12 @@ class AwesomeBarObserver {
         const numKeyDownEventsAtFirstAppearanceOfSelected = AwesomeBarObserver.numKeyDownEvents(
           eventsAtSelectedsFirstEntry,
         );
+        const eventAtFirstAppearanceOfSelected = eventsAtSelectedsFirstEntry
+          .slice()
+          .pop();
+        const timeAtFirstAppearanceOfSelected =
+          eventAtFirstAppearanceOfSelected.timestamp.getTime() -
+          focusEvent.timestamp.getTime();
 
         await this.frecencyOptimizer.step(
           numSuggestionsDisplayed,
@@ -100,6 +128,9 @@ class AwesomeBarObserver {
           bookmarkAndHistoryRankSelected,
           numKeyDownEventsAtFirstAppearanceOfSelected,
           numKeyDownEvents,
+          timeStartInteraction,
+          timeEndInteraction,
+          timeAtFirstAppearanceOfSelected,
           searchStringLength,
           selectedStyle,
         );
@@ -137,6 +168,7 @@ class AwesomeBarObserver {
             suggestion => suggestion.url,
           );
           const bookmarkAndHistoryRankSelected = -1;
+          const timeAtFirstAppearanceOfSelected = -1;
           const selectedStyle = "";
 
           await this.frecencyOptimizer.step(
@@ -146,21 +178,14 @@ class AwesomeBarObserver {
             bookmarkAndHistoryRankSelected,
             numKeyDownEventsAtFirstAppearanceOfSelected,
             numKeyDownEvents,
+            timeStartInteraction,
+            timeEndInteraction,
+            timeAtFirstAppearanceOfSelected,
             searchStringLength,
             selectedStyle,
           );
         } else {
           // 3. The autocomplete popup did not get some suggestions displayed and none was selected
-
-          const focusEvent = this.observedEventsSinceLastFocus
-            .slice()
-            .reverse()
-            .find(observedEvent => {
-              return (
-                observedEvent.awesomeBarState &&
-                observedEvent.type === "onFocus"
-              );
-            });
 
           const rankSelected = -1;
 
@@ -174,6 +199,7 @@ class AwesomeBarObserver {
           const numSuggestionsDisplayed = 0;
           const bookmarkAndHistoryUrlSuggestions = [];
           const bookmarkAndHistoryRankSelected = -1;
+          const timeAtFirstAppearanceOfSelected = -1;
           const selectedStyle = "";
 
           await this.frecencyOptimizer.step(
@@ -183,6 +209,9 @@ class AwesomeBarObserver {
             bookmarkAndHistoryRankSelected,
             numKeyDownEventsAtFirstAppearanceOfSelected,
             numKeyDownEvents,
+            timeStartInteraction,
+            timeEndInteraction,
+            timeAtFirstAppearanceOfSelected,
             searchStringLength,
             selectedStyle,
           );
@@ -338,7 +367,7 @@ class AwesomeBarObserver {
 
   /**
    * @param {array} observedEventsSinceLastFocus Self-explanatory hopefully
-   * @returns {int} The eventsAtSelectedsFirstEntry
+   * @returns {int} The events up until and including the event at which the one that they ultimately selected entered the list
    */
   static eventsAtSelectedsFirstEntry(observedEventsSinceLastFocus) {
     const selectionEvent = observedEventsSinceLastFocus
@@ -378,6 +407,6 @@ class AwesomeBarObserver {
     const index = observedEventsSinceLastFocus.indexOf(
       eventWhereTheSelectedUrlAppearedForTheFirstTime,
     );
-    return observedEventsSinceLastFocus.slice(0, index);
+    return observedEventsSinceLastFocus.slice(0, index + 1);
   }
 }

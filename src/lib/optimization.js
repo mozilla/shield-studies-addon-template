@@ -36,6 +36,9 @@ class FrecencyOptimizer {
     bookmarkAndHistoryRankSelected,
     numKeyDownEventsAtFirstAppearanceOfSelected,
     numKeyDownEvents,
+    timeStartInteraction,
+    timeEndInteraction,
+    timeAtFirstAppearanceOfSelected,
     searchStringLength,
     selectedStyle,
   ) {
@@ -74,6 +77,9 @@ class FrecencyOptimizer {
         bookmarkAndHistoryRankSelected,
         numKeyDownEventsAtFirstAppearanceOfSelected,
         numKeyDownEvents,
+        timeStartInteraction,
+        timeEndInteraction,
+        timeAtFirstAppearanceOfSelected,
         searchStringLength,
         selectedStyle,
       });
