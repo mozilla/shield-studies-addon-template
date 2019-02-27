@@ -38,16 +38,29 @@ const baseStudySetup = {
 
   // endings with urls
   endings: {
-    /** normandy-defined endings */
+    /** normandy-defined endings - https://firefox-source-docs.mozilla.org/toolkit/components/normandy/normandy/data-collection.html */
+    "install-failure": {
+      baseUrls: [],
+    },
     "individual-opt-out": {
       baseUrls: [
         "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey/?reason=individual-opt-out",
       ],
     },
-    "shield-study-ended": {
-      baseUrls: [
-        "https://qsurvey.mozilla.com/s3/URL-bar-satisfaction-survey/?reason=shield-study-ended",
-      ],
+    "general-opt-out": {
+      baseUrls: [],
+    },
+    "recipe-not-seen": {
+      baseUrls: [],
+    },
+    uninstalled: {
+      baseUrls: [],
+    },
+    "uninstalled-sideload": {
+      baseUrls: [],
+    },
+    unknown: {
+      baseUrls: [],
     },
     /** study-utils-defined endings */
     "user-disable": {
