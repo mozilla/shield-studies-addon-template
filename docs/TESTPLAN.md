@@ -33,7 +33,11 @@
 
 ## Expected User Experience / Functionality
 
-No user interface elements are modified in this study.
+No user interface elements are modified directly in this study.
+
+The awesome bar is observed and an updated model is calculated and submitted via telemetry after every interaction.
+
+Depending on the study branch (see configuration in [../src/feature.js]()), a remote model may be fetched and applied locally (`validation: true`).
 
 ### Do these tests (in addition to ordinary regression tests)
 

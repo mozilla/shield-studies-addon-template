@@ -55,10 +55,8 @@ class Feature {
     const branchConfiguration = this.branchConfigurations[
       studyInfo.variation.name
     ];
-    if (branchConfiguration.training) {
-      this.awesomeBarObserver = new AwesomeBarObserver(synchronizer);
-      this.awesomeBarObserver.start();
-    }
+    this.awesomeBarObserver = new AwesomeBarObserver(synchronizer);
+    this.awesomeBarObserver.start();
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
