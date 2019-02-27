@@ -13,7 +13,7 @@
 * [`shield-study-addon` pings, specific to THIS study.](#shield-study-addon-pings-specific-to-this-study)
 * [`frecency-update` ping (schema)](#frecency-update-ping-schema)
   * [Example ping](#example-ping)
-* [Example sequence for a 'voted => not sure' interaction](#example-sequence-for-a-voted--not-sure-interaction)
+* [Example ping sequence](#example-ping-sequence)
 * [References](#references)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -47,19 +47,33 @@ Every time a `freceny-update` ping is submitted (see below), a corresponding `sh
 
 ## `frecency-update` ping ([schema](https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/dev/templates/telemetry/frecency-update))
 
-This ping is sent every time an enrolled user performs a history / bookmark search in the awesome bar.
+Three main interactions with the awesome bar trigger a model update via study telemetry:
+
+1. A suggestion was selected from the autocomplete popup
+2. The autocomplete popup got some suggestions displayed but none were selected
+3. The autocomplete popup did not get some suggestions displayed and none was selected
+
 The following data is sent with this ping:
 
-| name                        | type              | description                                                                                         |
-| --------------------------- | ----------------- | --------------------------------------------------------------------------------------------------- |
-| `model_version`             | integer           | the version of the model that all the other data is based on                                        |
-| `study_variation`           | string            | in what variation is the user enrolled in (e.g. treatment, control)                                 |
-| `update`                    | array of floats   | the model improvement that the user is proposing                                                    |
-| `loss`                      | float             | a number quantifying how well the model worked                                                      |
-| `num_suggestions_displayed` | integer           | how many history / bookmark suggestions were displayed?                                             |
-| `rank_selected`             | integer           | what was the position of the selected suggestion? (should be minimized by the optimization process) |
-| `num_chars_typed`           | integer           | how many characters did the user type? (should be minimized by the optimization process)            |
-| `frecency_scores`           | array of integers | what scores did the model assign to the suggestions?                                                |
+| name                                             | type              | description                                                                                                                                |
+| ------------------------------------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `model_version`                                  | integer           | the version of the model that all the other data is based on                                                                               |
+| `frecency_scores`                                | array of integers | what scores did the model assign to the suggestions?                                                                                       |
+| `loss`                                           | float             | a number quantifying how well the model worked                                                                                             |
+| `update`                                         | array of floats   | the model improvement that the user is proposing                                                                                           |
+| `num_suggestions_displayed`                      | integer           | how many suggestions were displayed?                                                                                                       |
+| `rank_selected`                                  | integer           | what was the position of the selected suggestion? (-1 if none selected)                                                                    |
+| `bookmark_and_history_num_suggestions_displayed` | integer           | how many history / bookmark suggestions were displayed?                                                                                    |
+| `bookmark_and_history_rank_selected`             | integer           | what was the position of the selected history / bookmark suggestion? (-1 if none selected)                                                 |
+| `num_key_down_events_at_selecteds_first_entry`   | integer           | how many keys did the user press down before the ultimately selected suggestion entered the list?                                          |
+| `num_key_down_events`                            | integer           | how many keys did the user press down?                                                                                                     |
+| `time_start_interaction`                         | integer           | the time when the awesome bar interaction started (always 0 since the the other timestamps are reported relative to this one)              |
+| `time_end_interaction`                           | integer           | the time when the ultimately selected suggestion entered the list (relative to `time_start_interaction`, -1 if no suggestion was selected) |
+| `time_at_selecteds_first_entry`                  | integer           | the time when the awesome bar interaction ended (relative to `time_start_interaction`)                                                     |
+| `search_string_length`                           | integer           | the length of the awesome bar search string at the end of the interaction                                                                  |
+| `selected_style`                                 | string            | the style attribute of the chosen suggestion (indicates the source of the suggestion)                                                      |
+| `study_variation`                                | string            | in what variation is the user enrolled in (e.g. control)                                                                                   |
+| `study_addon_version`                            | string            | the version of the study add-on                                                                                                            |
 
 ### Example ping
 
@@ -99,60 +113,90 @@ The following data is sent with this ping:
 }
 ```
 
-## Example sequence for a 'voted => not sure' interaction
+## Example ping sequence
 
 These are the `payload` fields from all pings in the `shield-study` and `shield-study-addon` buckets.
-
-TODO
 
 ```
 // common fields
 
-branch        up-to-expectations-1        // should describe Question text
-study_name    57-perception-shield-study
-addon_version 1.0.0
+branch        dogfooding
+study_name    federated-learning-v2@shield.mozilla.org
+addon_version 2.1.0
 version       3
 
-2017-10-09T14:16:18.042Z shield-study
-{
-  "study_state": "enter"
-}
-
-2017-10-09T14:16:18.055Z shield-study
+2019-02-27T13:45:30.229Z shield-study
 {
   "study_state": "installed"
 }
 
-2017-10-09T14:16:18.066Z shield-study-addon
+2019-02-27T13:45:39.703Z shield-study-addon
 {
   "attributes": {
-    "event": "prompted",
-    "promptType": "notificationBox-strings-1"
+    "bookmark_and_history_num_suggestions_displayed": "0",
+    "bookmark_and_history_rank_selected": "-1",
+    "frecency_scores": "[]",
+    "loss": "0",
+    "model_version": "140",
+    "num_key_down_events": "11",
+    "num_key_down_events_at_selecteds_first_entry": "11",
+    "num_suggestions_displayed": "2",
+    "rank_selected": "0",
+    "search_string_length": "11",
+    "selected_style": "action visiturl heuristic",
+    "study_addon_version": "2.1.0",
+    "study_variation": "dogfooding",
+    "time_at_selecteds_first_entry": "3082",
+    "time_end_interaction": "3184",
+    "time_start_interaction": "0",
+    "update": "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]"
   }
 }
 
-2017-10-09T16:29:44.109Z shield-study-addon
+2019-02-27T13:45:47.264Z shield-study-addon
 {
   "attributes": {
-    "promptType": "notificationBox-strings-1",
-    "event": "answered",
-    "yesFirst": "1",
-    "score": "0",
-    "label": "not sure",
-    "branch": "up-to-expectations-1",
-    "message": "Is Firefox performing up to your expectations?"
+    "bookmark_and_history_num_suggestions_displayed": "1",
+    "bookmark_and_history_rank_selected": "0",
+    "frecency_scores": "[41]",
+    "loss": "0",
+    "model_version": "140",
+    "num_key_down_events": "4",
+    "num_key_down_events_at_selecteds_first_entry": "1",
+    "num_suggestions_displayed": "2",
+    "rank_selected": "1",
+    "search_string_length": "4",
+    "selected_style": "favicon",
+    "study_addon_version": "2.1.0",
+    "study_variation": "dogfooding",
+    "time_at_selecteds_first_entry": "4079",
+    "time_end_interaction": "5993",
+    "time_start_interaction": "0",
+    "update": "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]"
   }
 }
 
-2017-10-09T16:29:44.188Z shield-study
+2019-02-27T13:45:49.495Z shield-study-addon
 {
-  "study_state": "ended-neutral",
-  "study_state_fullname": "voted"
-}
-
-2017-10-09T16:29:44.191Z shield-study
-{
-  "study_state": "exit"
+  "attributes": {
+    "bookmark_and_history_num_suggestions_displayed": "0",
+    "bookmark_and_history_rank_selected": "-1",
+    "frecency_scores": "[]",
+    "loss": "0",
+    "model_version": "140",
+    "num_key_down_events": "6",
+    "num_key_down_events_at_selecteds_first_entry": "6",
+    "num_suggestions_displayed": "1",
+    "rank_selected": "0",
+    "search_string_length": "6",
+    "selected_style": "action searchengine heuristic",
+    "study_addon_version": "2.1.0",
+    "study_variation": "dogfooding",
+    "time_at_selecteds_first_entry": "755",
+    "time_end_interaction": "1515",
+    "time_start_interaction": "0",
+    "update": "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]"
+  }
 }
 ```
 

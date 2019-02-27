@@ -76,6 +76,27 @@ const run = async studyType => {
   await utils.setupWebdriver.installAddon(driver);
   await utils.ui.openBrowserConsole(driver);
 
+  console.log(
+    "The add-on should now be loaded and you should be able to interact with the add-on in the newly opened Firefox instance.",
+  );
+  const beginTime = Date.now();
+
+  // For inclusion in TELEMETRY.md as example ping sequence
+  console.log("Waiting 30 seconds to allow for telemetry report to be shown");
+  await driver.sleep(30 * 1000);
+  const studyPings = await utils.telemetry.getShieldPingsAfterTimestamp(
+    driver,
+    beginTime,
+  );
+  const filteredPings = studyPings.filter(
+    ping => ping.type === "shield-study" || ping.type === "shield-study-addon",
+  );
+  console.log(
+    "Shield study telemetry pings in chronological order: ",
+    utils.telemetry.pingsReport(filteredPings.reverse()),
+  );
+
+  // Wait "indefinitely"
   await driver.sleep(1000 * 60 * 60 * 24);
   driver.quit();
 };
