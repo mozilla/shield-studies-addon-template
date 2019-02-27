@@ -41,12 +41,6 @@ npm start
 ## run and reload on filechanges
 npm run watch
 
-# run and reload on filechanges, with a variation/branch set by preference
-npm run watch -- --pref extensions.button-icon-preference_shield_mozilla_org.test.variationName=kittens
-
-# run and reload on filechanges, with a specific Firefox installation
-npm run watch -- -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
-
 ## lint
 npm run lint
 
@@ -119,7 +113,7 @@ npm run format
 npm run generate
 ```
 
-Generates stub code and API docs from `src/privileged/*/schema.yaml`. See <https://github.com/motin/webext-experiment-utils> for more information.
+Generates stub code and API docs from `src/privileged/*/schema.yaml` using <https://github.com/motin/webext-experiment-utils>.
 
 ## Manual testing
 
@@ -135,7 +129,13 @@ Launch the built add-on as expiring within a few seconds:
 EXPIRE_SECONDS=5 npm run test:manual
 ```
 
-Code at [./run-firefox.js](./run-firefox.js).
+Launch the built add-on as with a specific variation set:
+
+```shell
+BRANCH=control npm run test:manual
+```
+
+For more options, see the code at [./run-firefox.js](./run-firefox.js).
 
 ## Automated testing
 
@@ -191,10 +191,11 @@ Note: The study variation/branch during tests is overridden by a preference in t
 
 ### Core components
 
-* `synchronization`: Everything related to the federated learning protocol. Currently that means sending weight updates back using Telemetry and reading the current model from S3
-* `optimization`: For computing model updates
-* `studySetup` is adapted from [`shield-studies-addon-utils`](https://github.com/mozilla/shield-studies-addon-utils) and configures the study
-* `main.js` connects everything.
+* `lib/awesomeBarObserver.js`: Everything related to observing awesome bar interactions, using the events emitted by the `awesomeBar` Experiment API.
+* `lib/synchronization.js`: Everything related to the federated learning protocol. Currently that means sending weight updates back using Telemetry and reading the current model from S3
+* `lib/optimization.js`: For computing model updates
+* `studySetup.js` is adapted from [`shield-studies-addon-utils`](https://github.com/mozilla/shield-studies-addon-utils) and configures the study
+* `feature.js` connects everything.
 
 ## Directory Structure and Files
 
