@@ -31,6 +31,10 @@
 * Go to [this study's tracking bug](tbd: replace with your study's launch bug link in bugzilla) and install the latest add-on zip file
 * (If you are installing an unsigned version of the add-on, you need to set `extensions.legacy.enabled` to `true` before installing the add-on)
 
+Note for early add-on testers:
+
+* The live endpoints may not be live in production yet. If you see errors directly after "Fetching model from ...", this may be the case. To test the rest of the add-on functionality, you can set `extensions.federated-learning-v2_shield_mozilla_org.test.modelUrlEndpoint` to `https://public-data.telemetry.mozilla.org/awesomebar_study/latest.json` before installing the add-on. This re-uses the endpoint from the first version of the study.
+
 ## Expected User Experience / Functionality
 
 No user interface elements are modified directly in this study.
