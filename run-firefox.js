@@ -12,7 +12,10 @@ const LOG_LEVEL = process.env.LOG_LEVEL || "info";
 const EXPIRE_SECONDS = process.env.EXPIRE_SECONDS || false;
 const EXPIRED = process.env.EXPIRED || false;
 const BRANCH = process.env.BRANCH || "dogfooding";
-const MODEL_URL_ENDPOINT = process.env.MODEL_URL_ENDPOINT || false;
+const MODEL_URL_ENDPOINT =
+  process.env.MODEL_URL_ENDPOINT !== undefined
+    ? process.env.MODEL_URL_ENDPOINT
+    : false;
 
 const run = async studyType => {
   const driver = await utils.setupWebdriver.promiseSetupDriver(
@@ -57,7 +60,7 @@ const run = async studyType => {
       BRANCH,
     );
   }
-  if (MODEL_URL_ENDPOINT) {
+  if (MODEL_URL_ENDPOINT !== false) {
     // Useful for local testing until production endpoints for v2 are up properly
     await utils.preferences.set(
       driver,
