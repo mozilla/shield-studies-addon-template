@@ -86,7 +86,7 @@ class FrecencyOptimizer {
     } catch (error) {
       // Surfacing otherwise silent errors
       // eslint-disable-next-line no-console
-      console.error(error.toString());
+      console.error(error.toString(), error.stack);
       throw new Error(error.toString());
     }
   }
