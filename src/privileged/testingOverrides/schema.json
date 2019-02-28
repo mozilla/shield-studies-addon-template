@@ -1,0 +1,15 @@
+[
+  {
+    "namespace": "testingOverrides",
+    "description": "Accesses additional preferences used for study testing",
+    "functions": [
+      {
+        "name": "getModelUrlEndpointOverride",
+        "type": "function",
+        "async": true,
+        "description": "",
+        "parameters": []
+      }
+    ]
+  }
+]

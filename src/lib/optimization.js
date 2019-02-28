@@ -98,15 +98,15 @@ class FrecencyOptimizer {
     const gradient = [];
 
     for (const pref of FRECENCY_PREFS) {
-      const currentValue = await browser.experiments.prefs.getIntPref(pref);
+      const currentValue = await browser.frecencyPrefs.getIntPref(pref);
 
-      await browser.experiments.prefs.setIntPref(pref, currentValue - this.eps);
+      await browser.frecencyPrefs.setIntPref(pref, currentValue - this.eps);
       const loss1 = await this.lossFn(
         bookmarkAndHistoryUrlSuggestions,
         bookmarkAndHistoryRankSelected,
       );
 
-      await browser.experiments.prefs.setIntPref(pref, currentValue + this.eps);
+      await browser.frecencyPrefs.setIntPref(pref, currentValue + this.eps);
       const loss2 = await this.lossFn(
         bookmarkAndHistoryUrlSuggestions,
         bookmarkAndHistoryRankSelected,
@@ -115,7 +115,7 @@ class FrecencyOptimizer {
       const finiteDifference = (loss1 - loss2) / (2 * this.eps);
       gradient.push(finiteDifference);
 
-      await browser.experiments.prefs.setIntPref(pref, currentValue);
+      await browser.frecencyPrefs.setIntPref(pref, currentValue);
     }
 
     return gradient;

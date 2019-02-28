@@ -29,12 +29,12 @@
         "paths": [["experiments", "frecency"]]
       }
     },
-    "prefs": {
-      "schema": "./privileged/prefs/schema.json",
+    "frecencyPrefs": {
+      "schema": "./privileged/frecencyPrefs/schema.json",
       "parent": {
         "scopes": ["addon_parent"],
-        "script": "./privileged/prefs/api.js",
-        "paths": [["experiments", "prefs"]]
+        "script": "./privileged/frecencyPrefs/api.js",
+        "paths": [["frecencyPrefs"]]
       }
     },
     "privacyContext": {
@@ -51,6 +51,14 @@
         "scopes": ["addon_parent"],
         "script": "./privileged/study/api.js",
         "paths": [["study"]]
+      }
+    },
+    "testingOverrides": {
+      "schema": "./privileged/testingOverrides/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "./privileged/testingOverrides/api.js",
+        "paths": [["testingOverrides"]]
       }
     }
   },

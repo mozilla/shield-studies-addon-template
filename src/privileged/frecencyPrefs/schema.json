@@ -1,0 +1,56 @@
+[
+  {
+    "namespace": "frecencyPrefs",
+    "description":
+      "Read and write preferences under the `places.frecency.*` namespace",
+    "functions": [
+      {
+        "name": "clearUserPref",
+        "type": "function",
+        "async": true,
+        "description": "Clear a preference's non-default value",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "description":
+              "The preference name under the `places.frecency.*` namespace"
+          }
+        ]
+      },
+      {
+        "name": "getIntPref",
+        "type": "function",
+        "async": true,
+        "description": "Get a preference's value",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "description":
+              "The preference name under the `places.frecency.*` namespace"
+          }
+        ]
+      },
+      {
+        "name": "setIntPref",
+        "type": "function",
+        "async": true,
+        "description": "Set a preference's value",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "description":
+              "The preference name under the `places.frecency.*` namespace"
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "description": "The new value"
+          }
+        ]
+      }
+    ]
+  }
+]
