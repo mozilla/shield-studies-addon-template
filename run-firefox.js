@@ -9,7 +9,7 @@ const utils = require("./test/functional/utils");
 
 const STUDY_TYPE = process.env.STUDY_TYPE || "shield";
 const LOG_LEVEL = process.env.LOG_LEVEL || "info";
-const EXPIRE_SECONDS = process.env.EXPIRE_SECONDS || false;
+const EXPIRE_IN_SECONDS = process.env.EXPIRE_IN_SECONDS || false;
 const EXPIRED = process.env.EXPIRED || false;
 const BRANCH = process.env.BRANCH || "dogfooding";
 const MODEL_URL_ENDPOINT =
@@ -31,13 +31,13 @@ const run = async studyType => {
     STUDY_TYPE,
   );
   */
-  if (EXPIRE_SECONDS > 0) {
-    // Set preference that simulates that the study will expire after EXPIRE_SECONDS seconds
+  if (EXPIRE_IN_SECONDS > 0) {
+    // Set preference that simulates that the study will expire after EXPIRE_IN_SECONDS seconds
     const beginTime = Date.now();
     const msInOneDay = 60 * 60 * 24 * 1000;
     const expiresInDays = 7 * 4; // 4 weeks // Needs to be the same as in src/studySetup.js
     const firstRunTimestamp =
-      beginTime - msInOneDay * expiresInDays + EXPIRE_SECONDS * 1000;
+      beginTime - msInOneDay * expiresInDays + EXPIRE_IN_SECONDS * 1000;
     await utils.preferences.set(
       driver,
       `extensions.${widgetId}.test.firstRunTimestamp`,
