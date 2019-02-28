@@ -94,6 +94,7 @@
     "lint:fixpack": "fixpack",
     "lint:web-ext-lint": "web-ext lint",
     "postformat": "npm run eslint-fix && fixpack",
+    "postgenerate": "npm run format",
     "prebuild": "npm-run-all bundle:*",
     "prestart": "npm run pretest",
     "pretest": "node test/ensure_minimum_node_version.js && npm run build",
