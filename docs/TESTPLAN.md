@@ -58,6 +58,7 @@ If the user clicks on the badge more than 3 times, it ends the study.
 
 This study fires a survey at the following endings:
 
+* `individual-opt-out`
 * `expired`
 
 ### Do these tests (in addition to ordinary regression tests)
@@ -128,6 +129,15 @@ This study fires a survey at the following endings:
 * Install the add-on as per above
 * Verify that the study runs
 * Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
+
+**Cleans up preferences upon Normandy unenrollment**
+
+* Set the branch preference to one of the validation branches
+* Enroll a client using the Normandy staging server
+* Verify that the study runs
+* Verify that `places.frecency.firstBucketCutoff` has a non-default value
+* Unenroll a client using the Normandy staging server
+* Verify that `places.frecency.firstBucketCutoff` has been restored to use the default value
 
 **Correct branches and weights**
 
