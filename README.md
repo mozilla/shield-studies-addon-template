@@ -84,3 +84,7 @@ Telemetry pings are loaded into the encrypted Pioneer pipeline.
 ## Improving this add-on
 
 See [DEV.md](./docs/DEV.md) for more details on how to work with this add-on as a developer.
+
+## References
+
+* [Bugzilla](https://bugzilla.mozilla.org/show_bug.cgi?id=TODO)

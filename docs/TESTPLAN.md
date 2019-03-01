@@ -10,7 +10,7 @@
   * [Preparations](#preparations)
   * [Install the add-on and enroll in the study](#install-the-add-on-and-enroll-in-the-study)
 * [Expected User Experience / Functionality](#expected-user-experience--functionality)
-  * [Do these tests](#do-these-tests)
+  * [Do these tests (in addition to ordinary regression tests)](#do-these-tests-in-addition-to-ordinary-regression-tests)
   * [Design](#design)
   * [Note: checking "sent Telemetry is correct"](#note-checking-sent-telemetry-is-correct)
 * [Debug](#debug)
@@ -53,40 +53,53 @@ Icon will be the same every run.
 
 If the user clicks on the badge more than 3 times, it ends the study.
 
-### Do these tests
+### Surveys
 
-1. UI APPEARANCE. OBSERVE a notification bar with these traits:
+This study fires a survey at the following endings:
 
-   * Icon is 'heartbeat'
-   * Text is "Welcome to the new feature! Look for changes!",
-   * Clickable buttons with labels 'Thanks!' AND 'I do not want this.'
-   * An `x` button at the right that closes the notice.
+* `expired`
 
-   Test fails IF:
+### Do these tests (in addition to ordinary regression tests)
 
-   * There is no bar.
-   * Elements are not correct or are not displayed
+**UI appearance test 1**
 
-2. UI functionality: Thanks!
+* Install the add-on as per above
+* Verify that the study runs
+* OBSERVE a notification bar with these traits:
+  * Icon is 'heartbeat'
+  * Text is "Welcome to the new feature! Look for changes!",
+  * Clickable buttons with labels 'Thanks!' AND 'I do not want this.'
+  * An `x` button at the right that closes the notice.
+* Test fails IF:
+  * There is no bar.
+  * Elements are not correct or are not displayed
 
-   * Click on the 'Thanks!' button
-   * Verify that the notification bar closes
+**UI functionality test 1: Thanks!**
 
-3. UI functionality: I do not want this.
+* Install the add-on as per above
+* Verify that the study runs
+* Click on the 'Thanks!' button
+* Verify that the notification bar closes
 
-   * Click on the 'I do not want this.' button
-   * Verify that the notification bar closes
-   * Verify that the study ends
-   * Verify that sent Telemetry is correct
-   * Verify that the ending is `introduction-leave-study`
+**UI functionality test 2: I do not want this**
 
-4. UI functionality `too-popular`
+* Install the add-on as per above
+* Verify that the study runs
+* Click on the 'I do not want this.' button
+* Verify that the notification bar closes
+* Verify that the study ends
+* Verify that sent Telemetry is correct
+* Verify that the ending is `introduction-leave-study`
 
-   * Click on the web extension's icon three times
-   * Verify that the study ends
-   * Verify that sent Telemetry is correct
-   * Verify that the ending is `too-popular`
-   * Verify that the user is sent to the URL specified in `src/studySetup.js` under `endings -> too-popular`.
+**UI functionality test 3: `too-popular`**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Click on the web extension's icon three times
+* Verify that the study ends
+* Verify that sent Telemetry is correct
+* Verify that the ending is `too-popular`
+* Verify that the user is sent to the URL specified in `src/studySetup.js` under `endings -> too-popular`.
 
 ### Design
 

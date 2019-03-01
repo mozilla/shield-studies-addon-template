@@ -1,6 +1,9 @@
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(feature)" }]*/
 
-/**  Example Feature module for a Shield Study.
+/**
+ * **Example template documentation - remove or replace this jsdoc in your study**
+ *
+ * Example Feature module for a Shield Study.
  *
  *  UI:
  *  - during INSTALL only, show a notification bar with 2 buttons:
@@ -18,11 +21,10 @@
  **/
 class Feature {
   constructor() {}
-  /** A Demonstration feature.
-   *
-   *  - variation: study info about particular client study variation
-   *  - reason: string of background.js install/startup/shutdown reason
-   *
+
+  /**
+   * @param {Object} studyInfo Study info
+   * @returns {Promise<*>} Promise that resolves after configure
    */
   async configure(studyInfo) {
     const feature = this;
@@ -77,11 +79,12 @@ class Feature {
 
   /**
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
+   * @returns {Promise<*>} Promise that resolves after cleanup
    */
   async cleanup() {}
 
   /**
-   * Example of a utility function
+   * Example of a static utility function that can be unit-tested
    *
    * @param variation
    * @returns {string}
@@ -91,6 +94,9 @@ class Feature {
   }
 }
 
+/**
+ * **Example browser action handling code - remove or replace in your study**
+ */
 class BrowserActionButtonChoiceFeature {
   /**
    * - set image, text, click handler (telemetry)

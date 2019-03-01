@@ -17,7 +17,7 @@ const run = async studyType => {
     utils.FIREFOX_PREFERENCES,
   );
   const widgetId = utils.ui.makeWidgetId(
-    "jestr-pioneer-shield-study@pioneer.mozilla.org",
+    "extensions.button-icon-preference_shield_mozilla_org.test.variationName",
   );
   /*
   await utils.preferences.set(
