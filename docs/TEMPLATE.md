@@ -57,3 +57,14 @@ create a PR.
 4. Build your study add-on and make the docs reflect your study
 5. File issues/PRs against https://github.com/mozilla/shield-studies-addon-template/ when you come across things to improve in the template
 
+### Retrofitting an existing study add-on to use the template
+
+First, move all existing files in your study add-on repository into a new folder and commit those changes. Then:
+
+    git clone https://github.com/mozilla/shield-studies-addon-template /tmp/shield-studies-addon-template
+    git remote add shield-studies-addon-template /tmp/shield-studies-addon-template
+    git fetch shield-studies-addon-template
+    git merge --allow-unrelated-histories shield-studies-addon-template/master
+    git remote remove shield-studies-addon-template
+
+After this, move back the files into the template structure as necessary. For an example of this, see [this](https://github.com/mozilla/federated-learning-v2-study-addon/commit/7367aa8d3f6d29f675ff3f36a1136c6b09476ace).
