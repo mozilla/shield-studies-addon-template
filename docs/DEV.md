@@ -126,7 +126,7 @@ EXPIRED=1 npm run test:manual
 Launch the built add-on as expiring within a few seconds:
 
 ```shell
-EXPIRE_SECONDS=5 npm run test:manual
+EXPIRE_IN_SECONDS=5 npm run test:manual
 ```
 
 Launch the built add-on as with a specific variation set:
