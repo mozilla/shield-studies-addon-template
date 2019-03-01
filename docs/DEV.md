@@ -38,18 +38,14 @@ npm start
 ## run and reload on filechanges
 npm run watch
 
-# run and reload on filechanges, with a variation/branch set by preference
-npm run watch -- --pref extensions.button-icon-preference_shield_mozilla_org.test.variationName=kittens
-
-# run and reload on filechanges, with a specific Firefox installation
-npm run watch -- -f "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin"
-
 ## lint
 npm run lint
 
 ## build
 npm run build
 ```
+
+Use [../web-ext-config.js](../web-ext-config.js) to configure testing preferences and which Firefox flavor the above commands should use. (Pioneer studies note: web-ext can not be used to launch Pioneer studies - refer to the Manual testing section below for Pioneer studies).
 
 ## Details
 
