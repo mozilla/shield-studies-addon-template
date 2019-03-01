@@ -10,6 +10,7 @@
   * [Preparations](#preparations)
   * [Install the add-on and enroll in the study](#install-the-add-on-and-enroll-in-the-study)
 * [Expected User Experience / Functionality](#expected-user-experience--functionality)
+  * [Surveys](#surveys)
   * [Do these tests (in addition to ordinary regression tests)](#do-these-tests-in-addition-to-ordinary-regression-tests)
   * [Design](#design)
   * [Note: checking "sent Telemetry is correct"](#note-checking-sent-telemetry-is-correct)

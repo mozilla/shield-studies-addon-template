@@ -9,7 +9,7 @@ This repository is intended as an example repository containing templates and go
 practices for creating a [Shield Study](https://wiki.mozilla.org/Firefox/Shield/Shield_Studies) add-on for Firefox.
 
 See [TEMPLATE.md](./docs/TEMPLATE.md) for more details on how to use the template.
-Note: Remove this section after you have cloned/merged the template to your own study add-on repo. 
+Note: Remove this section after you have cloned/merged the template to your own study add-on repo.
 
 ## Seeing the add-on in action
 
