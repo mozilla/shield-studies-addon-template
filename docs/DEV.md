@@ -11,6 +11,8 @@
 * [Details](#details)
 * [Loading the Web Extension in Firefox](#loading-the-web-extension-in-firefox)
 * [Seeing the add-on in action](#seeing-the-add-on-in-action)
+* [Format code using prettier and eslint --fix](#format-code-using-prettier-and-eslint---fix)
+* [Generate stub code and API docs](#generate-stub-code-and-api-docs)
 * [Automated testing](#automated-testing)
   * [Unit tests](#unit-tests)
   * [Functional tests](#functional-tests)
