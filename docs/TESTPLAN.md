@@ -101,6 +101,31 @@ This study fires a survey at the following endings:
 * Verify that the ending is `too-popular`
 * Verify that the user is sent to the URL specified in `src/studySetup.js` under `endings -> too-popular`.
 
+(Template note: The above are example study-specific test instructions. Below are some general tests that probably should be kept in your study's test plan).
+
+**Enabling of permanent private browsing before study has begun**
+
+* Enable permanent private browsing
+* Install the add-on as per above
+* Verify that the study does not run
+
+**Enabling of permanent private browsing after study has begun**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Enable permanent private browsing
+* Verify that the study ends upon the subsequent restart of the browser
+
+**Private browsing mode test 1**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that no information is recorded and sent when private browsing mode is active
+
+**Correct branches and weights**
+
+* Make sure that the branches and weights in the add-on configuration ([../src/studySetup.js](../src/studySetup.js)) corresponds to the branch weights of the Experimenter entry. (Note that for practical reasons, the implementation uses 7 branches instead of the 5 defined study branches. The study branches that separate use different populations for training and validation corresponding to separate branches in the implementation)
+
 ### Design
 
 Any UI in a Shield study should be consistent with standard Firefox design specifications. These standards can be found at [design.firefox.com](https://design.firefox.com/photon/welcome.html). Firefox logo specifications can be found [here](https://design.firefox.com/photon/visuals/product-identity-assets.html).
