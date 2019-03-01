@@ -122,6 +122,12 @@ This study fires a survey at the following endings:
 * Verify that the study runs
 * Verify that no information is recorded and sent when private browsing mode is active
 
+**Not showing in `about:addons`**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
+
 **Correct branches and weights**
 
 * Make sure that the branches and weights in the add-on configuration ([../src/studySetup.js](../src/studySetup.js)) corresponds to the branch weights of the Experimenter entry. (Note that for practical reasons, the implementation uses 7 branches instead of the 5 defined study branches. The study branches that separate use different populations for training and validation corresponding to separate branches in the implementation)
