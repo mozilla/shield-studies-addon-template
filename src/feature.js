@@ -73,8 +73,62 @@ class Feature {
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
-  sendTelemetry(stringStringMap) {
-    browser.study.sendTelemetry(stringStringMap);
+  async sendTelemetry(payload) {
+    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
+      // drop the ping - do not send any telemetry
+      return false;
+    }
+
+    await browser.study.logger.debug([
+      "Telemetry about to be validated using browser.study.validateJSON",
+      payload,
+    ]);
+
+    const payloadSchema = {
+      type: "object",
+      properties: {
+        event: {
+          type: "string",
+        },
+        timesClickedInSession: {
+          type: "number",
+          minimum: 0,
+        },
+      },
+      required: ["event"],
+    };
+    const validationResult = await browser.study.validateJSON(
+      payload,
+      payloadSchema,
+    );
+
+    // Use to update study.payload.schema.json
+    // console.log(JSON.stringify(payloadSchema));
+
+    if (!validationResult.valid) {
+      await browser.study.logger.error([
+        "Invalid telemetry payload",
+        { payload, validationResult },
+      ]);
+      throw new Error("Invalid telemetry payload");
+    }
+
+    // Submit ping using a custom schema/topic
+    /*
+    await browser.telemetry.submitPing("study-schema-foo", payload, {
+      addClientId: true,
+    });
+    */
+
+    // Submit ping using study utils - allows for automatic querying of study data in re:dash
+    const shieldStudyAddonPayload = {
+      event: String(payload.event),
+      timesClickedInSession: String(payload.timesClickedInSession),
+    };
+    await browser.study.sendTelemetry(shieldStudyAddonPayload);
+    await browser.study.logger.log("Telemetry submitted:");
+    await browser.study.logger.log({ payload, shieldStudyAddonPayload });
+    return true;
   }
 
   /**
@@ -139,7 +193,7 @@ class BrowserActionButtonChoiceFeature {
     // telemetry EVERY CLICK
     browser.study.sendTelemetry({
       event: "button-click",
-      timesClickedInSession: "" + this.timesClickedInSession,
+      timesClickedInSession: this.timesClickedInSession,
     });
 
     // webExtension-initiated ending for "used-often"
