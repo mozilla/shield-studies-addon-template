@@ -3,10 +3,11 @@
 // for unhandled promise rejection debugging
 process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line no-console
 
+/*
 const assert = require("assert");
 const utils = require("./utils");
 
-/* Part 1:  Utilities */
+// Part 1:  Utilities
 
 async function getNotification(driver) {
   return utils.ui.getChromeElementBy.tagName(driver, "notification");
@@ -16,7 +17,7 @@ async function getFirstButton(driver) {
   return utils.ui.getChromeElementBy.className(driver, "notification-button");
 }
 
-/* Part 2:  The Tests */
+// Part 2:  The Tests
 
 // TODO glind, this is an incomplete set of tests
 
@@ -107,3 +108,4 @@ describe("introduction / orientation bar", function() {
     assert(true);
   });
 });
+*/

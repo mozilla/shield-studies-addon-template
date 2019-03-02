@@ -1,6 +1,9 @@
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "(feature)" }]*/
 
-/**  Example Feature module for a Shield Study.
+/**
+ * **Example template documentation - remove or replace this jsdoc in your study**
+ *
+ * Example Feature module for a Shield Study.
  *
  *  UI:
  *  - during INSTALL only, show a notification bar with 2 buttons:
@@ -18,18 +21,18 @@
  **/
 class Feature {
   constructor() {}
-  /** A Demonstration feature.
-   *
-   *  - variation: study info about particular client study variation
-   *  - reason: string of background.js install/startup/shutdown reason
-   *
+
+  /**
+   * @param {Object} studyInfo Study info
+   * @returns {Promise<*>} Promise that resolves after configure
    */
   async configure(studyInfo) {
     const feature = this;
     const { variation, isFirstRun } = studyInfo;
 
     // Initiate our browser action
-    new BrowserActionButtonChoiceFeature(variation);
+    const browserActionButtonChoiceFeature = new BrowserActionButtonChoiceFeature();
+    await browserActionButtonChoiceFeature.configure(variation);
 
     // perform something only during first run
     if (isFirstRun) {
@@ -38,8 +41,8 @@ class Feature {
       );
 
       browser.introductionNotificationBar.onIntroductionShown.addListener(
-        () => {
-          console.log("onIntroductionShown");
+        async() => {
+          await browser.study.logger.log("onIntroductionShown");
 
           feature.sendTelemetry({
             event: "onIntroductionShown",
@@ -48,8 +51,8 @@ class Feature {
       );
 
       browser.introductionNotificationBar.onIntroductionAccept.addListener(
-        () => {
-          console.log("onIntroductionAccept");
+        async() => {
+          await browser.study.logger.log("onIntroductionAccept");
           feature.sendTelemetry({
             event: "onIntroductionAccept",
           });
@@ -57,8 +60,8 @@ class Feature {
       );
 
       browser.introductionNotificationBar.onIntroductionLeaveStudy.addListener(
-        () => {
-          console.log("onIntroductionLeaveStudy");
+        async() => {
+          await browser.study.logger.log("onIntroductionLeaveStudy");
           feature.sendTelemetry({
             event: "onIntroductionLeaveStudy",
           });
@@ -71,56 +74,118 @@ class Feature {
   }
 
   /* good practice to have the literal 'sending' be wrapped up */
-  sendTelemetry(stringStringMap) {
-    browser.study.sendTelemetry(stringStringMap);
+  async sendTelemetry(payload) {
+    if (await browser.privacyContext.aPrivateBrowserWindowIsOpen()) {
+      // drop the ping - do not send any telemetry
+      return false;
+    }
+
+    await browser.study.logger.debug([
+      "Telemetry about to be validated using browser.study.validateJSON",
+      payload,
+    ]);
+
+    const payloadSchema = {
+      type: "object",
+      properties: {
+        event: {
+          type: "string",
+        },
+        timesClickedInSession: {
+          type: "number",
+          minimum: 0,
+        },
+      },
+      required: ["event"],
+    };
+    const validationResult = await browser.study.validateJSON(
+      payload,
+      payloadSchema,
+    );
+
+    // Use to update study.payload.schema.json
+    // console.log(JSON.stringify(payloadSchema));
+
+    if (!validationResult.valid) {
+      await browser.study.logger.error([
+        "Invalid telemetry payload",
+        { payload, validationResult },
+      ]);
+      throw new Error("Invalid telemetry payload");
+    }
+
+    // Submit ping using a custom schema/topic
+    /*
+    await browser.telemetry.submitPing("study-schema-foo", payload, {
+      addClientId: true,
+    });
+    */
+
+    // Submit ping using study utils - allows for automatic querying of study data in re:dash
+    const shieldStudyAddonPayload = {
+      event: String(payload.event),
+      timesClickedInSession: String(payload.timesClickedInSession),
+    };
+    await browser.study.sendTelemetry(shieldStudyAddonPayload);
+    await browser.study.logger.log("Telemetry submitted:");
+    await browser.study.logger.log({ payload, shieldStudyAddonPayload });
+    return true;
   }
 
   /**
    * Called at end of study, and if the user disables the study or it gets uninstalled by other means.
+   * @returns {Promise<*>} Promise that resolves after cleanup
    */
   async cleanup() {}
 
   /**
-   * Example of a utility function
+   * Example of a static utility function that can be unit-tested
    *
-   * @param variation
-   * @returns {string}
+   * @param {Object} variation The study variation
+   * @returns {string} The path to the variation's icon
    */
   static iconPath(variation) {
     return `icons/${variation.name}.svg`;
   }
 }
 
+/**
+ * **Example browser action handling code - remove or replace in your study**
+ */
 class BrowserActionButtonChoiceFeature {
   /**
    * - set image, text, click handler (telemetry)
+   * @param {Object} variation The study variation
+   * @returns {Promise<*>} Promise that resolves after configuration
    */
-  constructor(variation) {
-    console.log(
+  async configure(variation) {
+    await browser.study.logger.log(
       "Initializing BrowserActionButtonChoiceFeature:",
       variation.name,
     );
     this.timesClickedInSession = 0;
 
     // modify BrowserAction (button) ui for this particular {variation}
-    console.log("path:", `icons/${variation.name}.svg`);
+    await browser.study.logger.log("path:", `icons/${variation.name}.svg`);
     // TODO: Running into an error "values is undefined" here
     browser.browserAction.setIcon({ path: Feature.iconPath(variation) });
     browser.browserAction.setTitle({ title: variation.name });
     browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
-    console.log("initialized");
+    await browser.study.logger.log("initialized");
   }
 
-  /** handleButtonClick
+  /**
+   * handleButtonClick
    *
    * - instrument browserAction button clicks
    * - change label
+   * @returns {Promise<*>} Promise that resolves after handling
    */
-  handleButtonClick() {
-    console.log("handleButtonClick");
+  async handleButtonClick() {
+    await browser.study.logger.log("handleButtonClick");
     // note: doesn't persist across a session, unless you use localStorage or similar.
     this.timesClickedInSession += 1;
-    console.log("got a click", this.timesClickedInSession);
+    await browser.study.logger.log("got a click", this.timesClickedInSession);
     browser.browserAction.setBadgeText({
       text: this.timesClickedInSession.toString(),
     });
@@ -133,7 +198,7 @@ class BrowserActionButtonChoiceFeature {
     // telemetry EVERY CLICK
     browser.study.sendTelemetry({
       event: "button-click",
-      timesClickedInSession: "" + this.timesClickedInSession,
+      timesClickedInSession: this.timesClickedInSession,
     });
 
     // webExtension-initiated ending for "used-often"

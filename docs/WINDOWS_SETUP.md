@@ -29,7 +29,7 @@ The Shield Studies Add-on Template makes some assumptions about your environment
    3. Restart.
    4. Type `bash` at the Windows command line and wait for Ubuntu to install.
 
-2. Install a recent version of node.js:
+2. Install a recent version of Node.js:
 
 ```
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
@@ -38,7 +38,7 @@ sudo apt-get install -y nodejs
 
 3. Get the latest npm: `npm install npm@latest -g`
 
-4. Install git and zip (and any other linux command-line tools you like):
+4. Install git and zip (and any other Linux command-line tools you like):
 
 ```
 sudo apt install git
@@ -55,7 +55,7 @@ sudo apt install zip
 ## Known Issues
 
 * Running `npm run test` in this environment fails with a 'profile cannot be loaded' error. Worked around it? See TODO.
-* [Editing files in the WSL linux filesystem with Windows tools corrupts data there.](https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-files-using-windows-apps-and-tools/) Don't find your secret hidden linux home directory in WSL, check your code out there, and then edit it using e.g. Windows Visual Studio Code. Things will break in all sorts of unpredictable ways.
+* [Editing files in the WSL Linux filesystem with Windows tools corrupts data there.](https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-files-using-windows-apps-and-tools/) Don't find your secret hidden Linux home directory in WSL, check your code out there, and then edit it using e.g. Windows Visual Studio Code. Things will break in all sorts of unpredictable ways.
 
 ## TODO
 

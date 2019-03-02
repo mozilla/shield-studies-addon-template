@@ -3,10 +3,11 @@
   "description": "__MSG_extensionDescription__",
   "version": "2.0.0",
   "manifest_version": 2,
+  "hidden": true,
   "applications": {
     "gecko": {
       "id": "button-icon-preference@shield.mozilla.org",
-      "strict_min_version": "61.0a1"
+      "strict_min_version": "65.0a1"
     }
   },
   "default_locale": "en-US",

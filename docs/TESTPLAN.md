@@ -10,7 +10,8 @@
   * [Preparations](#preparations)
   * [Install the add-on and enroll in the study](#install-the-add-on-and-enroll-in-the-study)
 * [Expected User Experience / Functionality](#expected-user-experience--functionality)
-  * [Do these tests](#do-these-tests)
+  * [Surveys](#surveys)
+  * [Do these tests (in addition to ordinary regression tests)](#do-these-tests-in-addition-to-ordinary-regression-tests)
   * [Design](#design)
   * [Note: checking "sent Telemetry is correct"](#note-checking-sent-telemetry-is-correct)
 * [Debug](#debug)
@@ -53,40 +54,94 @@ Icon will be the same every run.
 
 If the user clicks on the badge more than 3 times, it ends the study.
 
-### Do these tests
+### Surveys
 
-1. UI APPEARANCE. OBSERVE a notification bar with these traits:
+This study fires a survey at the following endings:
 
-   * Icon is 'heartbeat'
-   * Text is "Welcome to the new feature! Look for changes!",
-   * Clickable buttons with labels 'Thanks!' AND 'I do not want this.'
-   * An `x` button at the right that closes the notice.
+* `individual-opt-out`
+* `expired`
 
-   Test fails IF:
+### Do these tests (in addition to ordinary regression tests)
 
-   * There is no bar.
-   * Elements are not correct or are not displayed
+**UI appearance test 1**
 
-2. UI functionality: Thanks!
+* Install the add-on as per above
+* Verify that the study runs
+* OBSERVE a notification bar with these traits:
+  * Icon is 'heartbeat'
+  * Text is "Welcome to the new feature! Look for changes!",
+  * Clickable buttons with labels 'Thanks!' AND 'I do not want this.'
+  * An `x` button at the right that closes the notice.
+* Test fails IF:
+  * There is no bar.
+  * Elements are not correct or are not displayed
 
-   * Click on the 'Thanks!' button
-   * Verify that the notification bar closes
+**UI functionality test 1: Thanks!**
 
-3. UI functionality: I do not want this.
+* Install the add-on as per above
+* Verify that the study runs
+* Click on the 'Thanks!' button
+* Verify that the notification bar closes
 
-   * Click on the 'I do not want this.' button
-   * Verify that the notification bar closes
-   * Verify that the study ends
-   * Verify that sent Telemetry is correct
-   * Verify that the ending is `introduction-leave-study`
+**UI functionality test 2: I do not want this**
 
-4. UI functionality `too-popular`
+* Install the add-on as per above
+* Verify that the study runs
+* Click on the 'I do not want this.' button
+* Verify that the notification bar closes
+* Verify that the study ends
+* Verify that sent Telemetry is correct
+* Verify that the ending is `introduction-leave-study`
 
-   * Click on the web extension's icon three times
-   * Verify that the study ends
-   * Verify that sent Telemetry is correct
-   * Verify that the ending is `too-popular`
-   * Verify that the user is sent to the URL specified in `src/studySetup.js` under `endings -> too-popular`.
+**UI functionality test 3: `too-popular`**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Click on the web extension's icon three times
+* Verify that the study ends
+* Verify that sent Telemetry is correct
+* Verify that the ending is `too-popular`
+* Verify that the user is sent to the URL specified in `src/studySetup.js` under `endings -> too-popular`.
+
+(Template note: The above are example study-specific test instructions. Below are some general tests that probably should be kept in your study's test plan).
+
+**Enabling of permanent private browsing before study has begun**
+
+* Enable permanent private browsing
+* Install the add-on as per above
+* Verify that the study does not run
+
+**Enabling of permanent private browsing after study has begun**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Enable permanent private browsing
+* Verify that the study ends upon the subsequent restart of the browser
+
+**Private browsing mode test 1**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that no information is recorded and sent when private browsing mode is active
+
+**Not showing in `about:addons`**
+
+* Install the add-on as per above
+* Verify that the study runs
+* Verify that the study does not show up in `about:addons` (note: only signed study add-ons are hidden)
+
+**Cleans up preferences upon Normandy unenrollment**
+
+* Set the branch preference to one of the validation branches
+* Enroll a client using the Normandy staging server
+* Verify that the study runs
+* Verify that `places.frecency.firstBucketCutoff` has a non-default value
+* Unenroll a client using the Normandy staging server
+* Verify that `places.frecency.firstBucketCutoff` has been restored to use the default value
+
+**Correct branches and weights**
+
+* Make sure that the branches and weights in the add-on configuration ([../src/studySetup.js](../src/studySetup.js)) corresponds to the branch weights of the Experimenter entry. (Note that for practical reasons, the implementation uses 7 branches instead of the 5 defined study branches. The study branches that separate use different populations for training and validation corresponding to separate branches in the implementation)
 
 ### Design
 

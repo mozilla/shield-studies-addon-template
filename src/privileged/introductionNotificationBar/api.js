@@ -23,8 +23,8 @@ XPCOMUtils.defineLazyModuleGetter(
   "resource:///modules/BrowserWindowTracker.jsm",
 );
 
-/** Return most recent NON-PRIVATE browser window, so that we can
- * manipulate chrome elements on it.
+/**
+ * @returns {Object} The most recent NON-PRIVATE browser window, so that we can manipulate chrome elements on it.
  */
 function getMostRecentBrowserWindow() {
   return BrowserWindowTracker.getTopWindow({
@@ -59,6 +59,7 @@ class IntroductionNotificationBarEventEmitter extends EventEmitter {
       "#high-priority-global-notificationbox",
     );
 
+    // TODO: https://github.com/mozilla/shield-studies-addon-template/issues/96
     console.log("typeof notificationBox", typeof notificationBox);
 
     if (!notificationBox) {
@@ -103,17 +104,6 @@ class IntroductionNotificationBarEventEmitter extends EventEmitter {
 }
 
 this.introductionNotificationBar = class extends ExtensionAPI {
-  /**
-   * Extension Shutdown
-   * APIs that allocate any resources (e.g., adding elements to the browser’s user interface,
-   * setting up internal event listeners, etc.) must free these resources when the extension
-   * for which they are allocated is shut down.
-   */
-  onShutdown(shutdownReason) {
-    console.log("onShutdown", shutdownReason);
-    // TODO: remove any active ui
-  }
-
   getAPI(context) {
     const introductionNotificationBarEventEmitter = new IntroductionNotificationBarEventEmitter();
     return {

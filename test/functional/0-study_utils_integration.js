@@ -6,6 +6,8 @@ process.on("unhandledRejection", r => console.error(r)); // eslint-disable-line 
 const assert = require("assert");
 const utils = require("./utils");
 
+const expiresInDays = 14; // Needs to be the same as in src/studySetup.js
+
 describe("basic shield utils integration", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(25000);
@@ -70,7 +72,7 @@ describe("basic shield utils integration", function() {
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 
@@ -119,7 +121,7 @@ describe("basic shield utils integration", function() {
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 });
@@ -191,7 +193,7 @@ describe("setup of an already expired study should result in endStudy('expired')
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 });
@@ -209,7 +211,6 @@ describe("setup of a study that expires within a few seconds should result in en
 
     // Set preference that simulates that the study will expire after a few seconds
     const msInOneDay = 60 * 60 * 24 * 1000;
-    const expiresInDays = 14; // Needs to be the same as in src/studySetup.js
     const firstRunTimestamp = beginTime - msInOneDay * expiresInDays + 8000;
     const addonWidgetId = await utils.ui.addonWidgetId();
     const customPreferences = Object.assign({}, utils.FIREFOX_PREFERENCES);
@@ -252,7 +253,7 @@ describe("setup of a study that expires within a few seconds should result in en
 
       const observed = utils.telemetry.summarizePings(filteredPings);
       const expected = [];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 
@@ -293,7 +294,7 @@ describe("setup of a study that expires within a few seconds should result in en
           },
         ],
       ];
-      assert.deepStrictEqual(expected, observed, "telemetry pings match");
+      assert.deepStrictEqual(observed, expected, "telemetry pings match");
     });
   });
 });
