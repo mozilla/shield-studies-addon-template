@@ -20,6 +20,7 @@ async function getFirstButton(driver) {
 
 // TODO glind, this is an incomplete set of tests
 
+/*
 describe("introduction / orientation bar", function() {
   // This gives Firefox time to start, and us a bit longer during some of the tests.
   this.timeout(15000);
@@ -107,3 +108,4 @@ describe("introduction / orientation bar", function() {
     assert(true);
   });
 });
+*/
