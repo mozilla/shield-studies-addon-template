@@ -31,7 +31,8 @@ class Feature {
     const { variation, isFirstRun } = studyInfo;
 
     // Initiate our browser action
-    new BrowserActionButtonChoiceFeature(variation);
+    const browserActionButtonChoiceFeature = new BrowserActionButtonChoiceFeature();
+    await browserActionButtonChoiceFeature.configure(variation);
 
     // perform something only during first run
     if (isFirstRun) {
@@ -40,8 +41,8 @@ class Feature {
       );
 
       browser.introductionNotificationBar.onIntroductionShown.addListener(
-        () => {
-          console.log("onIntroductionShown");
+        async() => {
+          await browser.study.logger.log("onIntroductionShown");
 
           feature.sendTelemetry({
             event: "onIntroductionShown",
@@ -50,8 +51,8 @@ class Feature {
       );
 
       browser.introductionNotificationBar.onIntroductionAccept.addListener(
-        () => {
-          console.log("onIntroductionAccept");
+        async() => {
+          await browser.study.logger.log("onIntroductionAccept");
           feature.sendTelemetry({
             event: "onIntroductionAccept",
           });
@@ -59,8 +60,8 @@ class Feature {
       );
 
       browser.introductionNotificationBar.onIntroductionLeaveStudy.addListener(
-        () => {
-          console.log("onIntroductionLeaveStudy");
+        async() => {
+          await browser.study.logger.log("onIntroductionLeaveStudy");
           feature.sendTelemetry({
             event: "onIntroductionLeaveStudy",
           });
@@ -140,8 +141,8 @@ class Feature {
   /**
    * Example of a static utility function that can be unit-tested
    *
-   * @param variation
-   * @returns {string}
+   * @param {Object} variation The study variation
+   * @returns {string} The path to the variation's icon
    */
   static iconPath(variation) {
     return `icons/${variation.name}.svg`;
@@ -154,33 +155,37 @@ class Feature {
 class BrowserActionButtonChoiceFeature {
   /**
    * - set image, text, click handler (telemetry)
+   * @param {Object} variation The study variation
+   * @returns {Promise<*>} Promise that resolves after configuration
    */
-  constructor(variation) {
-    console.log(
+  async configure(variation) {
+    await browser.study.logger.log(
       "Initializing BrowserActionButtonChoiceFeature:",
       variation.name,
     );
     this.timesClickedInSession = 0;
 
     // modify BrowserAction (button) ui for this particular {variation}
-    console.log("path:", `icons/${variation.name}.svg`);
+    await browser.study.logger.log("path:", `icons/${variation.name}.svg`);
     // TODO: Running into an error "values is undefined" here
     browser.browserAction.setIcon({ path: Feature.iconPath(variation) });
     browser.browserAction.setTitle({ title: variation.name });
     browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
-    console.log("initialized");
+    await browser.study.logger.log("initialized");
   }
 
-  /** handleButtonClick
+  /**
+   * handleButtonClick
    *
    * - instrument browserAction button clicks
    * - change label
+   * @returns {Promise<*>} Promise that resolves after handling
    */
-  handleButtonClick() {
-    console.log("handleButtonClick");
+  async handleButtonClick() {
+    await browser.study.logger.log("handleButtonClick");
     // note: doesn't persist across a session, unless you use localStorage or similar.
     this.timesClickedInSession += 1;
-    console.log("got a click", this.timesClickedInSession);
+    await browser.study.logger.log("got a click", this.timesClickedInSession);
     browser.browserAction.setBadgeText({
       text: this.timesClickedInSession.toString(),
     });
