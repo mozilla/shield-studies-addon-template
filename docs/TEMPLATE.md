@@ -2,29 +2,11 @@
 
 (Remove this file after you have cloned/merged the template to your own study add-on repo.)
 
-## Important notice
-
-We just started [supporting a pure Web Extension Experiment workflow in this template](https://github.com/mozilla/shield-studies-addon-template/issues/53) with a new version, v5, of the [Shield utilities](https://github.com/mozilla/shield-studies-addon-utils/).
-Even though support for these workflows are yet to pass official QA review, **we do not recommend using the old template (for creating legacy boostrapped add-ons using Shield Utils v4) of this template**. Creating a legacy boostrapped add-on with the outdated master branch will likely result in a broken Shield study add-on in recent versions of Firefox.
-
-Instead, we recommend that you:
-
-* build your study as a WEE ([Web Extension Experiment](https://firefox-source-docs.mozilla.org/toolkit/components/extensions/webextensions/index.html))
-* help us test the requisite [new Shield Web Extension API(s)](https://github.com/mozilla/shield-studies-addon-utils/)
-
-Example Shield add-ons using the experimental Shield API(s):
-
-* This template
-* <https://github.com/mozilla/shield-studies-addon-utils/tree/master/examples/small-study>
-* <https://github.com/motin/taar-experiment-v3-shield-study>
-* <https://github.com/motin/dataleak-pioneer-shield-study>
-* <https://github.com/mozilla/shield-cloudstorage>
-
-Chat with us: #shield on Slack about the latest progress and how to help us move faster away from legacy add-ons.
+Thinking about building a Study Add-on? Please read [the docs on Pref-Flip and Add-On Experiments](https://mana.mozilla.org/wiki/display/FIREFOX/Pref-Flip+and+Add-On+Experiments) first.
 
 ## Aims
 
-The aim is to bring together tools and services we've used on other Shield Study add-ons into a template/example repository, so that new projects can come
+The aim is to bring together tools and services we've used on other [Shield and Pioneer Add-on Experiments](https://mana.mozilla.org/wiki/display/FIREFOX/Pref-Flip+and+Add-On+Experiments) into a template/example repository, so that new projects can come
 along and get infrastructure together, and be up and running with code, test suites, coverage etc quickly.
 
 Using this template will get you these things:
@@ -32,7 +14,7 @@ Using this template will get you these things:
 * [Shield Utils](https://github.com/mozilla/shield-studies-addon-utils/) integration and example usage
 * Functional tests
 * Unit tests
-* Continuous integration testing against Release, Beta, Dev Edition and Nightly (via Circle CI)
+* Continuous integration testing against Dev Edition and Nightly (via Circle CI)
 * [Example web extension experiment implementing custom ui using privileged code](./src/privileged/introductionNotificationBar/)
 * Linting
 * Partial code coverage (specific files)
@@ -41,7 +23,6 @@ Bonus:
 
 * Consistent package.json (fixpack) and package-lock.json
 * Addon-linter
-* Runs nsp during lint
 
 ## Documentation
 
@@ -56,6 +37,8 @@ create a PR.
 3. Remove irrelevant example code
 4. Build your study add-on and make the docs reflect your study
 5. File issues/PRs against https://github.com/mozilla/shield-studies-addon-template/ when you come across things to improve in the template
+
+For more information on engineering study add-ons, see <https://github.com/mozilla/shield-studies-addon-utils/> (especially <https://github.com/mozilla/shield-studies-addon-utils/blob/master/docs/engineering.md>).
 
 ### Retrofitting an existing study add-on to use the template
 
