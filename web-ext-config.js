@@ -14,7 +14,7 @@ const defaultConfig = {
     browserConsole: true,
     startUrl: ["about:debugging"],
     pref: [
-      "shieldStudy.logLevel=All",
+      "shieldStudy.logLevel=info",
       "browser.ctrlTab.recentlyUsedOrder=false",
       "extensions.button-icon-preference_shield_mozilla_org.test.variationName=dogfooding",
     ],

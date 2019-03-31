@@ -160,3 +160,4 @@ See [TELEMETRY.md](./TELEMETRY.md) for more details on what pings are sent by th
 To debug installation and loading of the add-on:
 
 * Open the Browser Console using Firefox's top menu at `Tools > Web Developer > Browser Console`. This will display Shield (loading/telemetry) and log output from the add-on.
+* Set `shieldStudy.logLevel` to `all`. This permits debug-level shield-add-on log output in the browser console.
