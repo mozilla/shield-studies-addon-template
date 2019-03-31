@@ -260,7 +260,7 @@ The example tests is inspired by tests in <https://github.com/mozilla/share-butt
 >> tree -a -I 'node_modules|.git|.DS_Store'
 ```
 
-This structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/background.js`, `src/privileged/` and `src/studySetup.js`.
+This add-on uses the structure is set forth in [shield-studies-addon-template](https://github.com/mozilla/shield-studies-addon-template), with study-specific changes found mostly in `src/background.js`, `src/privileged/` and `src/studySetup.js`.
 
 ## General Shield Study Engineering
 
