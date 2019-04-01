@@ -7,7 +7,7 @@
     "url": "https://github.com/mozilla/shield-studies-addon-template/issues"
   },
   "dependencies": {
-    "shield-studies-addon-utils": "github:motin/shield-studies-addon-utils#add-normandy-unenroll-listener"
+    "shield-studies-addon-utils": "^5.3.0"
   },
   "devDependencies": {
     "@oclif/fixpack": "^2.3.0",
