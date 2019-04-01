@@ -1,3 +1,17 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Contents**
+
+* [Using this study add-on template](#using-this-study-add-on-template)
+  * [Aims](#aims)
+  * [Documentation](#documentation)
+  * [Using this template](#using-this-template)
+    * [Retrofitting an existing study add-on to use the template](#retrofitting-an-existing-study-add-on-to-use-the-template)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Using this study add-on template
 
 (Remove this file after you have cloned/merged the template to your own study add-on repo.)
