@@ -11,14 +11,14 @@ const STUDY_TYPE = process.env.STUDY_TYPE || "shield";
 const LOG_LEVEL = process.env.LOG_LEVEL || "info";
 const EXPIRE_IN_SECONDS = process.env.EXPIRE_IN_SECONDS || false;
 const EXPIRED = process.env.EXPIRED || false;
-const BRANCH = process.env.BRANCH || "treatment";
+const BRANCH = process.env.BRANCH || "kittens";
 
 const run = async studyType => {
   const driver = await utils.setupWebdriver.promiseSetupDriver(
     utils.FIREFOX_PREFERENCES,
   );
   const widgetId = utils.ui.makeWidgetId(
-    "extensions.button-icon-preference_shield_mozilla_org.test.variationName",
+    "button-icon-preference@shield.mozilla.org",
   );
   /*
   await utils.preferences.set(

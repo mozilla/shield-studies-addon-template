@@ -16,7 +16,7 @@ const defaultConfig = {
     pref: [
       "shieldStudy.logLevel=info",
       "browser.ctrlTab.recentlyUsedOrder=false",
-      "extensions.button-icon-preference_shield_mozilla_org.test.variationName=dogfooding",
+      "extensions.button-icon-preference_shield_mozilla_org.test.variationName=kittens",
     ],
   },
 };

@@ -14,9 +14,6 @@ const EventEmitter =
   ExtensionCommon.EventEmitter || ExtensionUtils.EventEmitter;
 
 // eslint-disable-next-line no-undef
-const { ExtensionError } = ExtensionUtils;
-
-// eslint-disable-next-line no-undef
 XPCOMUtils.defineLazyModuleGetter(
   this,
   "BrowserWindowTracker",
@@ -54,17 +51,7 @@ class IntroductionNotificationBarEventEmitter extends EventEmitter {
   emitShow(variationName) {
     const self = this;
     const recentWindow = getMostRecentBrowserWindow();
-    const doc = recentWindow.document;
-    const notificationBox = doc.querySelector(
-      "#high-priority-global-notificationbox",
-    );
-
-    // TODO: https://github.com/mozilla/shield-studies-addon-template/issues/96
-    console.log("typeof notificationBox", typeof notificationBox);
-
-    if (!notificationBox) {
-      throw new ExtensionError("The notification box could not be invoked");
-    }
+    const notificationBox = recentWindow.gHighPriorityNotificationBox;
 
     // api: https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XUL/Method/appendNotification
     const notice = notificationBox.appendNotification(

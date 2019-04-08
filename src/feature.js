@@ -159,16 +159,17 @@ class BrowserActionButtonChoiceFeature {
    * @returns {Promise<*>} Promise that resolves after configuration
    */
   async configure(variation) {
-    await browser.study.logger.log(
+    await browser.study.logger.log([
       "Initializing BrowserActionButtonChoiceFeature:",
       variation.name,
-    );
+    ]);
     this.timesClickedInSession = 0;
 
     // modify BrowserAction (button) ui for this particular {variation}
-    await browser.study.logger.log("path:", `icons/${variation.name}.svg`);
+    const iconPath = Feature.iconPath(variation);
+    await browser.study.logger.log({ iconPath });
     // TODO: Running into an error "values is undefined" here
-    browser.browserAction.setIcon({ path: Feature.iconPath(variation) });
+    browser.browserAction.setIcon({ path: iconPath });
     browser.browserAction.setTitle({ title: variation.name });
     browser.browserAction.onClicked.addListener(() => this.handleButtonClick());
     await browser.study.logger.log("initialized");
@@ -185,7 +186,7 @@ class BrowserActionButtonChoiceFeature {
     await browser.study.logger.log("handleButtonClick");
     // note: doesn't persist across a session, unless you use localStorage or similar.
     this.timesClickedInSession += 1;
-    await browser.study.logger.log("got a click", this.timesClickedInSession);
+    await browser.study.logger.log(["got a click", this.timesClickedInSession]);
     browser.browserAction.setBadgeText({
       text: this.timesClickedInSession.toString(),
     });
@@ -198,7 +199,7 @@ class BrowserActionButtonChoiceFeature {
     // telemetry EVERY CLICK
     browser.study.sendTelemetry({
       event: "button-click",
-      timesClickedInSession: this.timesClickedInSession,
+      timesClickedInSession: this.timesClickedInSession.toString(),
     });
 
     // webExtension-initiated ending for "used-often"

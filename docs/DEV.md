@@ -231,9 +231,6 @@ The example tests is inspired by tests in <https://github.com/mozilla/share-butt
 │   │   ├── introductionNotificationBar
 │   │   │   ├── api.js
 │   │   │   └── schema.json
-│   │   ├── panel
-│   │   │   ├── blurts.EveryWindow.jsm
-│   │   │   └── cookiesrest.EveryWindow.js
 │   │   ├── privacyContext
 │   │   │   ├── api.js
 │   │   │   ├── api.md
